@@ -4,12 +4,12 @@ workspace_setup:
   git_init: true
 prompt: |
   Create a file named answer.txt in the workspace.
-  The file must contain exactly:
+  The file must contain exactly these 15 bytes, with no trailing newline:
   hello benchmark
 oracle:
   type: file_equals
   path: answer.txt
-  text: |
+  text: |-
     hello benchmark
 budgets:
   timeout_sec: 120
