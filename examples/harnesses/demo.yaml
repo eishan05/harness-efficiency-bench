@@ -1,0 +1,12 @@
+id: demo
+adapter: demo
+model: synthetic-demo
+timeout_sec: 60
+trace_mode: full
+pricing:
+  input_per_million: 0
+  cached_input_per_million: 0
+  output_per_million: 0
+capabilities:
+  - model_call_trace
+  - tool_result_trace

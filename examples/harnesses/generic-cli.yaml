@@ -1,0 +1,6 @@
+id: generic-write-answer
+adapter: generic_cli
+command: "printf 'hello benchmark\n' > answer.txt"
+timeout_sec: 60
+trace_mode: partial
+

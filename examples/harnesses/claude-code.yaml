@@ -1,0 +1,7 @@
+id: claude-code
+adapter: claude_code
+model: sonnet
+timeout_sec: 900
+trace_mode: structured
+# Optional estimate. Prefer native Claude Code cost fields when present.
+pricing: {}

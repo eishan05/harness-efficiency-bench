@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harness-efficiency-bench"
+version = "0.1.0"
+description = "Benchmark harness efficiency for coding agents."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "PyYAML>=6.0",
+]
+
+[project.scripts]
+harness-bench = "harness_efficiency_bench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

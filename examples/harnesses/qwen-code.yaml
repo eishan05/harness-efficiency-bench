@@ -1,0 +1,6 @@
+id: qwen-code
+adapter: qwen_code
+model: qwen-default
+timeout_sec: 900
+trace_mode: partial
+

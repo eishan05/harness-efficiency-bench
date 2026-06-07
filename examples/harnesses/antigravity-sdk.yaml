@@ -1,0 +1,8 @@
+id: antigravity-sdk
+adapter: antigravity
+model: gemini-default
+timeout_sec: 900
+trace_mode: structured
+config:
+  mode: sdk
+

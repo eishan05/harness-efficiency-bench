@@ -1,0 +1,9 @@
+id: nanobot
+adapter: nanobot
+model: configured-in-nanobot
+timeout_sec: 900
+trace_mode: partial
+# Fill this in for your local nanobot setup, for example a wrapper script that
+# accepts {prompt_file}, runs nanobot, and exits after the task is complete.
+command: null
+

@@ -1,0 +1,27 @@
+id: toy-write-file
+source: local
+workspace_setup:
+  git_init: true
+prompt: |
+  Create a file named answer.txt in the workspace.
+  The file must contain exactly:
+  hello benchmark
+oracle:
+  type: file_equals
+  path: answer.txt
+  text: |
+    hello benchmark
+budgets:
+  timeout_sec: 120
+perturbations:
+  - id: 20k
+    tokens: 20000
+    seed: "irrelevant stale build log"
+    placement: prompt_prefix
+  - id: 50k
+    tokens: 50000
+    seed: "irrelevant stale build log"
+    placement: prompt_prefix
+tags:
+  - smoke
+  - toy
