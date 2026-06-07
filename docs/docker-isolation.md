@@ -77,6 +77,45 @@ ANTHROPIC_API_KEY=... PYTHONPATH=src python3 -m harness_efficiency_bench.cli run
 
 The Docker harness passes only `ANTHROPIC_API_KEY` from the host. It does not mount the host Claude config or OAuth credentials.
 
+## Antigravity CLI
+
+Build the Antigravity CLI image:
+
+```bash
+docker build -t harness-bench/antigravity-cli:1.0.6 docker/antigravity
+```
+
+Antigravity CLI uses Google OAuth rather than an API key. For Docker-isolated runs, use a dedicated auth directory instead of mounting your host home:
+
+```bash
+mkdir -p /tmp/harness-antigravity-auth
+export ANTIGRAVITY_AUTH_DIR=/tmp/harness-antigravity-auth
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
+  --task examples/tasks/toy-write-file/task.yaml \
+  --harness examples/harnesses/antigravity-cli-docker-isolated.yaml \
+  --require-docker-isolation \
+  --delete-workspace
+```
+
+The first run may print a Google OAuth URL and wait for an authorization code. Once authenticated, later runs reuse only the dedicated `ANTIGRAVITY_AUTH_DIR`; they do not mount the host Antigravity or Gemini home directory.
+
+Use a persistent auth directory if you do not want to repeat OAuth after `/tmp` is cleaned:
+
+```bash
+mkdir -p ~/.harness-bench/antigravity-auth
+export ANTIGRAVITY_AUTH_DIR=~/.harness-bench/antigravity-auth
+```
+
+If you initially authenticated with `/tmp/harness-antigravity-auth`, copy that state into the persistent directory:
+
+```bash
+mkdir -p ~/.harness-bench/antigravity-auth
+cp -a /tmp/harness-antigravity-auth/. ~/.harness-bench/antigravity-auth/
+export ANTIGRAVITY_AUTH_DIR=~/.harness-bench/antigravity-auth
+```
+
+OAuth must be repeated only if the auth directory is deleted, the refresh token is revoked or expires, Google invalidates the session, or a different `ANTIGRAVITY_AUTH_DIR` is used.
+
 ## Additional Docker-Only Agent CLIs
 
 The repository includes Docker harness manifests and images for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, `hermes-agent`, and `grok-build`.

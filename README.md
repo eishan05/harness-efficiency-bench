@@ -118,6 +118,14 @@ Claude Code harnesses are split by auth and isolation:
 - `claude-code-api`: host/API-key debug harness. Requires `ANTHROPIC_API_KEY`.
 - `claude-code-docker-isolated`: Docker-isolated API-key harness for serious runs. Requires `ANTHROPIC_API_KEY` and the image build above.
 
+Antigravity CLI is split into host debug and Docker-isolated OAuth modes:
+
+- `antigravity-cli`: host/local CLI debug harness.
+- `antigravity-sdk`: host/local SDK debug harness.
+- `antigravity-cli-docker-isolated`: Docker-isolated CLI harness. Requires the `docker/antigravity` image and a dedicated `ANTIGRAVITY_AUTH_DIR` mounted into the container's Antigravity config directory.
+
+Use a persistent `ANTIGRAVITY_AUTH_DIR`, such as `~/.harness-bench/antigravity-auth`, to avoid repeating Google OAuth between runs. OAuth is needed again only if that directory is deleted, the token is revoked/expired, or you switch to a different auth directory.
+
 Docker-only agent CLI harnesses are API-key only and do not mount host OAuth or subscription state. Direct-provider examples are available for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, `hermes-agent`, and `grok-build`. Manifests marked `bench_ready: false` are scaffolds that still need live provider-key smoke verification before serious comparisons.
 
 OpenRouter variants are available as `*-docker-openrouter.yaml` manifests for Docker CLIs except Grok Build, which uses xAI directly. Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, for example:
