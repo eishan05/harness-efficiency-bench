@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${GOOSE_PROVIDER:=openrouter}"
+  : "${GOOSE_MODEL:=$OPENROUTER_MODEL}"
+else
+  : "${GOOSE_PROVIDER:=openai}"
+  : "${GOOSE_MODEL:=gpt-4o-mini}"
+fi
+export GOOSE_MODE="${GOOSE_MODE:-auto}"
+export GOOSE_MAX_TURNS="${GOOSE_MAX_TURNS:-50}"
+export GOOSE_DISABLE_SESSION_NAMING="${GOOSE_DISABLE_SESSION_NAMING:-true}"
+export GOOSE_CONTEXT_STRATEGY="${GOOSE_CONTEXT_STRATEGY:-summarize}"
+
+goose run \
+  --no-session \
+  --with-builtin developer \
+  --output-format stream-json \
+  --provider "$GOOSE_PROVIDER" \
+  --model "$GOOSE_MODEL" \
+  -i "$prompt_file"

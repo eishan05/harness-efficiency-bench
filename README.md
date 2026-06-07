@@ -2,7 +2,7 @@
 
 Benchmark coding-agent harnesses on token efficiency, context growth, tool-output retention, cost, and solve rate.
 
-The v1 scaffold is designed around small task manifests and pluggable harness adapters. It can run a toy benchmark immediately, and it includes adapter entry points for Codex, Claude Code, Antigravity, Qwen Code, mini-swe-agent, nanobot, and generic command-line harnesses.
+The v1 scaffold is designed around small task manifests and pluggable harness adapters. It can run a toy benchmark immediately, and it includes adapter entry points for Codex, Claude Code, Antigravity, Qwen Code, mini-swe-agent, nanobot, generic command-line harnesses, and Docker-only agent CLIs.
 
 ## Quick Start
 
@@ -47,6 +47,17 @@ docker build -t harness-bench/claude-code:2.1.114 docker/claude-code
 ANTHROPIC_API_KEY=... PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
   --task examples/tasks/toy-write-file/task.yaml \
   --harness examples/harnesses/claude-code-docker-isolated.yaml \
+  --require-docker-isolation \
+  --delete-workspace
+```
+
+Build and run a Docker-only agent CLI harness:
+
+```bash
+docker build -t harness-bench/goose:1.37.0 docker/goose
+OPENAI_API_KEY=... PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
+  --task examples/tasks/toy-write-file/task.yaml \
+  --harness examples/harnesses/goose-docker-isolated.yaml \
   --require-docker-isolation \
   --delete-workspace
 ```
@@ -106,6 +117,22 @@ Claude Code harnesses are split by auth and isolation:
 - `claude-code`: host/local subscription debug harness. Requires `claude auth status` to show working account access.
 - `claude-code-api`: host/API-key debug harness. Requires `ANTHROPIC_API_KEY`.
 - `claude-code-docker-isolated`: Docker-isolated API-key harness for serious runs. Requires `ANTHROPIC_API_KEY` and the image build above.
+
+Docker-only agent CLI harnesses are API-key only and do not mount host OAuth or subscription state. Direct-provider examples are available for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, `hermes-agent`, and `grok-build`. Manifests marked `bench_ready: false` are scaffolds that still need live provider-key smoke verification before serious comparisons.
+
+OpenRouter variants are available as `*-docker-openrouter.yaml` manifests for Docker CLIs except Grok Build, which uses xAI directly. Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, for example:
+
+```bash
+export OPENROUTER_API_KEY=...
+export OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b:free"
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
+  --task examples/tasks/toy-write-file/task.yaml \
+  --harness examples/harnesses/aider-docker-openrouter.yaml \
+  --require-docker-isolation \
+  --delete-workspace
+```
+
+Grok Build uses xAI directly. Set `XAI_API_KEY` for `examples/harnesses/grok-build-docker-isolated.yaml`; the wrapper also accepts `GROK_CODE_XAI_API_KEY` for compatibility.
 
 ## Adding Harnesses
 

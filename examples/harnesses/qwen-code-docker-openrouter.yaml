@@ -1,0 +1,40 @@
+id: qwen-code-docker-openrouter
+adapter: docker_agent_cli
+model: openrouter/${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: partial
+command:
+  - /opt/harness/run-agent
+  - "{prompt_file}"
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/qwen-code:0.17.1
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /qwen-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /qwen-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+    - QWEN_MODEL_NAME
+    - QWEN_BASE_URL
+    - QWEN_API_KEY_ENV
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  cli_version: "0.17.1"
+  version_command:
+    - qwen
+    - --version
+  trace:
+    parser: qwen_text_or_json

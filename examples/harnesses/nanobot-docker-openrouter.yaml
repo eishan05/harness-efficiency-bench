@@ -1,0 +1,43 @@
+id: nanobot-docker-openrouter
+adapter: docker_agent_cli
+model: openrouter/${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: partial
+command:
+  - /opt/harness/run-agent
+  - "{prompt_file}"
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/nanobot:0.2.1
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /nanobot-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /nanobot-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+    - OPENROUTER_BASE_URL
+    - NANOBOT_MAX_TOKENS
+    - NANOBOT_CONTEXT_WINDOW_TOKENS
+    - NANOBOT_MAX_TOOL_ITERATIONS
+    - NANOBOT_MAX_TOOL_RESULT_CHARS
+    - NANOBOT_TEMPERATURE
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  cli_version: "0.2.1"
+  version_command:
+    - nanobot
+    - --version
+  trace:
+    parser: nanobot_text

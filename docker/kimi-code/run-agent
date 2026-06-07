@@ -1,0 +1,45 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+export KIMI_CODE_HOME="${KIMI_CODE_HOME:-$HOME/.kimi-code}"
+export KIMI_DISABLE_TELEMETRY="${KIMI_DISABLE_TELEMETRY:-1}"
+
+mkdir -p "$KIMI_CODE_HOME"
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${KIMI_MODEL_NAME:=$OPENROUTER_MODEL}"
+  : "${KIMI_BASE_URL:=https://openrouter.ai/api/v1}"
+  : "${KIMI_MAX_CONTEXT_SIZE:=131072}"
+  cat > "$KIMI_CODE_HOME/config.toml" <<EOF
+[providers.openrouter]
+type = "openai"
+base_url = "${KIMI_BASE_URL}"
+api_key = "${OPENROUTER_API_KEY}"
+
+[models."${KIMI_MODEL_NAME}"]
+provider = "openrouter"
+model = "${KIMI_MODEL_NAME}"
+max_context_size = ${KIMI_MAX_CONTEXT_SIZE}
+EOF
+elif [ -n "${KIMI_API_KEY:-}" ]; then
+  : "${KIMI_MODEL_NAME:=kimi-for-coding}"
+  : "${KIMI_BASE_URL:=https://api.moonshot.ai/v1}"
+  : "${KIMI_MAX_CONTEXT_SIZE:=131072}"
+  cat > "$KIMI_CODE_HOME/config.toml" <<EOF
+[providers.kimi]
+type = "kimi"
+base_url = "${KIMI_BASE_URL}"
+api_key = "${KIMI_API_KEY}"
+
+[models."${KIMI_MODEL_NAME}"]
+provider = "kimi"
+model = "${KIMI_MODEL_NAME}"
+max_context_size = ${KIMI_MAX_CONTEXT_SIZE}
+EOF
+else
+  : "${KIMI_MODEL_NAME:=kimi-for-coding}"
+fi
+
+kimi --output-format stream-json --model "$KIMI_MODEL_NAME" -p "$prompt"

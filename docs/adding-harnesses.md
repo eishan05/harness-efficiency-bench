@@ -46,6 +46,34 @@ config:
 
 The task workspace is mounted at `/workspace`, and `{prompt_file}` resolves to `/workspace/.benchmark_prompt.txt` inside the container. Containers are started with `docker run --rm`; the container is removed after execution, while benchmark results and traces are retained.
 
+## Docker-Only Agent CLIs
+
+Use `docker_agent_cli` for third-party agent CLIs that must never run on the host:
+
+```yaml
+id: my-agent-docker-isolated
+adapter: docker_agent_cli
+command: ["/opt/harness/run-agent", "{prompt_file}"]
+trace_mode: structured
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/my-agent:1.2.3
+  cli_version: "1.2.3"
+  version_command: ["my-agent", "--version"]
+  required_env:
+    - OPENAI_API_KEY
+  docker_env_passthrough:
+    - OPENAI_API_KEY
+  trace:
+    parser: generic_json
+```
+
+The adapter fails fast unless `config.backend: docker` is set. It also checks `required_env`, runs `version_command` when configured, and records version-check metadata in the result. Use `bench_ready: false` for images or wrappers that build but do not yet have a smoke-verified one-shot task path.
+
+When adding an OpenRouter route, prefer a separate `*-docker-openrouter.yaml` manifest over changing the direct-provider manifest. Require both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and pass only those plus harness-specific model override env vars into Docker.
+
 ## First-Class Adapter
 
 Add a Python adapter when the harness has structured JSON, JSONL, SDK events, or usage metadata.
@@ -75,7 +103,8 @@ If `input_text` is omitted, exact tool-output retention is marked unsupported.
 
 - `codex`: parses `codex exec --json`.
 - `claude_code`: parses `claude -p --output-format stream-json`, including per-turn usage, native final cost, and tool result output.
+- `docker_agent_cli`: Docker-only command wrapper for agent CLIs, with required env checks, CLI version preflight, and generic JSON/JSONL/proxy usage parsing.
 - `antigravity`: prefers `google-antigravity` SDK; supports `agy -p` fallback.
 - `qwen_code`: runs `qwen -p`; richer parsing can be added once local JSON output is available.
-- `nanobot`: requires a local command/wrapper because deployments differ.
+- `nanobot`: Docker wrapper can generate a minimal OpenRouter config; custom deployments can still use `NANOBOT_RUN_COMMAND`.
 - `mini_swe_agent`: requires a local command/wrapper because versions differ.

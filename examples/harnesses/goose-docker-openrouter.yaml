@@ -1,0 +1,39 @@
+id: goose-docker-openrouter
+adapter: docker_agent_cli
+model: openrouter/${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: structured
+command:
+  - /opt/harness/run-agent
+  - "{prompt_file}"
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/goose:1.37.0
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /goose-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /goose-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+    - GOOSE_PROVIDER
+    - GOOSE_MODEL
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  cli_version: "1.37.0"
+  version_command:
+    - goose
+    - --version
+  trace:
+    parser: goose_stream_json

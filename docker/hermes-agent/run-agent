@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${HERMES_TOOLSETS:=terminal}"
+  exec hermes chat \
+    --provider openrouter \
+    --model "$OPENROUTER_MODEL" \
+    --toolsets "$HERMES_TOOLSETS" \
+    --yolo \
+    -q "$prompt"
+fi
+
+if [ -z "${HERMES_RUN_COMMAND:-}" ]; then
+  echo "HERMES_RUN_COMMAND is required until the Hermes one-shot benchmark path is smoke-verified." >&2
+  exit 2
+fi
+
+export HARNESS_PROMPT_FILE="$prompt_file"
+export HARNESS_PROMPT="$prompt"
+exec /bin/sh -lc "$HERMES_RUN_COMMAND"

@@ -1,0 +1,41 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${QWEN_MODEL_NAME:=$OPENROUTER_MODEL}"
+  : "${QWEN_BASE_URL:=https://openrouter.ai/api/v1}"
+  : "${QWEN_API_KEY_ENV:=OPENROUTER_API_KEY}"
+else
+  : "${QWEN_MODEL_NAME:=qwen3-coder-plus}"
+  : "${QWEN_BASE_URL:=https://dashscope.aliyuncs.com/compatible-mode/v1}"
+  : "${QWEN_API_KEY_ENV:=DASHSCOPE_API_KEY}"
+fi
+
+mkdir -p "$HOME/.qwen"
+cat > "$HOME/.qwen/settings.json" <<EOF
+{
+  "modelProviders": {
+    "openai": [
+      {
+        "id": "${QWEN_MODEL_NAME}",
+        "name": "${QWEN_MODEL_NAME}",
+        "baseUrl": "${QWEN_BASE_URL}",
+        "envKey": "${QWEN_API_KEY_ENV}"
+      }
+    ]
+  },
+  "security": {
+    "auth": {
+      "selectedType": "openai"
+    }
+  },
+  "model": {
+    "name": "${QWEN_MODEL_NAME}"
+  }
+}
+EOF
+
+qwen --yolo -p "$prompt"

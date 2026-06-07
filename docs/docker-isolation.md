@@ -77,6 +77,31 @@ ANTHROPIC_API_KEY=... PYTHONPATH=src python3 -m harness_efficiency_bench.cli run
 
 The Docker harness passes only `ANTHROPIC_API_KEY` from the host. It does not mount the host Claude config or OAuth credentials.
 
+## Additional Docker-Only Agent CLIs
+
+The repository includes Docker harness manifests and images for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, `hermes-agent`, and `grok-build`.
+
+Build an image with:
+
+```bash
+docker build -t harness-bench/goose:1.37.0 docker/goose
+```
+
+Then run the matching `examples/harnesses/*-docker-isolated.yaml` manifest with `--require-docker-isolation`. These harnesses are API-key only: they pass selected environment variables into an isolated container home, and they do not mount host OAuth or subscription directories.
+
+Tier 1 manifests are intended to be directly runnable after image build and API-key setup. Manifests marked `bench_ready: false` are registered with pinned image scaffolds, but their image builds and one-shot command paths still need live smoke verification before serious benchmark runs.
+
+OpenRouter-specific variants use the same images and are named `*-docker-openrouter.yaml`. They are available for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, and `hermes-agent`. They require:
+
+```bash
+export OPENROUTER_API_KEY=...
+export OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b:free"
+```
+
+These manifests keep provider-specific baselines unchanged while letting the same CLI run through OpenRouter. Trace quality depends on each CLI's output; many OpenRouter runs are black-box or partial even when the task oracle passes. Grok Build is not an OpenRouter variant; use `XAI_API_KEY` or `GROK_CODE_XAI_API_KEY` with `grok-build-docker-isolated.yaml`.
+
+Some agents initialize their own workspace metadata in the mounted task workspace. Task oracles should grade the required files or repository diff and ignore unrelated harness metadata unless the task explicitly forbids extra files.
+
 ## Harness Config Keys
 
 - `backend: docker` enables Docker execution.
@@ -88,3 +113,6 @@ The Docker harness passes only `ANTHROPIC_API_KEY` from the host. It does not mo
 - `docker_memory` and `docker_cpus` set container resource limits.
 - `docker_read_only` makes the container root filesystem read-only.
 - `docker_tmpfs` mounts writable tmpfs paths.
+- `required_env` makes Docker agent harnesses fail before launch if necessary API keys are absent.
+- `cli_version` and `version_command` pin and verify CLI versions for Docker agent harnesses.
+- `bench_ready: false` marks a harness as not ready for serious comparisons.

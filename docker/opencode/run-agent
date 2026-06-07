@@ -1,0 +1,55 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+mkdir -p "$HOME/.config/opencode"
+
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${OPENCODE_MODEL:=openrouter/$OPENROUTER_MODEL}"
+  model_name="${OPENCODE_MODEL#openrouter/}"
+  mkdir -p "$HOME/.local/share/opencode"
+  cat > "$HOME/.local/share/opencode/auth.json" <<EOF
+{
+  "openrouter": {
+    "type": "api",
+    "key": "${OPENROUTER_API_KEY}"
+  }
+}
+EOF
+  cat > "$HOME/.config/opencode/opencode.json" <<EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "model": "${OPENCODE_MODEL}",
+  "provider": {
+    "openrouter": {
+      "models": {
+        "${model_name}": {}
+      }
+    }
+  },
+  "permission": "allow"
+}
+EOF
+else
+  : "${OPENCODE_MODEL:=openai/gpt-4o-mini}"
+  : "${OPENAI_BASE_URL:=https://api.openai.com/v1}"
+  cat > "$HOME/.config/opencode/opencode.json" <<EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "model": "${OPENCODE_MODEL}",
+  "provider": {
+    "openai": {
+      "options": {
+        "apiKey": "{env:OPENAI_API_KEY}",
+        "baseURL": "${OPENAI_BASE_URL}"
+      }
+    }
+  },
+  "permission": "allow"
+}
+EOF
+fi
+
+opencode run --format json "$prompt"

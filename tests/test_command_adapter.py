@@ -52,6 +52,8 @@ class CommandAdapterTest(unittest.TestCase):
             self.assertIn("alpine:3.20", command)
             self.assertIn("-w", command)
             self.assertIn("/workspace", command)
+            self.assertIn("GIT_CONFIG_KEY_0=safe.directory", command)
+            self.assertIn("GIT_CONFIG_VALUE_0=/workspace", command)
 
 
 if __name__ == "__main__":

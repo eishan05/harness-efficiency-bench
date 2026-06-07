@@ -1,0 +1,56 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+mkdir -p "$HOME/.config/kilo"
+
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${KILO_MODEL:=openrouter/$OPENROUTER_MODEL}"
+  model_name="${KILO_MODEL#openrouter/}"
+  mkdir -p "$HOME/.local/share/kilo"
+  cat > "$HOME/.local/share/kilo/auth.json" <<EOF
+{
+  "openrouter": {
+    "type": "api",
+    "key": "${OPENROUTER_API_KEY}"
+  }
+}
+EOF
+  cat > "$HOME/.config/kilo/opencode.json" <<EOF
+{
+  "\$schema": "https://app.kilo.ai/config.json",
+  "model": "${KILO_MODEL}",
+  "provider": {
+    "openrouter": {
+      "env": ["OPENROUTER_API_KEY"],
+      "models": {
+        "${model_name}": {}
+      }
+    }
+  },
+  "permission": ["allow"]
+}
+EOF
+else
+  : "${KILO_MODEL:=openai/gpt-4o-mini}"
+  : "${OPENAI_BASE_URL:=https://api.openai.com/v1}"
+  cat > "$HOME/.config/kilo/opencode.json" <<EOF
+{
+  "\$schema": "https://app.kilo.ai/config.json",
+  "model": "${KILO_MODEL}",
+  "provider": {
+    "openai": {
+      "options": {
+        "apiKey": "{env:OPENAI_API_KEY}",
+        "baseURL": "${OPENAI_BASE_URL}"
+      }
+    }
+  },
+  "permission": ["allow"]
+}
+EOF
+fi
+
+kilo run --format json "$prompt"

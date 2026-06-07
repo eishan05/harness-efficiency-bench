@@ -1,0 +1,36 @@
+id: hermes-agent-docker-isolated
+adapter: docker_agent_cli
+model: configured-in-hermes
+timeout_sec: 900
+trace_mode: partial
+command:
+  - /opt/harness/run-agent
+  - "{prompt_file}"
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/hermes-agent:0.16.0
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /hermes-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /hermes-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENAI_API_KEY
+    - ANTHROPIC_API_KEY
+    - HERMES_RUN_COMMAND
+  cli_version: "0.16.0"
+  version_command:
+    - hermes
+    - --version
+  bench_ready: false
+  trace:
+    parser: hermes_text

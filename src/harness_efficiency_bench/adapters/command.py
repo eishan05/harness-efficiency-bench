@@ -6,6 +6,7 @@ import json
 import os
 import shlex
 import subprocess
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -41,6 +42,32 @@ def merged_env(extra: dict[str, str]) -> dict[str, str]:
     return env
 
 
+@dataclass(slots=True)
+class VersionCheck:
+    ok: bool
+    expected: str | None = None
+    actual: str = ""
+    command: str | list[str] | None = None
+    stderr: str = ""
+    exit_code: int = 0
+    skipped: bool = False
+
+    def to_metadata(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "ok": self.ok,
+            "skipped": self.skipped,
+            "actual": self.actual,
+            "exit_code": self.exit_code,
+        }
+        if self.expected is not None:
+            payload["expected"] = self.expected
+        if self.command is not None:
+            payload["command"] = self.command
+        if self.stderr:
+            payload["stderr"] = self.stderr
+        return payload
+
+
 def run_command(
     command: str | list[str],
     context: AdapterRunContext,
@@ -63,6 +90,46 @@ def run_command(
         shell=shell,
         check=False,
     )
+
+
+def missing_required_env(context: AdapterRunContext) -> list[str]:
+    missing: list[str] = []
+    for key in context.harness.config.get("required_env", []):
+        key_text = str(key)
+        value = context.harness.env.get(key_text, os.environ.get(key_text))
+        if not value:
+            missing.append(key_text)
+    return missing
+
+
+def run_version_check(context: AdapterRunContext) -> VersionCheck:
+    command = context.harness.config.get("version_command")
+    expected = context.harness.config.get("cli_version")
+    if context.harness.config.get("skip_version_check"):
+        return VersionCheck(ok=True, skipped=True, expected=str(expected) if expected else None, command=command)
+    if not command or not expected:
+        return VersionCheck(ok=True, skipped=True, expected=str(expected) if expected else None)
+    enforce = bool(context.harness.config.get("enforce_cli_version", True))
+    completed = run_command(command, context)
+    actual = completed.stdout.strip() or completed.stderr.strip()
+    expected_text = str(expected)
+    ok = completed.returncode == 0 and (not enforce or _version_output_matches(actual, expected_text))
+    return VersionCheck(
+        ok=ok,
+        expected=expected_text,
+        actual=actual,
+        command=command,
+        stderr=completed.stderr.strip(),
+        exit_code=completed.returncode,
+    )
+
+
+def _version_output_matches(actual: str, expected: str) -> bool:
+    normalized_expected = expected.strip()
+    if not normalized_expected:
+        return True
+    normalized_actual = actual.strip()
+    return normalized_expected in normalized_actual or normalized_expected.removeprefix("v") in normalized_actual
 
 
 def run_docker_command(
@@ -132,6 +199,16 @@ def build_docker_command(command: str | list[str], context: AdapterRunContext) -
     docker_home = context.harness.config.get("docker_home")
     if docker_home:
         docker_command.extend(["-e", f"HOME={docker_home}"])
+    docker_command.extend(
+        [
+            "-e",
+            "GIT_CONFIG_COUNT=1",
+            "-e",
+            "GIT_CONFIG_KEY_0=safe.directory",
+            "-e",
+            f"GIT_CONFIG_VALUE_0={docker_workspace}",
+        ]
+    )
     for tmpfs in context.harness.config.get("docker_tmpfs", []):
         docker_command.extend(["--tmpfs", str(tmpfs)])
     for mount in context.harness.config.get("docker_mounts", []):

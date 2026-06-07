@@ -1,0 +1,30 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  openclaw --dev agents add benchmark \
+    --workspace /workspace \
+    --model "openrouter/$OPENROUTER_MODEL" \
+    --non-interactive \
+    --json >/tmp/openclaw-agent-add.json
+  exec openclaw --dev agent \
+    --local \
+    --agent benchmark \
+    --session-key agent:benchmark:benchmark \
+    --model "openrouter/$OPENROUTER_MODEL" \
+    --message "$prompt" \
+    --json
+fi
+
+if [ -z "${OPENCLAW_RUN_COMMAND:-}" ]; then
+  echo "OPENCLAW_RUN_COMMAND is required until the OpenClaw one-shot benchmark path is smoke-verified." >&2
+  exit 2
+fi
+
+export HARNESS_PROMPT_FILE="$prompt_file"
+export HARNESS_PROMPT="$prompt"
+exec /bin/sh -lc "$OPENCLAW_RUN_COMMAND"

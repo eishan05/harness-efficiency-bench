@@ -8,6 +8,7 @@ from .base import BaseAdapter
 from .claude_code import ClaudeCodeAdapter
 from .codex import CodexAdapter
 from .demo import DemoAdapter
+from .docker_agent_cli import DockerAgentCliAdapter
 from .generic_cli import GenericCliAdapter
 from .mini_swe_agent import MiniSweAgentAdapter
 from .nanobot import NanobotAdapter
@@ -19,6 +20,7 @@ _ADAPTERS: dict[str, type[BaseAdapter]] = {
     "claude_code": ClaudeCodeAdapter,
     "codex": CodexAdapter,
     "demo": DemoAdapter,
+    "docker_agent_cli": DockerAgentCliAdapter,
     "generic_cli": GenericCliAdapter,
     "mini_swe_agent": MiniSweAgentAdapter,
     "nanobot": NanobotAdapter,
@@ -33,4 +35,3 @@ def create_adapter(manifest: HarnessManifest) -> BaseAdapter:
         known = ", ".join(sorted(_ADAPTERS))
         raise ValueError(f"unknown adapter {manifest.adapter!r}; known adapters: {known}") from exc
     return adapter_cls(manifest)
-

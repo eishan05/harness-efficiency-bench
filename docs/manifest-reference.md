@@ -93,6 +93,16 @@ config:
 
 Set `config.backend: docker` for Docker isolation. Docker harnesses run with `docker run --rm`, mount only the run workspace at `/workspace` by default, and can opt into `docker_network`, `docker_mounts`, `docker_env_passthrough`, `docker_memory`, `docker_cpus`, `docker_read_only`, and `docker_tmpfs`.
 
+Docker-only agent CLI harnesses should use `adapter: docker_agent_cli` and include:
+
+- `config.cli_version`: expected CLI/package version.
+- `config.version_command`: command used to verify the installed CLI inside Docker.
+- `config.required_env`: API-key env vars required before launch.
+- `config.trace.parser`: native output parser name, usually `generic_json`, `goose_stream_json`, `kimi_stream_json`, or `opencode_json`.
+- `config.bench_ready: false`: use this when the image exists but the one-shot command path has not been smoke-verified.
+
+OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model.
+
 Claude Code can be configured as either a host debug harness or a Docker-isolated API-key harness. For serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used.
 
 ## SWE-bench Prediction Export

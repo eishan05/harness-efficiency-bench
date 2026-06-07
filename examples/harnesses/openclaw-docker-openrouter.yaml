@@ -1,0 +1,37 @@
+id: openclaw-docker-openrouter
+adapter: docker_agent_cli
+model: openrouter/${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: partial
+command:
+  - /opt/harness/run-agent
+  - "{prompt_file}"
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/openclaw:2026.6.1
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /openclaw-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /openclaw-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  cli_version: "2026.6.1"
+  version_command:
+    - openclaw
+    - --version
+  trace:
+    parser: openclaw_text

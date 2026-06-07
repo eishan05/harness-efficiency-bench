@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${AIDER_MODEL:=openrouter/$OPENROUTER_MODEL}"
+else
+  : "${AIDER_MODEL:=openai/gpt-4o-mini}"
+fi
+
+aider \
+  --model "$AIDER_MODEL" \
+  --message-file "$prompt_file" \
+  --yes \
+  --no-auto-commits \
+  --no-dirty-commits \
+  --no-stream

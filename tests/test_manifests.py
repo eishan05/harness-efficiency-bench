@@ -20,6 +20,55 @@ class ManifestTest(unittest.TestCase):
         self.assertEqual(harness.id, "demo")
         self.assertEqual(harness.adapter, "demo")
 
+    def test_all_example_harnesses_load(self):
+        for path in sorted((ROOT / "examples/harnesses").glob("*.yaml")):
+            with self.subTest(path=path.name):
+                harness = HarnessManifest.load(path)
+                self.assertTrue(harness.id)
+                self.assertTrue(harness.adapter)
+
+    def test_docker_agent_cli_examples_are_docker_only_and_versioned(self):
+        paths = sorted((ROOT / "examples/harnesses").glob("*-docker-isolated.yaml"))
+        self.assertTrue(paths)
+        for path in paths:
+            harness = HarnessManifest.load(path)
+            if harness.adapter != "docker_agent_cli":
+                continue
+            with self.subTest(path=path.name):
+                self.assertEqual(harness.config.get("backend"), "docker")
+                self.assertIn("docker_isolation", harness.capabilities)
+                self.assertTrue(harness.config.get("docker_image"))
+                self.assertTrue(harness.config.get("cli_version"))
+                self.assertTrue(harness.config.get("version_command"))
+
+    def test_openrouter_docker_examples_require_key_and_model(self):
+        paths = sorted((ROOT / "examples/harnesses").glob("*-docker-openrouter.yaml"))
+        self.assertTrue(paths)
+        ids = {HarnessManifest.load(path).id for path in paths}
+        self.assertTrue(
+            {
+                "aider-docker-openrouter",
+                "goose-docker-openrouter",
+                "hermes-agent-docker-openrouter",
+                "kilo-docker-openrouter",
+                "kimi-code-docker-openrouter",
+                "nanobot-docker-openrouter",
+                "openclaw-docker-openrouter",
+                "opencode-docker-openrouter",
+                "qwen-code-docker-openrouter",
+            }.issubset(ids)
+        )
+        for path in paths:
+            harness = HarnessManifest.load(path)
+            with self.subTest(path=path.name):
+                self.assertEqual(harness.adapter, "docker_agent_cli")
+                self.assertEqual(harness.config.get("backend"), "docker")
+                self.assertIn("docker_isolation", harness.capabilities)
+                self.assertIn("OPENROUTER_API_KEY", harness.config.get("docker_env_passthrough", []))
+                self.assertIn("OPENROUTER_MODEL", harness.config.get("docker_env_passthrough", []))
+                self.assertIn("OPENROUTER_API_KEY", harness.config.get("required_env", []))
+                self.assertIn("OPENROUTER_MODEL", harness.config.get("required_env", []))
+
 
 if __name__ == "__main__":
     unittest.main()

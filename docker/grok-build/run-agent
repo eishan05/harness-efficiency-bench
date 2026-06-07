@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+
+if [ -n "${GROK_BUILD_RUN_COMMAND:-}" ]; then
+  export HARNESS_PROMPT_FILE="$prompt_file"
+  export HARNESS_PROMPT="$prompt"
+  exec /bin/sh -lc "$GROK_BUILD_RUN_COMMAND"
+fi
+
+if [ -n "${XAI_API_KEY:-}" ] && [ -z "${GROK_CODE_XAI_API_KEY:-}" ]; then
+  export GROK_CODE_XAI_API_KEY="$XAI_API_KEY"
+fi
+if [ -z "${XAI_API_KEY:-}" ] && [ -z "${GROK_CODE_XAI_API_KEY:-}" ]; then
+  echo "XAI_API_KEY or GROK_CODE_XAI_API_KEY is required for Grok Build headless runs." >&2
+  exit 2
+fi
+
+: "${GROK_OUTPUT_FORMAT:=streaming-json}"
+exec grok -p "$prompt" --output-format "$GROK_OUTPUT_FORMAT" --always-approve

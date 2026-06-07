@@ -1,0 +1,63 @@
+#!/bin/sh
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+prompt="$(cat "$prompt_file")"
+
+if [ -n "${NANOBOT_RUN_COMMAND:-}" ]; then
+  export HARNESS_PROMPT_FILE="$prompt_file"
+  export HARNESS_PROMPT="$prompt"
+  exec /bin/sh -lc "$NANOBOT_RUN_COMMAND"
+fi
+
+if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  : "${NANOBOT_CONFIG_PATH:=$HOME/.nanobot/config.json}"
+  : "${NANOBOT_MAX_TOKENS:=8192}"
+  : "${NANOBOT_CONTEXT_WINDOW_TOKENS:=65536}"
+  : "${NANOBOT_MAX_TOOL_ITERATIONS:=200}"
+  : "${NANOBOT_MAX_TOOL_RESULT_CHARS:=16000}"
+  : "${NANOBOT_TEMPERATURE:=0.1}"
+  : "${OPENROUTER_BASE_URL:=https://openrouter.ai/api/v1}"
+  export OPENROUTER_MODEL
+  export NANOBOT_MAX_TOKENS
+  export NANOBOT_CONTEXT_WINDOW_TOKENS
+  export NANOBOT_MAX_TOOL_ITERATIONS
+  export NANOBOT_MAX_TOOL_RESULT_CHARS
+  export NANOBOT_TEMPERATURE
+  export OPENROUTER_BASE_URL
+  mkdir -p "$(dirname "$NANOBOT_CONFIG_PATH")"
+  python3 - <<'PY' > "$NANOBOT_CONFIG_PATH"
+import json
+import os
+
+def env_int(name):
+    return int(os.environ[name])
+
+config = {
+    "agents": {
+        "defaults": {
+            "workspace": "/workspace",
+            "model": os.environ["OPENROUTER_MODEL"],
+            "provider": "openrouter",
+            "maxTokens": env_int("NANOBOT_MAX_TOKENS"),
+            "contextWindowTokens": env_int("NANOBOT_CONTEXT_WINDOW_TOKENS"),
+            "temperature": float(os.environ["NANOBOT_TEMPERATURE"]),
+            "maxToolIterations": env_int("NANOBOT_MAX_TOOL_ITERATIONS"),
+            "maxToolResultChars": env_int("NANOBOT_MAX_TOOL_RESULT_CHARS"),
+        }
+    },
+    "providers": {
+        "openrouter": {
+            "apiKey": os.environ["OPENROUTER_API_KEY"],
+            "apiBase": os.environ["OPENROUTER_BASE_URL"],
+            "apiType": "auto",
+        }
+    },
+}
+print(json.dumps(config))
+PY
+  exec nanobot agent -m "$prompt" --workspace /workspace --config "$NANOBOT_CONFIG_PATH" --no-markdown --no-logs
+fi
+
+nanobot agent -m "$prompt" --workspace /workspace
