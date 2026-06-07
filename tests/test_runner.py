@@ -23,6 +23,26 @@ class RunnerTest(unittest.TestCase):
             self.assertIn("answer.txt", result["artifacts"]["git_diff"])
             self.assertNotIn(".benchmark_prompt.txt", result["artifacts"]["git_diff"])
 
+    def test_collect_git_diff_excludes_codex_rollout_trace(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            BenchmarkRunner._run_setup_command(["git", "init"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.email", "benchmark@example.invalid"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.name", "Harness Benchmark"], workspace)
+            (workspace / "tracked.txt").write_text("before\n", encoding="utf-8")
+            BenchmarkRunner._run_setup_command(["git", "add", "-A"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "commit", "-m", "baseline"], workspace)
+
+            (workspace / "tracked.txt").write_text("after\n", encoding="utf-8")
+            trace_dir = workspace / ".codex_rollout_trace" / "trace-1"
+            trace_dir.mkdir(parents=True)
+            (trace_dir / "trace.jsonl").write_text('{"payload": "large"}\n', encoding="utf-8")
+
+            diff = BenchmarkRunner._collect_git_diff(workspace)
+
+        self.assertIn("tracked.txt", diff)
+        self.assertNotIn(".codex_rollout_trace", diff)
+
     def test_summary(self):
         summary = summarize_results([{"success": True, "harness_id": "a", "metrics": {"usage": {"cost_usd": 2.0}}}])
         self.assertEqual(summary["attempted"], 1)

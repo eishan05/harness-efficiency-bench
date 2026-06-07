@@ -26,3 +26,4 @@ permissions:
 config:
   pricing_source: https://developers.openai.com/api/docs/models/gpt-5.5
   execution_note: host debug harness; not suitable for untrusted tasks
+  codex_rollout_trace: true

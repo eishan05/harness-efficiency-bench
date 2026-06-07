@@ -52,3 +52,4 @@ config:
   docker_env_passthrough:
     - OPENAI_API_KEY
   pricing_source: https://developers.openai.com/api/docs/models/gpt-5.1-codex-mini
+  codex_rollout_trace: true

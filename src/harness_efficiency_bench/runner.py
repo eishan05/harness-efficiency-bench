@@ -150,6 +150,21 @@ class BenchmarkRunner:
     def _collect_git_diff(workspace: Path) -> str:
         if not (workspace / ".git").exists():
             return ""
+        toplevel = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=workspace,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if toplevel.returncode != 0:
+            return ""
+        try:
+            if Path(toplevel.stdout.strip()).resolve() != workspace.resolve():
+                return ""
+        except OSError:
+            return ""
         subprocess.run(
             ["git", "add", "-N", "."],
             cwd=workspace,
@@ -167,7 +182,17 @@ class BenchmarkRunner:
             check=False,
         )
         completed = subprocess.run(
-            ["git", "diff", "--binary", "HEAD", "--", ".", ":(exclude).benchmark_prompt.txt"],
+            [
+                "git",
+                "diff",
+                "--binary",
+                "HEAD",
+                "--",
+                ".",
+                ":(exclude).benchmark_prompt.txt",
+                ":(exclude).codex_rollout_trace",
+                ":(exclude)**/.codex_rollout_trace",
+            ],
             cwd=workspace,
             text=True,
             stdout=subprocess.PIPE,
