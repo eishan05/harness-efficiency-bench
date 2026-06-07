@@ -26,7 +26,7 @@ Generic CLI runs can score oracle success and capture stdout/stderr. They only g
 
 ## Docker Execution
 
-Command-based adapters can run inside Docker by setting `config.backend`:
+Command-based adapters can run inside Docker by setting `config.backend`. Use this mode for serious benchmark runs and combine it with `--require-docker-isolation`:
 
 ```yaml
 id: my-agent-docker
@@ -35,9 +35,16 @@ command: "my-agent --prompt-file {prompt_file}"
 config:
   backend: docker
   docker_image: ghcr.io/my-org/my-agent:latest
+  docker_network: bridge
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_tmpfs:
+    - /tmp:exec,size=512m
+  docker_env_passthrough:
+    - OPENAI_API_KEY
 ```
 
-The task workspace is mounted at `/workspace`, and `{prompt_file}` resolves to `/workspace/.benchmark_prompt.txt` inside the container.
+The task workspace is mounted at `/workspace`, and `{prompt_file}` resolves to `/workspace/.benchmark_prompt.txt` inside the container. Containers are started with `docker run --rm`; the container is removed after execution, while benchmark results and traces are retained.
 
 ## First-Class Adapter
 

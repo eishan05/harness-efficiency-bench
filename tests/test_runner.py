@@ -30,6 +30,7 @@ class RunnerTest(unittest.TestCase):
         self.assertEqual(summary["cost_per_solved_task"], 2.0)
         self.assertIn("metrics", summary["by_harness"]["a"])
         self.assertEqual(summary["by_perturbation"]["base"]["solve_rate"], 1.0)
+        self.assertIn("research_metric_coverage", summary)
 
 
 if __name__ == "__main__":

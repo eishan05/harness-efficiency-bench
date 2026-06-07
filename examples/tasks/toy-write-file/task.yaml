@@ -22,6 +22,14 @@ perturbations:
     tokens: 50000
     seed: "irrelevant stale build log"
     placement: prompt_prefix
+  - id: 100k
+    tokens: 100000
+    seed: "irrelevant stale build log"
+    placement: prompt_prefix
+  - id: 200k
+    tokens: 200000
+    seed: "irrelevant stale build log"
+    placement: prompt_prefix
 tags:
   - smoke
   - toy

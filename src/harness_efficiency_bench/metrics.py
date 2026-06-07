@@ -134,3 +134,93 @@ def compute_run_metrics(events: list[TraceEvent], user_prompt_tokens: int) -> di
         "usage": usage,
     }
 
+
+def research_metric_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "startup_tax": _run_metric_coverage(
+            results,
+            "startup_tax",
+            "full requires structured model_call events with first-call input_tokens",
+        ),
+        "context_growth_rate": _run_metric_coverage(
+            results,
+            "context_growth_rate",
+            "full requires at least two model_call events with input_tokens per run",
+        ),
+        "tool_output_retention_ratio": _run_metric_coverage(
+            results,
+            "tool_output_retention_ratio",
+            "full requires tool_result events plus model_call input_text for exact matching",
+        ),
+        "solve_efficiency": _solve_efficiency_coverage(results),
+        "context_bloat_harm_curve": _context_bloat_coverage(results),
+    }
+
+
+def _run_metric_coverage(results: list[dict[str, Any]], metric_name: str, requirement: str) -> dict[str, Any]:
+    statuses = [
+        str(item.get("metrics", {}).get(metric_name, {}).get("status", "unsupported"))
+        for item in results
+    ]
+    full = statuses.count("full")
+    partial = statuses.count("partial")
+    unsupported = len(statuses) - full - partial
+    if not statuses:
+        status = "unsupported"
+    elif full == len(statuses):
+        status = "full"
+    elif full or partial:
+        status = "partial"
+    else:
+        status = "unsupported"
+    return {
+        "status": status,
+        "runs_full": full,
+        "runs_partial": partial,
+        "runs_unsupported": unsupported,
+        "requirement": requirement,
+    }
+
+
+def _solve_efficiency_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
+    runs_with_token_usage = 0
+    for item in results:
+        usage = item.get("metrics", {}).get("usage", {})
+        token_total = (
+            int(usage.get("input_tokens", 0) or 0)
+            + int(usage.get("output_tokens", 0) or 0)
+            + int(usage.get("reasoning_output_tokens", 0) or 0)
+        )
+        if token_total > 0 and usage.get("cost_usd") is not None:
+            runs_with_token_usage += 1
+    if not results:
+        status = "unsupported"
+    elif runs_with_token_usage == len(results):
+        status = "full"
+    elif runs_with_token_usage:
+        status = "partial"
+    else:
+        status = "unsupported"
+    return {
+        "status": status,
+        "runs_with_cost": runs_with_token_usage,
+        "runs_total": len(results),
+        "requirement": "full requires token usage plus cost estimates or native cost for every run",
+    }
+
+
+def _context_bloat_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
+    perturbations = {str(item.get("perturbation_id") or "base") for item in results}
+    has_base = "base" in perturbations
+    non_base = sorted(item for item in perturbations if item != "base")
+    if has_base and non_base:
+        status = "full"
+    elif non_base:
+        status = "partial"
+    else:
+        status = "unsupported"
+    return {
+        "status": status,
+        "perturbations": sorted(perturbations),
+        "requirement": "full requires base runs and at least one controlled context perturbation",
+    }

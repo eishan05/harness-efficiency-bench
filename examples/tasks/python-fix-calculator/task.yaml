@@ -1,0 +1,31 @@
+id: python-fix-calculator
+source: local-curated
+fixtures: fixtures
+workspace_setup:
+  git_init: true
+prompt: |
+  Fix the calculator implementation so the included unit tests pass.
+  Keep the public function names unchanged.
+oracle:
+  type: command
+  command: "python3 -m unittest discover -s tests"
+  timeout_sec: 30
+budgets:
+  timeout_sec: 180
+perturbations:
+  - id: 20k
+    tokens: 20000
+    seed: "irrelevant stale dependency resolver log"
+    placement: prompt_prefix
+  - id: 50k
+    tokens: 50000
+    seed: "irrelevant stale dependency resolver log"
+    placement: prompt_prefix
+  - id: 100k
+    tokens: 100000
+    seed: "irrelevant stale dependency resolver log"
+    placement: prompt_prefix
+tags:
+  - smoke
+  - python
+  - bugfix

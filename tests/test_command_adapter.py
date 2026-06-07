@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from harness_efficiency_bench.adapters.base import AdapterRunContext
-from harness_efficiency_bench.adapters.command import render_command
+from harness_efficiency_bench.adapters.command import build_docker_command, render_command
 from harness_efficiency_bench.manifests import HarnessManifest, TaskManifest
 
 
@@ -32,7 +32,25 @@ class CommandAdapterTest(unittest.TestCase):
             )
             self.assertEqual(rendered, "agent --prompt /workspace/.benchmark_prompt.txt --workspace /workspace")
 
+    def test_build_docker_command(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task = TaskManifest.load(ROOT / "examples/tasks/toy-write-file/task.yaml")
+            harness = HarnessManifest.load(ROOT / "examples/harnesses/generic-cli-docker.yaml")
+            context = AdapterRunContext(
+                run_id="run",
+                task=task,
+                harness=harness,
+                workspace=Path(tmp),
+                prompt="hello",
+                prompt_file=Path(tmp) / ".benchmark_prompt.txt",
+                timeout_sec=10,
+            )
+            command = build_docker_command(harness.command or "", context)
+            self.assertEqual(command[:6], ["docker", "run", "--rm", "-i", "--security-opt", "no-new-privileges"])
+            self.assertIn("alpine:3.20", command)
+            self.assertIn("-w", command)
+            self.assertIn("/workspace", command)
+
 
 if __name__ == "__main__":
     unittest.main()
-

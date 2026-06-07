@@ -10,8 +10,9 @@ from typing import Any
 
 from .adapters import create_adapter
 from .adapters.base import AdapterRunContext
+from .isolation import describe_isolation, require_docker_isolation
 from .manifests import HarnessManifest, TaskManifest
-from .metrics import compute_run_metrics
+from .metrics import compute_run_metrics, research_metric_coverage
 from .oracles import grade_oracle
 from .pricing import apply_pricing
 from .store import ResultStore
@@ -20,8 +21,9 @@ from .tracing import TraceEvent, utc_now
 
 
 class BenchmarkRunner:
-    def __init__(self, run_root: str | Path = "runs"):
+    def __init__(self, run_root: str | Path = "runs", *, require_docker: bool = False):
         self.store = ResultStore(run_root)
+        self.require_docker = require_docker
 
     def run_task(
         self,
@@ -32,6 +34,8 @@ class BenchmarkRunner:
         keep_workspace: bool = True,
     ) -> dict[str, Any]:
         run_id = f"{task.id}__{harness.id}__{uuid.uuid4().hex[:10]}"
+        if self.require_docker:
+            require_docker_isolation(harness)
         self.store.ensure()
         workspace = self.store.work_dir / run_id / "workspace"
         workspace.mkdir(parents=True, exist_ok=True)
@@ -87,6 +91,7 @@ class BenchmarkRunner:
             "metadata": adapter_result.metadata,
             "oracle_result": oracle_result.to_dict(),
             "metrics": metrics,
+            "isolation": describe_isolation(harness),
             "trace_path": str(trace_path),
             "workspace": str(workspace) if keep_workspace else None,
         }
@@ -229,6 +234,7 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "cost_per_solved_task": total_cost / solved if solved else None,
         "by_harness": by_harness,
         "by_perturbation": _summarize_by_perturbation(results),
+        "research_metric_coverage": research_metric_coverage(results),
     }
 
 

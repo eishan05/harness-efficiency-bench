@@ -1,8 +1,14 @@
 id: generic-write-answer-docker
 adapter: generic_cli
-command: "printf 'hello benchmark\n' > answer.txt"
+command: "printf 'hello benchmark' > answer.txt"
 timeout_sec: 60
 trace_mode: partial
 config:
   backend: docker
   docker_image: alpine:3.20
+  docker_network: none
+  docker_memory: 512m
+  docker_cpus: "1"
+  docker_read_only: true
+  docker_tmpfs:
+    - /tmp:exec,size=64m

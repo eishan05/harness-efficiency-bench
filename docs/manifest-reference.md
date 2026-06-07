@@ -45,18 +45,53 @@ Supported perturbation placements:
 ```yaml
 id: codex
 adapter: codex
-model: gpt-5.4
+model: gpt-5.5
 timeout_sec: 900
 trace_mode: structured
+command:
+  - codex
+  - exec
+  - --json
+  - -c
+  - model_provider="openai_api"
+  - -c
+  - model_providers.openai_api.env_key="OPENAI_API_KEY"
+  - -c
+  - model_providers.openai_api.supports_websockets=false
+  - --sandbox
+  - danger-full-access
+  - --skip-git-repo-check
+  - --model
+  - "{model}"
+  - "-"
 pricing:
-  input_per_million: 2.50
-  cached_input_per_million: 0.25
-  output_per_million: 15.00
+  input_per_million: 5.00
+  cached_input_per_million: 0.50
+  output_per_million: 30.00
+  long_context_threshold_tokens: 272000
+  long_context_input_per_million: 10.00
+  long_context_cached_input_per_million: 1.00
+  long_context_output_per_million: 45.00
 permissions:
-  sandbox: workspace-write
+  sandbox: docker-container
+config:
+  backend: docker
+  docker_image: harness-bench/codex-cli:0.137.0
+  docker_network: bridge
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /codex-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g
+    - /codex-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENAI_API_KEY
 ```
 
 `pricing` is optional. If a structured trace already reports `cost_usd`, the benchmark preserves that native value.
+
+Set `config.backend: docker` for Docker isolation. Docker harnesses run with `docker run --rm`, mount only the run workspace at `/workspace` by default, and can opt into `docker_network`, `docker_mounts`, `docker_env_passthrough`, `docker_memory`, `docker_cpus`, `docker_read_only`, and `docker_tmpfs`.
 
 ## SWE-bench Prediction Export
 

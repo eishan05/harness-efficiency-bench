@@ -6,7 +6,7 @@ from typing import Any
 
 from .base import AdapterResult, AdapterRunContext, BaseAdapter
 from .command import parse_jsonl_events, result_from_completed, run_command
-from ..tracing import TraceEvent, model_call_event
+from ..tracing import TraceEvent, model_call_event, tool_result_event
 
 
 class CodexAdapter(BaseAdapter):
@@ -52,6 +52,18 @@ class CodexAdapter(BaseAdapter):
                 )
                 call_index += 1
             elif event_type:
+                item = raw.get("item")
+                if isinstance(item, dict) and item.get("type") == "command_execution" and item.get("aggregated_output"):
+                    normalized.append(
+                        tool_result_event(
+                            name=str(item.get("command", "command_execution")),
+                            output=str(item.get("aggregated_output", "")),
+                            metadata={
+                                "source": "codex_json",
+                                "status": item.get("status"),
+                                "exit_code": item.get("exit_code"),
+                            },
+                        )
+                    )
                 normalized.append(TraceEvent(type="codex_event", data={"raw": raw}))
         return normalized
-

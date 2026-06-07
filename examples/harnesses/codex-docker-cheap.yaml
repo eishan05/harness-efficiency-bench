@@ -1,0 +1,54 @@
+id: codex-docker-cheap
+adapter: codex
+model: gpt-5.1-codex-mini
+timeout_sec: 300
+trace_mode: structured
+command:
+  - codex
+  - exec
+  - --json
+  - -c
+  - model_provider="openai_api"
+  - -c
+  - model_providers.openai_api.name="OpenAI API"
+  - -c
+  - model_providers.openai_api.base_url="https://api.openai.com/v1"
+  - -c
+  - model_providers.openai_api.env_key="OPENAI_API_KEY"
+  - -c
+  - model_providers.openai_api.wire_api="responses"
+  - -c
+  - model_providers.openai_api.supports_websockets=false
+  - -c
+  - model_reasoning_effort="low"
+  - -c
+  - model_verbosity="low"
+  - --sandbox
+  - danger-full-access
+  - --skip-git-repo-check
+  - --model
+  - "{model}"
+  - "-"
+pricing:
+  input_per_million: 0.25
+  cached_input_per_million: 0.025
+  output_per_million: 2.00
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/codex-cli:0.137.0
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /codex-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g
+    - /codex-home:exec,size=512m
+  docker_env_passthrough:
+    - OPENAI_API_KEY
+  pricing_source: https://developers.openai.com/api/docs/models/gpt-5.1-codex-mini

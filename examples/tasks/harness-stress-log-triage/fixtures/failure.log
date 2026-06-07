@@ -1,0 +1,16 @@
+CI job: unit-tests / linux-x86_64
+
+The relevant failure starts after this stale output block. Earlier failures from
+the auth package and Docker cache were from a previous run and are not related.
+
+FAILED tests/test_parser.py::ParserTest::test_seconds_are_rounded_down_to_minutes
+Expected: 1
+Actual:   90
+
+FAILED tests/test_parser.py::ParserTest::test_combined_seconds
+Expected: 61
+Actual:   150
+
+Hint from maintainer notes:
+Duration strings use h, m, and s. The public API returns whole minutes.
+Seconds should be converted to minutes with floor division.

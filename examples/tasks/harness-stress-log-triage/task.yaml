@@ -1,0 +1,32 @@
+id: harness-stress-log-triage
+source: local-curated
+fixtures: fixtures
+workspace_setup:
+  git_init: true
+prompt: |
+  Use the failing tests and failure.log to find and fix the parsing bug.
+  Do not remove tests or loosen assertions.
+oracle:
+  type: command
+  command: "python3 -m unittest discover -s tests"
+  timeout_sec: 30
+budgets:
+  timeout_sec: 240
+perturbations:
+  - id: 20k
+    tokens: 20000
+    seed: "irrelevant stale CI output from another repository"
+    placement: prompt_prefix
+  - id: 50k
+    tokens: 50000
+    seed: "irrelevant stale CI output from another repository"
+    placement: prompt_prefix
+  - id: 100k
+    tokens: 100000
+    seed: "irrelevant stale CI output from another repository"
+    placement: prompt_prefix
+tags:
+  - python
+  - bugfix
+  - retention
+  - log-triage

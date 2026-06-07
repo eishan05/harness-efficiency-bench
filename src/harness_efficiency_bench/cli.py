@@ -29,6 +29,7 @@ def main(argv: list[str] | None = None) -> int:
     run_task_parser.add_argument("--perturbation")
     run_task_parser.add_argument("--all-perturbations", action="store_true")
     run_task_parser.add_argument("--delete-workspace", action="store_true")
+    run_task_parser.add_argument("--require-docker-isolation", action="store_true")
 
     run_suite_parser = subparsers.add_parser("run-suite", help="Run all task manifests with one harness.")
     run_suite_parser.add_argument("--tasks-dir", default="examples/tasks")
@@ -36,6 +37,7 @@ def main(argv: list[str] | None = None) -> int:
     run_suite_parser.add_argument("--perturbation")
     run_suite_parser.add_argument("--all-perturbations", action="store_true")
     run_suite_parser.add_argument("--delete-workspace", action="store_true")
+    run_suite_parser.add_argument("--require-docker-isolation", action="store_true")
 
     analyze_parser = subparsers.add_parser("analyze", help="Print raw aggregate JSON.")
     analyze_parser.add_argument("--results-dir")
@@ -54,20 +56,26 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "harnesses":
         return _list_manifests(Path(args.harnesses_dir), HarnessManifest.load)
     if args.command == "run-task":
-        runner = BenchmarkRunner(args.run_root)
+        runner = BenchmarkRunner(args.run_root, require_docker=args.require_docker_isolation)
         task = TaskManifest.load(args.task)
         harness = HarnessManifest.load(args.harness)
-        results = _run_task_with_perturbations(runner, task, harness, args)
+        try:
+            results = _run_task_with_perturbations(runner, task, harness, args)
+        except RuntimeError as exc:
+            parser.error(str(exc))
         payload = results[0] if len(results) == 1 else {"summary": summarize_results(results), "results": results}
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0 if all(item["success"] for item in results) else 1
     if args.command == "run-suite":
-        runner = BenchmarkRunner(args.run_root)
+        runner = BenchmarkRunner(args.run_root, require_docker=args.require_docker_isolation)
         harness = HarnessManifest.load(args.harness)
         results = []
-        for task_path in _manifest_paths(Path(args.tasks_dir)):
-            task = TaskManifest.load(task_path)
-            results.extend(_run_task_with_perturbations(runner, task, harness, args))
+        try:
+            for task_path in _manifest_paths(Path(args.tasks_dir)):
+                task = TaskManifest.load(task_path)
+                results.extend(_run_task_with_perturbations(runner, task, harness, args))
+        except RuntimeError as exc:
+            parser.error(str(exc))
         summary = summarize_results(results)
         print(json.dumps({"summary": summary, "results": results}, indent=2, sort_keys=True))
         return 0 if all(item["success"] for item in results) else 1
@@ -175,6 +183,19 @@ def _markdown_report(summary: dict[str, Any]) -> str:
             lines.append(
                 f"| {perturbation_id} | {bucket['attempted']} | {bucket['solved']} | {bucket['solve_rate']:.3f} |"
             )
+    coverage = summary.get("research_metric_coverage")
+    if coverage:
+        lines.extend(
+            [
+                "",
+                "## Research Metric Coverage",
+                "",
+                "| Metric | Status | Requirement |",
+                "|---|---|---|",
+            ]
+        )
+        for metric_name, item in coverage.items():
+            lines.append(f"| {metric_name} | {item.get('status', '')} | {item.get('requirement', '')} |")
     return "\n".join(lines)
 
 
