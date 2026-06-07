@@ -40,6 +40,18 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
   --delete-workspace
 ```
 
+Preview Docker cleanup:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker
+```
+
+Remove benchmark-owned Docker images and optional build cache:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker --force --include-build-cache
+```
+
 Run the same task across all configured context-bloat perturbations:
 
 ```bash

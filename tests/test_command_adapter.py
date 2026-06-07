@@ -46,7 +46,9 @@ class CommandAdapterTest(unittest.TestCase):
                 timeout_sec=10,
             )
             command = build_docker_command(harness.command or "", context)
-            self.assertEqual(command[:6], ["docker", "run", "--rm", "-i", "--security-opt", "no-new-privileges"])
+            self.assertEqual(command[:4], ["docker", "run", "--rm", "-i"])
+            self.assertIn("harness-efficiency-bench=true", command)
+            self.assertIn("harness-efficiency-bench.run_id=run", command)
             self.assertIn("alpine:3.20", command)
             self.assertIn("-w", command)
             self.assertIn("/workspace", command)

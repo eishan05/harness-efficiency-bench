@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .docker_cleanup import DEFAULT_IMAGE_PREFIXES, execute_docker_cleanup, plan_docker_cleanup
 from .manifests import HarnessManifest, TaskManifest
 from .runner import BenchmarkRunner, summarize_results
 from .store import ResultStore
@@ -50,6 +51,24 @@ def main(argv: list[str] | None = None) -> int:
     export_parser.add_argument("--out", required=True)
     export_parser.add_argument("--model-name")
 
+    cleanup_parser = subparsers.add_parser("cleanup-docker", help="Clean benchmark Docker artifacts.")
+    cleanup_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Actually remove resources. Without this flag, prints a dry-run plan.",
+    )
+    cleanup_parser.add_argument(
+        "--include-build-cache",
+        action="store_true",
+        help="Also run docker builder prune -f.",
+    )
+    cleanup_parser.add_argument(
+        "--image-prefix",
+        action="append",
+        default=None,
+        help="Image repository prefix to remove. May be repeated. Defaults to harness-bench/.",
+    )
+
     args = parser.parse_args(argv)
     if args.command == "tasks":
         return _list_manifests(Path(args.tasks_dir), TaskManifest.load)
@@ -90,6 +109,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "export-predictions":
         results = _load_results(args)
         _export_predictions(results, Path(args.out), args.model_name)
+        return 0
+    if args.command == "cleanup-docker":
+        prefixes = tuple(args.image_prefix or DEFAULT_IMAGE_PREFIXES)
+        plan = plan_docker_cleanup(image_prefixes=prefixes, include_build_cache=args.include_build_cache)
+        result = execute_docker_cleanup(plan, dry_run=not args.force)
+        print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     parser.error(f"unknown command: {args.command}")
     return 2

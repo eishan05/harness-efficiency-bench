@@ -14,6 +14,20 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
 
 Docker-backed harnesses use `docker run --rm`. The container is removed automatically. The benchmark workspace is kept unless `--delete-workspace` is passed; results and traces are always kept.
 
+Docker images and build cache are not removed automatically. Preview cleanup with:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker
+```
+
+Remove benchmark-labeled containers, benchmark-owned images such as `harness-bench/*`, and optionally BuildKit cache:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker --force --include-build-cache
+```
+
+The cleanup command is dry-run by default. It removes images only by repository prefix, defaulting to `harness-bench/`; it does not remove arbitrary Docker images.
+
 ## Codex
 
 Build the example Codex CLI image:
