@@ -40,6 +40,17 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
   --delete-workspace
 ```
 
+Build the Claude Code Docker image and run the Docker-isolated API-key harness:
+
+```bash
+docker build -t harness-bench/claude-code:2.1.114 docker/claude-code
+ANTHROPIC_API_KEY=... PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
+  --task examples/tasks/toy-write-file/task.yaml \
+  --harness examples/harnesses/claude-code-docker-isolated.yaml \
+  --require-docker-isolation \
+  --delete-workspace
+```
+
 Preview Docker cleanup:
 
 ```bash
@@ -89,6 +100,12 @@ The starter task set includes:
 - `toy-write-file`: deterministic smoke/context-rot task.
 - `python-fix-calculator`: small Python bug-fix task.
 - `harness-stress-log-triage`: log-heavy bug-fix task intended to stress tool-output retention.
+
+Claude Code harnesses are split by auth and isolation:
+
+- `claude-code`: host/local subscription debug harness. Requires `claude auth status` to show working account access.
+- `claude-code-api`: host/API-key debug harness. Requires `ANTHROPIC_API_KEY`.
+- `claude-code-docker-isolated`: Docker-isolated API-key harness for serious runs. Requires `ANTHROPIC_API_KEY` and the image build above.
 
 ## Adding Harnesses
 

@@ -3,5 +3,25 @@ adapter: claude_code
 model: sonnet
 timeout_sec: 900
 trace_mode: structured
-# Optional estimate. Prefer native Claude Code cost fields when present.
+command:
+  - claude
+  - -p
+  - "{prompt}"
+  - --output-format
+  - stream-json
+  - --verbose
+  - --model
+  - "{model}"
+  - --max-budget-usd
+  - "0.10"
+  - --no-session-persistence
+  - --permission-mode
+  - acceptEdits
+  - --allowedTools
+  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
 pricing: {}
+permissions:
+  sandbox: host-debug
+config:
+  auth_mode: claude_subscription
+  execution_note: host debug harness; serious runs should use claude-code-docker-isolated

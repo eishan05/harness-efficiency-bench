@@ -1,0 +1,43 @@
+id: claude-code-docker-isolated
+adapter: claude_code
+model: sonnet
+timeout_sec: 900
+trace_mode: structured
+command:
+  - claude
+  - -p
+  - "{prompt}"
+  - --output-format
+  - stream-json
+  - --verbose
+  - --model
+  - "{model}"
+  - --max-budget-usd
+  - "0.10"
+  - --no-session-persistence
+  - --permission-mode
+  - bypassPermissions
+  - --allowedTools
+  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/claude-code:2.1.114
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /claude-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /claude-home:exec,size=512m,uid=1000,gid=1000
+  docker_env_passthrough:
+    - ANTHROPIC_API_KEY
+  auth_mode: anthropic_api_key
+  required_env:
+    - ANTHROPIC_API_KEY

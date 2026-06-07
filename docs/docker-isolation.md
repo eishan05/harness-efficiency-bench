@@ -57,6 +57,26 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
 
 The example Codex Docker harnesses pass `OPENAI_API_KEY` from the host environment into the container and configure a Codex provider that reads that env var. They do not mount the host Codex home directory by default.
 
+## Claude Code
+
+Build the example Claude Code image:
+
+```bash
+docker build -t harness-bench/claude-code:2.1.114 docker/claude-code
+```
+
+Then run the Docker-isolated harness:
+
+```bash
+ANTHROPIC_API_KEY=... PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
+  --task examples/tasks/toy-write-file/task.yaml \
+  --harness examples/harnesses/claude-code-docker-isolated.yaml \
+  --require-docker-isolation \
+  --delete-workspace
+```
+
+The Docker harness passes only `ANTHROPIC_API_KEY` from the host. It does not mount the host Claude config or OAuth credentials.
+
 ## Harness Config Keys
 
 - `backend: docker` enables Docker execution.

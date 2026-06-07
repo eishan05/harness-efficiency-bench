@@ -74,7 +74,7 @@ If `input_text` is omitted, exact tool-output retention is marked unsupported.
 ## Current Adapter Intent
 
 - `codex`: parses `codex exec --json`.
-- `claude_code`: parses `claude -p --output-format stream-json`.
+- `claude_code`: parses `claude -p --output-format stream-json`, including per-turn usage, native final cost, and tool result output.
 - `antigravity`: prefers `google-antigravity` SDK; supports `agy -p` fallback.
 - `qwen_code`: runs `qwen -p`; richer parsing can be added once local JSON output is available.
 - `nanobot`: requires a local command/wrapper because deployments differ.

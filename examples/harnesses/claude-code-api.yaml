@@ -1,0 +1,30 @@
+id: claude-code-api
+adapter: claude_code
+model: sonnet
+timeout_sec: 900
+trace_mode: structured
+command:
+  - claude
+  - --bare
+  - -p
+  - "{prompt}"
+  - --output-format
+  - stream-json
+  - --verbose
+  - --model
+  - "{model}"
+  - --max-budget-usd
+  - "0.10"
+  - --no-session-persistence
+  - --permission-mode
+  - acceptEdits
+  - --allowedTools
+  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
+pricing: {}
+permissions:
+  sandbox: host-debug
+config:
+  auth_mode: anthropic_api_key
+  required_env:
+    - ANTHROPIC_API_KEY
+  execution_note: host API-key debug harness; serious runs should use claude-code-docker-isolated

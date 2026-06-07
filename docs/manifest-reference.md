@@ -93,6 +93,8 @@ config:
 
 Set `config.backend: docker` for Docker isolation. Docker harnesses run with `docker run --rm`, mount only the run workspace at `/workspace` by default, and can opt into `docker_network`, `docker_mounts`, `docker_env_passthrough`, `docker_memory`, `docker_cpus`, `docker_read_only`, and `docker_tmpfs`.
 
+Claude Code can be configured as either a host debug harness or a Docker-isolated API-key harness. For serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used.
+
 ## SWE-bench Prediction Export
 
 Runs in Git-initialized workspaces capture `git diff --binary HEAD` as `artifacts.git_diff`.
