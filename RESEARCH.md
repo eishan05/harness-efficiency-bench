@@ -18,16 +18,7 @@ growth_rate = Δ input_tokens_per_call / Δ turn
 
 This tells you how quickly the harness accumulates baggage.
 
-## C. Tool-Output Retention Ratio
-
-```text
-retention_ratio =
-  tokens_from_old_tool_outputs_still_in_context / total_input_tokens
-```
-
-This is often where coding agents bloat: file reads, test logs, grep output, and MCP responses.
-
-## D. Solve Efficiency
+## C. Solve Efficiency
 
 ```text
 cost_per_solved_task =
@@ -37,7 +28,7 @@ cost_per_solved_task =
 
 This matters more than raw bloat: a harness that spends more tokens but solves more tasks may still be better.
 
-## E. Context-Bloat Harm Curve
+## D. Context-Bloat Harm Curve
 
 Run the same task with controlled irrelevant or stale context added:
 
