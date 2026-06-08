@@ -50,6 +50,8 @@ def collect_git_diff(workspace: Path) -> str:
             "--",
             ".",
             ":(exclude).benchmark_prompt.txt",
+            ":(exclude).harness-usage-proxy.jsonl",
+            ":(exclude).litellm-usage.jsonl",
             ":(exclude).codex_rollout_trace",
             ":(exclude).codex_rollout_trace/**",
             ":(exclude)**/.codex_rollout_trace",

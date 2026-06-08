@@ -144,7 +144,7 @@ def parse_proxy_trace_events(workspace: Path, config: dict[str, Any]) -> list[Tr
     events: list[TraceEvent] = []
     call_index = 0
     default_source = "usage_proxy" if proxy_config.get("trace_path") or trace_config.get("proxy_trace_path") else "litellm_proxy"
-    for raw in _parse_json_or_jsonl(trace_path.read_text(encoding="utf-8")):
+    for raw in sorted(_parse_json_or_jsonl(trace_path.read_text(encoding="utf-8")), key=_proxy_record_sort_key):
         usage = _event_usage(raw)
         if not usage or not _usage_has_activity(usage):
             continue
@@ -156,11 +156,23 @@ def parse_proxy_trace_events(workspace: Path, config: dict[str, Any]) -> list[Tr
                 output_tokens=_int_value(usage.get("output_tokens", usage.get("completion_tokens", 0))),
                 reasoning_output_tokens=_reasoning_tokens(usage),
                 cost_usd=_cost_usd(raw, usage),
-                metadata={"source": raw.get("source", default_source), "model": raw.get("model")},
+                metadata=_proxy_metadata(raw, default_source),
             )
         )
         call_index += 1
     return events
+
+
+def _proxy_metadata(raw: dict[str, Any], default_source: str) -> dict[str, Any]:
+    metadata = {"source": raw.get("source", default_source), "model": raw.get("model")}
+    for key in ("request_id", "status_code", "path", "method", "request_started_at", "request_finished_at"):
+        if raw.get(key) is not None:
+            metadata[key] = raw[key]
+    return metadata
+
+
+def _proxy_record_sort_key(raw: dict[str, Any]) -> tuple[str, str]:
+    return (str(raw.get("request_started_at") or raw.get("timestamp") or ""), str(raw.get("request_id") or ""))
 
 
 def _with_proxy_environment(context: AdapterRunContext, proxy_env: dict[str, str]) -> AdapterRunContext:
@@ -179,6 +191,10 @@ def _with_proxy_environment(context: AdapterRunContext, proxy_env: dict[str, str
 def _select_trace_events(native_events: list[TraceEvent], proxy_events: list[TraceEvent]) -> tuple[list[TraceEvent], str | None]:
     native_model_calls = [event for event in native_events if event.type == "model_call"]
     proxy_model_calls = [event for event in proxy_events if event.type == "model_call"]
+    if proxy_model_calls and not native_model_calls:
+        return native_events + proxy_events, "proxy"
+    if proxy_model_calls and _non_aggregate_calls(proxy_model_calls) > _non_aggregate_calls(native_model_calls):
+        return [event for event in native_events if event.type != "model_call"] + proxy_events, "proxy"
     if proxy_model_calls and (
         len(proxy_model_calls) > len(native_model_calls)
         or (
@@ -196,6 +212,15 @@ def _select_trace_events(native_events: list[TraceEvent], proxy_events: list[Tra
 
 def _calls_with_cost(events: list[TraceEvent]) -> int:
     return sum(1 for event in events if event.data.get("cost_usd") is not None)
+
+
+def _non_aggregate_calls(events: list[TraceEvent]) -> int:
+    count = 0
+    for event in events:
+        metadata = event.data.get("metadata")
+        if not isinstance(metadata, dict) or not metadata.get("aggregate"):
+            count += 1
+    return count
 
 
 def _trace_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -285,12 +310,12 @@ def _cached_tokens(usage: dict[str, Any]) -> int:
 def _reasoning_tokens(usage: dict[str, Any]) -> int:
     details = usage.get("completion_tokens_details")
     if isinstance(details, dict):
-        detail_value = _int_value(details.get("reasoning_tokens"))
+        detail_value = _int_value(details.get("reasoning_tokens", details.get("thinking_tokens")))
         if detail_value:
             return detail_value
     details = usage.get("output_tokens_details")
     if isinstance(details, dict):
-        detail_value = _int_value(details.get("reasoning_tokens"))
+        detail_value = _int_value(details.get("reasoning_tokens", details.get("thinking_tokens")))
         if detail_value:
             return detail_value
     return _int_value(usage.get("reasoning_output_tokens", usage.get("thinking_tokens", 0)))

@@ -1,4 +1,4 @@
-"""Small usage-only proxy for OpenAI-compatible provider APIs."""
+"""Small usage-only proxy for routeable provider APIs."""
 
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ class UsageProxyConfig:
     base_url_env: tuple[str, ...] = ()
     api_key_env: tuple[str, ...] = ()
     docker_host: str = "host.docker.internal"
+    listen_host: str = "127.0.0.1"
 
 
 class UsageProxy:
@@ -101,16 +102,21 @@ class UsageProxy:
             def _forward(self) -> None:
                 body = self.rfile.read(int(self.headers.get("Content-Length", "0") or 0))
                 request_payload = _json_object(body)
+                request_started_at = utc_now()
                 status, headers, response_body = proxy._forward_request(
                     method=self.command,
                     path=self.path,
                     headers={key: value for key, value in self.headers.items()},
                     body=body,
                 )
+                request_finished_at = utc_now()
                 proxy._write_usage_record(
                     method=self.command,
                     path=self.path,
                     status_code=status,
+                    response_headers=headers,
+                    request_started_at=request_started_at,
+                    request_finished_at=request_finished_at,
                     request_payload=request_payload,
                     response_body=response_body,
                 )
@@ -124,7 +130,7 @@ class UsageProxy:
                 if self.command != "HEAD":
                     self.wfile.write(response_body)
 
-        self._server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self._server = ThreadingHTTPServer((self.config.listen_host, 0), Handler)
         self._thread = threading.Thread(target=self._server.serve_forever, name="harness-usage-proxy", daemon=True)
         self._thread.start()
 
@@ -204,13 +210,18 @@ class UsageProxy:
         method: str,
         path: str,
         status_code: int,
+        response_headers: dict[str, str],
+        request_started_at: str,
+        request_finished_at: str,
         request_payload: dict[str, Any] | None,
         response_body: bytes,
     ) -> None:
         response_payload = _usage_payload(response_body)
         usage = _find_usage(response_payload) if response_payload else None
         record: dict[str, Any] = {
-            "timestamp": utc_now(),
+            "timestamp": request_finished_at,
+            "request_started_at": request_started_at,
+            "request_finished_at": request_finished_at,
             "source": "usage_proxy",
             "method": method,
             "path": path,
@@ -219,6 +230,9 @@ class UsageProxy:
         model = _find_model(response_payload) or (request_payload or {}).get("model")
         if model:
             record["model"] = model
+        request_id = _find_request_id(response_headers, response_payload)
+        if request_id:
+            record["request_id"] = request_id
         if usage:
             record["usage"] = usage
         cost = _find_cost(response_payload, usage)
@@ -248,6 +262,10 @@ def proxy_from_config(workspace: Path, config: dict[str, Any]) -> UsageProxy | N
             base_url_env=_string_tuple(raw.get("base_url_env")),
             api_key_env=_string_tuple(raw.get("api_key_env")),
             docker_host=str(raw.get("docker_host", "host.docker.internal")),
+            listen_host=str(
+                raw.get("listen_host")
+                or ("0.0.0.0" if config.get("backend") == "docker" else "127.0.0.1")
+            ),
         )
     )
 
@@ -265,6 +283,9 @@ def _usage_payload(body: bytes) -> dict[str, Any] | None:
     if payload is not None:
         return payload
     latest: dict[str, Any] | None = None
+    merged_usage: dict[str, Any] = {}
+    model: str | None = None
+    request_id: str | None = None
     for line in body.decode("utf-8", errors="ignore").splitlines():
         line = line.strip()
         if not line.startswith("data:"):
@@ -273,8 +294,22 @@ def _usage_payload(body: bytes) -> dict[str, Any] | None:
         if not data or data == "[DONE]":
             continue
         payload = _json_object(data.encode("utf-8"))
-        if payload and (_find_usage(payload) or _find_model(payload)):
+        if not payload:
+            continue
+        usage = _find_usage(payload)
+        if usage:
+            merged_usage = _merge_usage(merged_usage, usage)
+        model = _find_model(payload) or model
+        request_id = _find_payload_request_id(payload) or request_id
+        if _find_usage(payload) or _find_model(payload):
             latest = payload
+    if merged_usage:
+        combined: dict[str, Any] = {"usage": merged_usage}
+        if model:
+            combined["model"] = model
+        if request_id:
+            combined["id"] = request_id
+        return combined
     return latest
 
 
@@ -298,11 +333,53 @@ def _find_model(payload: dict[str, Any] | None) -> str | None:
     candidates: list[Any] = [
         payload.get("model"),
         payload.get("response", {}).get("model") if isinstance(payload.get("response"), dict) else None,
+        payload.get("message", {}).get("model") if isinstance(payload.get("message"), dict) else None,
     ]
     for candidate in candidates:
         if isinstance(candidate, str) and candidate:
             return candidate
     return None
+
+
+def _find_request_id(headers: dict[str, str], payload: dict[str, Any] | None) -> str | None:
+    for key, value in headers.items():
+        if key.lower() in {"x-request-id", "request-id", "x-openrouter-request-id"} and value:
+            return str(value)
+    return _find_payload_request_id(payload)
+
+
+def _find_payload_request_id(payload: dict[str, Any] | None) -> str | None:
+    if not isinstance(payload, dict):
+        return None
+    candidates: list[Any] = [
+        payload.get("id"),
+        payload.get("request_id"),
+        payload.get("response", {}).get("id") if isinstance(payload.get("response"), dict) else None,
+        payload.get("message", {}).get("id") if isinstance(payload.get("message"), dict) else None,
+    ]
+    for candidate in candidates:
+        if isinstance(candidate, str) and candidate:
+            return candidate
+    return None
+
+
+def _merge_usage(existing: dict[str, Any], incoming: dict[str, Any]) -> dict[str, Any]:
+    merged = dict(existing)
+    for key, value in incoming.items():
+        if isinstance(value, dict):
+            previous = merged.get(key)
+            merged[key] = _merge_usage(previous if isinstance(previous, dict) else {}, value)
+            continue
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            previous = merged.get(key)
+            if isinstance(previous, (int, float)) and not isinstance(previous, bool):
+                merged[key] = max(previous, value)
+            else:
+                merged[key] = value
+            continue
+        if key not in merged and value is not None:
+            merged[key] = value
+    return merged
 
 
 def _find_cost(payload: dict[str, Any] | None, usage: dict[str, Any] | None) -> float | None:

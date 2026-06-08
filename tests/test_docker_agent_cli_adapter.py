@@ -237,6 +237,56 @@ class DockerAgentCliAdapterTest(unittest.TestCase):
         self.assertEqual(events[0].data["cost_usd"], 0)
         self.assertEqual(events[0].data["metadata"]["source"], "usage_proxy")
 
+    def test_parse_usage_proxy_file_outside_workspace(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            (root / ".harness-usage-proxy.jsonl").write_text(
+                "\n".join(
+                    [
+                        json.dumps(
+                            {
+                                "source": "usage_proxy",
+                                "model": "nvidia/test",
+                                "usage": {"input_tokens": 99, "output_tokens": 1},
+                                "request_id": "req-later",
+                                "request_started_at": "2026-06-08T00:00:02+00:00",
+                                "status_code": 200,
+                            }
+                        ),
+                        json.dumps(
+                            {
+                                "source": "usage_proxy",
+                                "model": "nvidia/test",
+                                "usage": {
+                                    "input_tokens": 12,
+                                    "output_tokens": 4,
+                                    "output_tokens_details": {"thinking_tokens": 3},
+                                },
+                                "request_id": "req-test",
+                                "request_started_at": "2026-06-08T00:00:01+00:00",
+                                "status_code": 200,
+                            }
+                        ),
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            events = parse_proxy_trace_events(
+                workspace,
+                {"trace": {"proxy": {"trace_path": "../.harness-usage-proxy.jsonl"}}},
+            )
+
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0].data["input_tokens"], 12)
+        self.assertEqual(events[0].data["reasoning_output_tokens"], 3)
+        self.assertEqual(events[0].data["metadata"]["request_id"], "req-test")
+        self.assertEqual(events[0].data["metadata"]["status_code"], 200)
+        self.assertEqual(events[1].data["input_tokens"], 99)
+
     def test_select_trace_prefers_proxy_when_it_has_cost_for_same_call_count(self):
         native = [tool_result_event(name="shell", output="ok"), model_call_event(call_index=0, input_tokens=10)]
         proxy = [model_call_event(call_index=0, input_tokens=10, cost_usd=0.001)]
@@ -246,6 +296,26 @@ class DockerAgentCliAdapterTest(unittest.TestCase):
         self.assertEqual(source, "proxy")
         self.assertEqual(len([event for event in events if event.type == "model_call"]), 1)
         self.assertEqual(events[-1].data["cost_usd"], 0.001)
+
+    def test_select_trace_prefers_proxy_non_aggregate_over_native_aggregate(self):
+        native = [
+            tool_result_event(name="shell", output="ok"),
+            model_call_event(
+                call_index=0,
+                input_tokens=100,
+                cost_usd=0.001,
+                metadata={"source": "native_total", "aggregate": True},
+            ),
+        ]
+        proxy = [model_call_event(call_index=0, input_tokens=10, metadata={"source": "usage_proxy"})]
+
+        events, source = _select_trace_events(native, proxy)
+
+        model_calls = [event for event in events if event.type == "model_call"]
+        self.assertEqual(source, "proxy")
+        self.assertEqual(len(model_calls), 1)
+        self.assertEqual(model_calls[0].data["input_tokens"], 10)
+        self.assertEqual(events[0].type, "tool_result")
 
 
 if __name__ == "__main__":

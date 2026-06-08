@@ -118,10 +118,10 @@ Docker-only agent CLI harnesses should use `adapter: docker_agent_cli` and inclu
 - `config.version_command`: command used to verify the installed CLI inside Docker.
 - `config.required_env`: API-key env vars required before launch.
 - `config.trace.parser`: native output parser name, usually `generic_json`, `goose_stream_json`, `kimi_stream_json`, or `opencode_json`.
-- `config.trace.proxy`: optional usage-only OpenAI-compatible proxy config. Set `enabled: true`, `upstream_base_url`, `upstream_api_key_env`, `base_url_env`, `api_key_env`, and `trace_path`.
+- `config.trace.proxy`: optional usage-only provider proxy config for OpenAI-compatible or Anthropic-compatible traffic. Set `enabled: true`, `upstream_base_url`, `upstream_api_key_env`, `base_url_env`, `api_key_env`, and `trace_path`.
 - `config.bench_ready: false`: use this when the image exists but the one-shot command path has not been smoke-verified.
 
-OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model. Prefer enabling `trace.proxy` for OpenAI-compatible variants so black-box CLIs can still emit per-call usage without storing request payloads.
+OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model. Prefer enabling `trace.proxy` for OpenAI-compatible variants so black-box CLIs can still emit per-call usage without storing request payloads. Docker-backed proxy runs bind the local proxy to `0.0.0.0` during the run so the container can reach it through `host.docker.internal`; host runs stay loopback-only by default. For Git-based tasks, prefer a proxy `trace_path` outside the mounted workspace, such as `../.harness-usage-proxy.jsonl`, so the agent cannot read trace metadata and the file does not enter task diffs.
 
 Example proxy block:
 
@@ -140,7 +140,7 @@ trace:
     trace_path: .harness-usage-proxy.jsonl
 ```
 
-Claude Code can be configured as a host subscription harness, host API-key harness, Docker-isolated API-key harness, or OpenRouter harness. For direct Anthropic serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used. For OpenRouter, use `claude-code-openrouter.yaml` or `claude-code-docker-openrouter.yaml`; the adapter maps `OPENROUTER_API_KEY` to `ANTHROPIC_AUTH_TOKEN`, sets `ANTHROPIC_BASE_URL` to `https://openrouter.ai/api`, blanks `ANTHROPIC_API_KEY`, and parses Claude Code `modelUsage` when per-message usage is zero.
+Claude Code can be configured as a host subscription harness, host API-key harness, Docker-isolated API-key harness, or OpenRouter harness. For direct Anthropic serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used. For benchmark-ready OpenRouter runs, use `claude-code-docker-openrouter.yaml`; the adapter maps `OPENROUTER_API_KEY` to `ANTHROPIC_AUTH_TOKEN`, routes `ANTHROPIC_BASE_URL` through the usage proxy, and keeps Claude Code `modelUsage` as an aggregate fallback for C when per-request usage is unavailable. The host `claude-code-openrouter.yaml` remains a debug harness unless its run metadata shows `selected_trace_source: proxy`.
 
 ## SWE-bench Prediction Export
 

@@ -64,6 +64,33 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(0.0, 10.0), (2.0, 20.0)])
         self.assertEqual(metrics["context_growth_rate"]["value"], 5.0)
 
+    def test_startup_tax_sums_provider_first_and_task_first_when_distinct(self):
+        prompt = "fix the bug"
+        events = [
+            model_call_event(
+                call_index=0,
+                input_tokens=50,
+                output_tokens=1,
+                metadata={"source": "usage_proxy", "preflight": True},
+            ),
+            model_call_event(call_index=1, input_tokens=100, output_tokens=2),
+            model_call_event(call_index=2, input_tokens=120, output_tokens=2),
+        ]
+
+        metrics = compute_run_metrics(events, count_tokens(prompt))
+
+        self.assertEqual(metrics["startup_tax"]["status"], "full")
+        self.assertEqual(metrics["startup_tax"]["value"], 144)
+        self.assertEqual(metrics["startup_tax"]["details"]["provider_first_startup_tax"], 47)
+        self.assertEqual(metrics["startup_tax"]["details"]["task_first_startup_tax"], 97)
+        self.assertEqual(
+            metrics["startup_tax"]["details"]["composition"],
+            "provider_first_startup_tax + task_first_startup_tax",
+        )
+        self.assertEqual(metrics["context_growth_rate"]["status"], "full")
+        self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(1.0, 100.0), (2.0, 120.0)])
+        self.assertEqual(metrics["usage"]["input_tokens"], 270)
+
     def test_research_coverage_tracks_research_metrics_only(self):
         coverage = research_metric_coverage(
             [

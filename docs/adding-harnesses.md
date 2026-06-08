@@ -72,7 +72,7 @@ config:
 
 The adapter fails fast unless `config.backend: docker` is set. It also checks `required_env`, runs `version_command` when configured, and records version-check metadata in the result. Use `bench_ready: false` for images or wrappers that build but do not yet have a smoke-verified one-shot task path.
 
-When adding an OpenRouter route, prefer a separate `*-docker-openrouter.yaml` manifest over changing the direct-provider manifest. Require both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and pass only those plus harness-specific model override env vars into Docker. Claude Code is the exception to the OpenAI-compatible proxy pattern: use `adapter: claude_code` with `config.auth_mode: openrouter`, which routes through OpenRouter's Anthropic-compatible `https://openrouter.ai/api` gateway.
+When adding an OpenRouter route, prefer a separate `*-docker-openrouter.yaml` manifest over changing the direct-provider manifest. Require both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and pass only those plus harness-specific model override env vars into Docker. Claude Code uses `adapter: claude_code` with `config.auth_mode: openrouter`, and the Docker OpenRouter manifest routes its Anthropic-compatible `https://openrouter.ai/api` traffic through the usage-only proxy.
 
 When the CLI can accept an OpenAI-compatible base URL, add a usage-only proxy block:
 
@@ -91,7 +91,9 @@ trace:
     trace_path: .harness-usage-proxy.jsonl
 ```
 
-The adapter starts the proxy for the run, injects the configured base URL env vars, and records usage-only JSONL. Do not enable proxy mode for CLIs without a verified base URL path; mark those harnesses unsupported for A/B/C until native usage, a routeable endpoint, or an upstream patch exists.
+For Anthropic-compatible CLIs, use the same proxy block with `protocol: anthropic_compatible`, `upstream_base_url: https://openrouter.ai/api`, `base_url_env: [ANTHROPIC_BASE_URL]`, and `api_key_env: [ANTHROPIC_AUTH_TOKEN]`.
+
+The adapter starts the proxy for the run, injects the configured base URL env vars, and records usage-only JSONL. For Git-based task workspaces, prefer `trace_path: ../.harness-usage-proxy.jsonl` so trace metadata is outside the mounted workspace and cannot enter the model patch. Do not enable proxy mode for CLIs without a verified base URL path; mark those harnesses unsupported for A/B/C until native usage, a routeable endpoint, or an upstream patch exists.
 
 ## First-Class Adapter
 

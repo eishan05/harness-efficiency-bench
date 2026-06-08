@@ -10,7 +10,9 @@ from typing import Any
 
 from .base import AdapterResult, AdapterRunContext, BaseAdapter
 from .command import missing_required_env, parse_jsonl_events, result_from_completed, run_command
+from .docker_agent_cli import _select_trace_events, parse_proxy_trace_events
 from ..tracing import TraceEvent, model_call_event, tool_result_event
+from ..usage_proxy import proxy_from_config
 
 
 class ClaudeCodeAdapter(BaseAdapter):
@@ -25,6 +27,19 @@ class ClaudeCodeAdapter(BaseAdapter):
                 metadata={"trace_quality": "none", "missing_required_env": missing},
             )
         active_context = _with_openrouter_environment(context)
+        proxy = proxy_from_config(active_context.workspace, active_context.harness.config)
+        proxy_metadata: dict[str, Any] = {}
+        if proxy is not None:
+            proxy.start()
+            active_context = _with_proxy_environment(
+                active_context,
+                proxy.env(docker=_is_docker_backend(active_context)),
+            )
+            proxy_metadata = {
+                "proxy_trace": "enabled",
+                "proxy_base_url": proxy.docker_base_url if _is_docker_backend(active_context) else proxy.local_base_url,
+                "proxy_trace_path": str(proxy.config.trace_path),
+            }
         command = context.harness.command or [
             "claude",
             "--bare",
@@ -35,11 +50,26 @@ class ClaudeCodeAdapter(BaseAdapter):
             "--verbose",
             "--no-session-persistence",
         ]
-        completed = run_command(command, active_context)
+        try:
+            completed = run_command(command, active_context)
+        finally:
+            if proxy is not None:
+                proxy.stop()
         result = result_from_completed(completed)
-        result.trace_events = self._parse_events(completed.stdout)
-        result.metadata["trace_quality"] = "structured"
+        native_events = self._parse_events(completed.stdout)
+        proxy_events = parse_proxy_trace_events(context.workspace, active_context.harness.config)
+        if proxy_events:
+            proxy_events = _mark_preflight_proxy_calls(proxy_events, native_events)
+        parsed_events, selected_trace_source = _select_trace_events(native_events, proxy_events)
+        result.trace_events = parsed_events
+        result.metadata["trace_quality"] = "structured" if any(event.type == "model_call" for event in parsed_events) else "partial"
         result.metadata["model_id"] = active_context.harness.model
+        result.metadata["bench_ready"] = bool(context.harness.config.get("bench_ready", True))
+        result.metadata.update(proxy_metadata)
+        if proxy is not None:
+            result.metadata["proxy_trace"] = "parsed" if proxy_events and selected_trace_source == "proxy" else "available_not_selected" if proxy_events else "enabled_no_usage"
+        if selected_trace_source:
+            result.metadata["selected_trace_source"] = selected_trace_source
         return result
 
     @staticmethod
@@ -108,6 +138,61 @@ def _with_openrouter_environment(context: AdapterRunContext) -> AdapterRunContex
         env.setdefault("CLAUDE_CODE_SUBAGENT_MODEL", model)
     harness = replace(context.harness, env=env, model=model or context.harness.model)
     return replace(context, harness=harness)
+
+
+def _with_proxy_environment(context: AdapterRunContext, proxy_env: dict[str, str]) -> AdapterRunContext:
+    if not proxy_env:
+        return context
+    config = dict(context.harness.config)
+    if _is_docker_backend(context):
+        config["docker_add_host_gateway"] = True
+    harness = replace(
+        context.harness,
+        env={**context.harness.env, **proxy_env},
+        config=config,
+    )
+    return replace(context, harness=harness)
+
+
+def _is_docker_backend(context: AdapterRunContext) -> bool:
+    return context.harness.config.get("backend") == "docker"
+
+
+def _mark_preflight_proxy_calls(proxy_events: list[TraceEvent], native_events: list[TraceEvent]) -> list[TraceEvent]:
+    visible_request_ids = _visible_assistant_message_ids(native_events)
+    if not visible_request_ids:
+        return proxy_events
+    marked: list[TraceEvent] = []
+    for event in proxy_events:
+        if event.type != "model_call":
+            marked.append(event)
+            continue
+        metadata = dict(event.data.get("metadata", {})) if isinstance(event.data.get("metadata"), dict) else {}
+        request_id = metadata.get("request_id")
+        if request_id and str(request_id) not in visible_request_ids:
+            data = dict(event.data)
+            metadata["preflight"] = True
+            metadata["preflight_reason"] = "proxy request_id not present in Claude assistant stream"
+            data["metadata"] = metadata
+            marked.append(TraceEvent(type=event.type, timestamp=event.timestamp, data=data))
+        else:
+            marked.append(event)
+    return marked
+
+
+def _visible_assistant_message_ids(events: list[TraceEvent]) -> set[str]:
+    message_ids: set[str] = set()
+    for event in events:
+        if event.type != "claude_event":
+            continue
+        raw = event.data.get("raw")
+        if not isinstance(raw, dict) or raw.get("type") != "assistant":
+            continue
+        message = raw.get("message")
+        message_id = message.get("id") if isinstance(message, dict) else None
+        if isinstance(message_id, str) and message_id:
+            message_ids.add(message_id)
+    return message_ids
 
 
 def _expand_env_vars(value: str | None, env: dict[str, str]) -> str:

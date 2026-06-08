@@ -1,7 +1,10 @@
 import json
 import os
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from harness_efficiency_bench.adapters.base import AdapterRunContext
@@ -233,6 +236,138 @@ class ClaudeCodeAdapterTest(unittest.TestCase):
         self.assertEqual(active_context.harness.env["ANTHROPIC_AUTH_TOKEN"], "sk-test-openrouter")
         self.assertEqual(active_context.harness.env["ANTHROPIC_API_KEY"], "")
         self.assertEqual(active_context.harness.env["ANTHROPIC_DEFAULT_SONNET_MODEL"], "nvidia/test-model:free")
+
+    @patch.dict(
+        os.environ,
+        {"OPENROUTER_API_KEY": "sk-test-openrouter", "OPENROUTER_MODEL": "nvidia/test-model:free"},
+    )
+    def test_run_prefers_proxy_usage_over_openrouter_aggregate_usage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trace_path = root / ".harness-usage-proxy.jsonl"
+
+            class FakeProxy:
+                def __init__(self):
+                    self.config = SimpleNamespace(trace_path=trace_path)
+                    self.local_base_url = "http://127.0.0.1:1234/api"
+                    self.docker_base_url = "http://host.docker.internal:1234/api"
+                    self.started = False
+                    self.stopped = False
+
+                def start(self):
+                    self.started = True
+
+                def stop(self):
+                    self.stopped = True
+
+                def env(self, *, docker):
+                    self.docker = docker
+                    return {
+                        "ANTHROPIC_BASE_URL": self.docker_base_url,
+                        "ANTHROPIC_AUTH_TOKEN": "sk-test-openrouter",
+                    }
+
+            fake_proxy = FakeProxy()
+            harness = HarnessManifest(
+                id="claude-code-docker-openrouter",
+                adapter="claude_code",
+                path=root / "harness.yaml",
+                model="${OPENROUTER_MODEL}",
+                config={
+                    "auth_mode": "openrouter",
+                    "backend": "docker",
+                    "required_env": ["OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
+                    "trace": {"proxy": {"enabled": True, "trace_path": ".harness-usage-proxy.jsonl"}},
+                },
+            )
+            task = TaskManifest(id="task", prompt="prompt", path=root / "task.yaml")
+            context = AdapterRunContext(
+                run_id="run",
+                task=task,
+                harness=harness,
+                workspace=root,
+                prompt="prompt",
+                prompt_file=root / ".benchmark_prompt.txt",
+                timeout_sec=1,
+            )
+
+            def fake_run_command(command, active_context):
+                self.assertTrue(active_context.harness.config["docker_add_host_gateway"])
+                self.assertEqual(active_context.harness.env["ANTHROPIC_BASE_URL"], fake_proxy.docker_base_url)
+                self.assertEqual(active_context.harness.env["ANTHROPIC_AUTH_TOKEN"], "sk-test-openrouter")
+                trace_path.write_text(
+                    "\n".join(
+                        [
+                            json.dumps(
+                                {
+                                    "source": "usage_proxy",
+                                    "model": "nvidia/test-model:free",
+                                    "request_id": "hidden-preflight",
+                                    "usage": {"input_tokens": 3, "output_tokens": 1},
+                                    "status_code": 200,
+                                }
+                            ),
+                            json.dumps(
+                                {
+                                    "source": "usage_proxy",
+                                    "model": "nvidia/test-model:free",
+                                    "request_id": "visible-message",
+                                    "usage": {"input_tokens": 9, "output_tokens": 2},
+                                    "status_code": 200,
+                                }
+                            ),
+                        ]
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+                stdout = "\n".join(
+                    [
+                        json.dumps(
+                            {
+                                "type": "assistant",
+                                "message": {
+                                    "id": "visible-message",
+                                    "usage": {"input_tokens": 0, "output_tokens": 0},
+                                },
+                            }
+                        ),
+                        json.dumps(
+                            {
+                                "type": "result",
+                                "usage": {"input_tokens": 0, "output_tokens": 0},
+                                "modelUsage": {
+                                    "nvidia/test-model:free": {
+                                        "inputTokens": 99,
+                                        "outputTokens": 4,
+                                        "costUSD": 0.001,
+                                    }
+                                },
+                            }
+                        ),
+                    ]
+                )
+                return subprocess.CompletedProcess(command, 0, stdout=stdout, stderr="")
+
+            with patch(
+                "harness_efficiency_bench.adapters.claude_code.proxy_from_config",
+                return_value=fake_proxy,
+            ), patch("harness_efficiency_bench.adapters.claude_code.run_command", side_effect=fake_run_command):
+                result = ClaudeCodeAdapter(harness).run(context)
+
+        model_calls = [event for event in result.trace_events if event.type == "model_call"]
+        self.assertTrue(fake_proxy.started)
+        self.assertTrue(fake_proxy.stopped)
+        self.assertTrue(fake_proxy.docker)
+        self.assertEqual(len(model_calls), 2)
+        self.assertEqual(model_calls[0].data["input_tokens"], 3)
+        self.assertTrue(model_calls[0].data["metadata"]["preflight"])
+        self.assertEqual(model_calls[1].data["input_tokens"], 9)
+        self.assertEqual(model_calls[1].data["output_tokens"], 2)
+        self.assertEqual(model_calls[0].data["metadata"]["source"], "usage_proxy")
+        self.assertNotIn("aggregate", model_calls[1].data["metadata"])
+        self.assertEqual(result.metadata["proxy_trace"], "parsed")
+        self.assertEqual(result.metadata["selected_trace_source"], "proxy")
 
 
 if __name__ == "__main__":

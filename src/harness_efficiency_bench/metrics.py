@@ -29,32 +29,61 @@ def _model_calls(events: list[TraceEvent]) -> list[dict[str, Any]]:
 
 
 def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValue:
-    calls = _model_calls(events)
+    all_calls = _model_calls(events)
+    calls = [call for call in all_calls if not _is_aggregate_model_call(call)]
     if not calls:
-        return MetricValue(None, "unsupported", {"reason": "no model_call events"})
-    first_input = calls[0].get("input_tokens")
-    if first_input is None:
-        return MetricValue(None, "unsupported", {"reason": "first model call missing input_tokens"})
-    if _is_aggregate_model_call(calls[0]):
+        if not all_calls:
+            return MetricValue(None, "unsupported", {"reason": "no model_call events"})
+        first_input = all_calls[0].get("input_tokens")
+        if first_input is None:
+            return MetricValue(None, "unsupported", {"reason": "first model call missing input_tokens"})
         return MetricValue(
             int(first_input) - user_prompt_tokens,
             "partial",
             {"reason": "model_call input_tokens are aggregate run usage, not first-call usage"},
         )
-    return MetricValue(int(first_input) - user_prompt_tokens, "full")
+    provider_first = calls[0]
+    task_calls = [call for call in calls if not _is_preflight_model_call(call)]
+    provider_tax = _call_startup_tax(provider_first, user_prompt_tokens)
+    if provider_tax is None:
+        return MetricValue(None, "unsupported", {"reason": "provider-first model call missing input_tokens"})
+    details: dict[str, Any] = {
+        "provider_first_startup_tax": provider_tax,
+        "provider_first_call_index": provider_first.get("call_index"),
+    }
+    if not task_calls:
+        return MetricValue(
+            provider_tax,
+            "partial",
+            {**details, "reason": "no non-preflight task model_call events"},
+        )
+    task_first = task_calls[0]
+    task_tax = _call_startup_tax(task_first, user_prompt_tokens)
+    if task_tax is None:
+        return MetricValue(None, "unsupported", {"reason": "task-first model call missing input_tokens"})
+    details.update(
+        {
+            "task_first_startup_tax": task_tax,
+            "task_first_call_index": task_first.get("call_index"),
+        }
+    )
+    if provider_first is task_first:
+        return MetricValue(provider_tax, "full", details)
+    details["composition"] = "provider_first_startup_tax + task_first_startup_tax"
+    return MetricValue(provider_tax + task_tax, "full", details)
 
 
 def context_growth_rate(events: list[TraceEvent]) -> MetricValue:
     calls = _model_calls(events)
     points: list[tuple[float, float]] = []
     for index, call in enumerate(calls):
-        if _is_aggregate_model_call(call):
+        if _is_aggregate_model_call(call) or _is_preflight_model_call(call):
             continue
         input_tokens = call.get("input_tokens")
         if input_tokens is not None:
             points.append((float(call.get("call_index", index)), float(input_tokens)))
     if len(points) < 2:
-        return MetricValue(None, "unsupported", {"reason": "need at least two non-aggregate model calls"})
+        return MetricValue(None, "unsupported", {"reason": "need at least two non-aggregate non-preflight model calls"})
     xs = [point[0] for point in points]
     ys = [point[1] for point in points]
     x_mean = sum(xs) / len(xs)
@@ -103,6 +132,18 @@ def usage_token_cost(usage: dict[str, Any]) -> int:
 def _is_aggregate_model_call(call: dict[str, Any]) -> bool:
     metadata = call.get("metadata")
     return isinstance(metadata, dict) and bool(metadata.get("aggregate"))
+
+
+def _is_preflight_model_call(call: dict[str, Any]) -> bool:
+    metadata = call.get("metadata")
+    return isinstance(metadata, dict) and bool(metadata.get("preflight"))
+
+
+def _call_startup_tax(call: dict[str, Any], user_prompt_tokens: int) -> int | None:
+    input_tokens = call.get("input_tokens")
+    if input_tokens is None:
+        return None
+    return int(input_tokens) - user_prompt_tokens
 
 
 def tool_output_retention_ratio(events: list[TraceEvent]) -> MetricValue:
@@ -170,12 +211,12 @@ def research_metric_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
         "startup_tax": _run_metric_coverage(
             results,
             "startup_tax",
-            "full requires structured non-aggregate model_call events with first-call input_tokens",
+            "full requires structured non-aggregate model_call events with provider-first and task-first input_tokens",
         ),
         "context_growth_rate": _run_metric_coverage(
             results,
             "context_growth_rate",
-            "full requires at least two non-aggregate model_call events with input_tokens per run",
+            "full requires at least two non-aggregate non-preflight model_call events with input_tokens per run",
         ),
         "solve_efficiency": _solve_efficiency_coverage(results),
     }

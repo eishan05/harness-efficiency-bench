@@ -40,6 +40,8 @@ class RunnerTest(unittest.TestCase):
             trace_dir = workspace / ".codex_rollout_trace" / "trace-1"
             trace_dir.mkdir(parents=True)
             (trace_dir / "trace.jsonl").write_text('{"payload": "large"}\n', encoding="utf-8")
+            (workspace / ".harness-usage-proxy.jsonl").write_text('{"usage": {"input_tokens": 1}}\n', encoding="utf-8")
+            (workspace / ".litellm-usage.jsonl").write_text('{"usage": {"input_tokens": 1}}\n', encoding="utf-8")
             cache_dir = workspace / "pkg" / "__pycache__"
             cache_dir.mkdir(parents=True)
             (cache_dir / "module.cpython-311.pyc").write_bytes(b"cache")
@@ -51,6 +53,8 @@ class RunnerTest(unittest.TestCase):
 
         self.assertIn("tracked.txt", diff)
         self.assertNotIn(".codex_rollout_trace", diff)
+        self.assertNotIn(".harness-usage-proxy.jsonl", diff)
+        self.assertNotIn(".litellm-usage.jsonl", diff)
         self.assertNotIn("__pycache__", diff)
 
     def test_git_clone_workspace_setup_uses_repo_cache(self):
