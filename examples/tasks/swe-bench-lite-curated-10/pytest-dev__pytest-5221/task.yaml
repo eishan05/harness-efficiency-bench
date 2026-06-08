@@ -7,6 +7,7 @@ workspace_setup:
     base_commit: 4a2fdce62b73944030cff9b3e52862868ca9584d
 oracle:
   type: swe_bench
+  backend: docker
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: pytest-dev__pytest-5221

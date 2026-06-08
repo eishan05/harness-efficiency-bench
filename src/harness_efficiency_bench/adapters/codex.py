@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import os
+import re
 import shutil
 import time
 from dataclasses import replace
@@ -27,8 +29,9 @@ class CodexAdapter(BaseAdapter):
             "--skip-git-repo-check",
             "-",
         ]
-        trace_root = self._trace_root(context)
-        run_context = self._context_with_rollout_trace(context, trace_root)
+        active_context = self._context_with_expanded_model(context)
+        trace_root = self._trace_root(active_context)
+        run_context = self._context_with_rollout_trace(active_context, trace_root)
         completed = run_command(command, run_context, stdin=context.prompt)
         result = result_from_completed(completed)
         rollout_events = []
@@ -40,6 +43,8 @@ class CodexAdapter(BaseAdapter):
             completed.stdout,
             include_turn_completed_usage=not rollout_events,
         ) + rollout_events
+        if run_context.harness.model:
+            result.metadata["model_id"] = run_context.harness.model
         result.metadata["trace_quality"] = "structured"
         if rollout_events:
             result.metadata["codex_rollout_trace"] = "parsed"
@@ -209,6 +214,14 @@ class CodexAdapter(BaseAdapter):
         )
         return replace(context, harness=harness)
 
+    @staticmethod
+    def _context_with_expanded_model(context: AdapterRunContext) -> AdapterRunContext:
+        model = _expand_env_vars(context.harness.model or "", {**os.environ, **context.harness.env})
+        if not model or model == context.harness.model:
+            return context
+        harness = replace(context.harness, model=model)
+        return replace(context, harness=harness)
+
 
 def _usage_from_response_payload(bundle: Path, response_ref: Any) -> dict[str, Any] | None:
     if not isinstance(response_ref, dict):
@@ -223,3 +236,14 @@ def _usage_from_response_payload(bundle: Path, response_ref: Any) -> dict[str, A
         return None
     usage = response.get("token_usage") or response.get("usage")
     return usage if isinstance(usage, dict) else None
+
+
+def _expand_env_vars(value: str, env: dict[str, str]) -> str:
+    if not value:
+        return ""
+
+    def replace_match(match: re.Match[str]) -> str:
+        key = match.group("braced") or match.group("plain") or ""
+        return str(env.get(key, match.group(0)))
+
+    return re.sub(r"\$\{(?P<braced>[A-Za-z_][A-Za-z0-9_]*)\}|\$(?P<plain>[A-Za-z_][A-Za-z0-9_]*)", replace_match, value)

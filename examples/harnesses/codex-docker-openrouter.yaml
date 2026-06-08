@@ -1,0 +1,51 @@
+id: codex-docker-openrouter
+adapter: codex
+model: ${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: structured
+command:
+  - codex
+  - exec
+  - --json
+  - -c
+  - model_provider="openrouter"
+  - -c
+  - model_providers.openrouter.name="OpenRouter"
+  - -c
+  - model_providers.openrouter.base_url="https://openrouter.ai/api/v1"
+  - -c
+  - model_providers.openrouter.env_key="OPENROUTER_API_KEY"
+  - -c
+  - model_providers.openrouter.wire_api="responses"
+  - --sandbox
+  - danger-full-access
+  - --skip-git-repo-check
+  - --model
+  - "{model}"
+  - "-"
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/codex-cli:0.137.0
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_user: host
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /codex-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g
+    - /codex-home:exec,size=512m,uid={uid},gid={gid},mode=700
+  docker_env_passthrough:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  pricing_source: provider token usage only
+  codex_rollout_trace: true

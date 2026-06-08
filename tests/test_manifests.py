@@ -22,8 +22,18 @@ class ManifestTest(unittest.TestCase):
         self.assertEqual(task.id, "django__django-11905")
         self.assertEqual(task.source, "swe-bench-lite")
         self.assertEqual(task.oracle.type, "swe_bench")
+        self.assertEqual(task.oracle.data["backend"], "docker")
         self.assertEqual(task.oracle.data["instance_id"], "django__django-11905")
         self.assertEqual(task.workspace_setup["git_clone"]["repo"], "django/django")
+
+    def test_swe_bench_lite_curated_tasks_use_docker_oracle(self):
+        paths = sorted((ROOT / "examples/tasks/swe-bench-lite-curated-10").glob("*/task.yaml"))
+        self.assertTrue(paths)
+        for path in paths:
+            task = TaskManifest.load(path)
+            with self.subTest(path=path.name):
+                self.assertEqual(task.oracle.type, "swe_bench")
+                self.assertEqual(task.oracle.data.get("backend"), "docker")
 
     def test_load_harness_manifest(self):
         harness = HarnessManifest.load(ROOT / "examples/harnesses/demo.yaml")
@@ -59,6 +69,7 @@ class ManifestTest(unittest.TestCase):
             {
                 "claude-code-docker-openrouter",
                 "aider-docker-openrouter",
+                "codex-docker-openrouter",
                 "goose-docker-openrouter",
                 "hermes-agent-docker-openrouter",
                 "kilo-docker-openrouter",
@@ -74,6 +85,8 @@ class ManifestTest(unittest.TestCase):
             with self.subTest(path=path.name):
                 if harness.id == "claude-code-docker-openrouter":
                     self.assertEqual(harness.adapter, "claude_code")
+                elif harness.id == "codex-docker-openrouter":
+                    self.assertEqual(harness.adapter, "codex")
                 else:
                     self.assertEqual(harness.adapter, "docker_agent_cli")
                 self.assertEqual(harness.config.get("backend"), "docker")

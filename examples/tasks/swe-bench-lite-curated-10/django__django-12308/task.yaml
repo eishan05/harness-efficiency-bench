@@ -7,6 +7,7 @@ workspace_setup:
     base_commit: 2e0f04507b17362239ba49830d26fec504d46978
 oracle:
   type: swe_bench
+  backend: docker
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: django__django-12308

@@ -23,25 +23,28 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
   --require-docker-isolation
 ```
 
-Install the optional official evaluator before running SWE-bench oracles:
+Build the Dockerized SWE-bench oracle image before running SWE-bench oracles:
 
 ```bash
-python3 -m pip install -e '.[swebench]'
+docker build -t harness-bench/swebench-oracle:4.1.0 docker/swebench-oracle
 ```
 
 SWE-bench task workspaces are cloned from GitHub at the instance `base_commit`. By default the runner keeps local Git mirrors in `.cache/harness-bench/repos`; override with `--repo-cache <path>` or disable with `--no-repo-cache`.
 
-The `swe_bench` oracle writes a one-line prediction JSONL from the workspace diff and invokes the official Docker evaluator:
+The `swe_bench` oracle writes a one-line prediction JSONL from the workspace diff and invokes the official evaluator inside `harness-bench/swebench-oracle:4.1.0`. The evaluator container mounts `/var/run/docker.sock`, so it does not install `swebench` on the host but it does create official SWE-bench Docker images on the host Docker daemon:
 
 ```bash
-python -m swebench.harness.run_evaluation \
-  --dataset_name SWE-bench/SWE-bench_Lite \
-  --split test \
-  --predictions_path <run>/swebench_eval/predictions.jsonl \
-  --instance_ids <instance_id> \
-  --max_workers 1 \
-  --cache_level env
+docker run --rm \
+  --user <host-uid>:<host-gid> \
+  --group-add <docker-socket-gid> \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v <absolute-run>/swebench_eval:<absolute-run>/swebench_eval \
+  -w <absolute-run>/swebench_eval \
+  harness-bench/swebench-oracle:4.1.0 \
+  python -m swebench.harness.run_evaluation ...
 ```
+
+Host-mode evaluation is still available by setting `oracle.backend: host` and installing `python3 -m pip install -e '.[swebench]'`, but Docker mode is the default for curated SWE-bench Lite manifests.
 
 The official evaluator creates Docker images with `sweb.*` repositories. Ordinary cleanup keeps those caches because rebuilding them is expensive. Remove them explicitly with:
 

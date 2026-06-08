@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import urllib.parse
 import urllib.request
@@ -14,6 +15,8 @@ import yaml
 
 DEFAULT_SWE_BENCH_LITE_DATASET = "SWE-bench/SWE-bench_Lite"
 DEFAULT_SWE_BENCH_SPLIT = "test"
+DEFAULT_SWE_BENCH_ORACLE_IMAGE = "harness-bench/swebench-oracle:4.1.0"
+DEFAULT_DOCKER_SOCKET = "/var/run/docker.sock"
 
 CURATED_10_INSTANCE_IDS = (
     "django__django-11905",
@@ -101,6 +104,7 @@ def write_swe_bench_task_manifests(
             },
             "oracle": {
                 "type": "swe_bench",
+                "backend": "docker",
                 "dataset_name": dataset_name,
                 "split": split,
                 "instance_id": instance_id,
@@ -150,9 +154,10 @@ def build_swe_bench_eval_command(
     cache_level: str,
     timeout_sec: int,
     namespace: str | None,
+    python_executable: str | None = None,
 ) -> list[str]:
     command = [
-        sys.executable,
+        python_executable or sys.executable,
         "-m",
         "swebench.harness.run_evaluation",
         "--dataset_name",
@@ -175,6 +180,40 @@ def build_swe_bench_eval_command(
     if namespace is not None:
         command.extend(["--namespace", namespace])
     return command
+
+
+def build_swe_bench_docker_command(
+    *,
+    eval_command: list[str],
+    eval_root: Path,
+    evaluator_image: str = DEFAULT_SWE_BENCH_ORACLE_IMAGE,
+    docker_socket: str = DEFAULT_DOCKER_SOCKET,
+) -> list[str]:
+    eval_root = eval_root.resolve()
+    docker_socket_gid = Path(docker_socket).stat().st_gid if Path(docker_socket).exists() else os.getgid()
+    return [
+        "docker",
+        "run",
+        "--rm",
+        "--label",
+        "harness-efficiency-bench=true",
+        "--label",
+        "harness-efficiency-bench.component=swebench-oracle",
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
+        "--group-add",
+        str(docker_socket_gid),
+        "-v",
+        f"{docker_socket}:{docker_socket}",
+        "-e",
+        f"DOCKER_HOST=unix://{docker_socket}",
+        "-v",
+        f"{eval_root}:{eval_root}",
+        "-w",
+        str(eval_root),
+        evaluator_image,
+        *eval_command,
+    ]
 
 
 def swe_bench_report_path(eval_root: Path, *, model_name_or_path: str, run_id: str) -> Path:

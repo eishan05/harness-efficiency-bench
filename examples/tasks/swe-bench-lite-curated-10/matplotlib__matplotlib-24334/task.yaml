@@ -7,6 +7,7 @@ workspace_setup:
     base_commit: 332937997d03e0c173be6d9fc1841e9186e857df
 oracle:
   type: swe_bench
+  backend: docker
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: matplotlib__matplotlib-24334

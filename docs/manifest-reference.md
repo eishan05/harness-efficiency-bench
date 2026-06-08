@@ -142,6 +142,8 @@ trace:
 
 Claude Code can be configured as a host subscription harness, host API-key harness, Docker-isolated API-key harness, or OpenRouter harness. For direct Anthropic serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used. For benchmark-ready OpenRouter runs, use `claude-code-docker-openrouter.yaml`; the adapter maps `OPENROUTER_API_KEY` to `ANTHROPIC_AUTH_TOKEN`, routes `ANTHROPIC_BASE_URL` through the usage proxy, and keeps Claude Code `modelUsage` as an aggregate fallback for C when per-request usage is unavailable. The host `claude-code-openrouter.yaml` remains a debug harness unless its run metadata shows `selected_trace_source: proxy`.
 
+Codex OpenRouter runs use `examples/harnesses/codex-docker-openrouter.yaml`. The manifest configures a custom Codex `model_provider` named `openrouter`, uses `wire_api="responses"` for OpenRouter's OpenAI-compatible `/api/v1/responses` route, resolves `model: ${OPENROUTER_MODEL}` before command rendering, and keeps `codex_rollout_trace: true` for token metrics when Codex emits rollout traces.
+
 ## SWE-bench Prediction Export
 
 Runs in Git-initialized workspaces capture `git diff --binary HEAD` as `artifacts.git_diff`.

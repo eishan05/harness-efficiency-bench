@@ -12,6 +12,9 @@ from harness_efficiency_bench.cli import main
 from harness_efficiency_bench.oracles import grade_oracle
 from harness_efficiency_bench.swe_bench import (
     CURATED_10_INSTANCE_IDS,
+    DEFAULT_DOCKER_SOCKET,
+    DEFAULT_SWE_BENCH_ORACLE_IMAGE,
+    build_swe_bench_docker_command,
     fetch_swe_bench_rows,
     write_swe_bench_task_manifests,
 )
@@ -59,6 +62,7 @@ class SweBenchTest(unittest.TestCase):
             prompt_text = (written[0].parent / "prompt.txt").read_text(encoding="utf-8")
 
         self.assertIn("oracle:\n  type: swe_bench", manifest_text)
+        self.assertIn("backend: docker", manifest_text)
         self.assertIn("repo: django/django", manifest_text)
         self.assertEqual(prompt_text, "Fix the bug.\nDo not regress.\n")
         self.assertNotIn("test_patch", manifest_text + prompt_text)
@@ -91,20 +95,21 @@ class SweBenchTest(unittest.TestCase):
 
     def test_swe_bench_oracle_reports_missing_package(self):
         with tempfile.TemporaryDirectory() as tmp:
-            spec = OracleSpec.from_dict({"type": "swe_bench", "instance_id": "x"})
+            spec = OracleSpec.from_dict({"type": "swe_bench", "backend": "host", "instance_id": "x"})
             with patch("importlib.util.find_spec", return_value=None):
                 result = grade_oracle(spec, Path(tmp))
 
         self.assertFalse(result.success)
         self.assertIn("swebench package is not installed", result.message)
 
-    def test_swe_bench_oracle_runs_evaluator_and_parses_report(self):
+    def test_swe_bench_host_oracle_runs_evaluator_and_parses_report(self):
         with tempfile.TemporaryDirectory() as tmp:
             workspace = Path(tmp) / "workspace"
             workspace.mkdir()
             spec = OracleSpec.from_dict(
                 {
                     "type": "swe_bench",
+                    "backend": "host",
                     "dataset_name": "SWE-bench/SWE-bench_Lite",
                     "split": "test",
                     "instance_id": "django__django-11905",
@@ -135,6 +140,71 @@ class SweBenchTest(unittest.TestCase):
         self.assertTrue(result.success)
         self.assertEqual(result.score, 1.0)
         self.assertEqual(result.details["returncode"], 0)
+
+    def test_swe_bench_docker_oracle_runs_without_host_swebench(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp) / "workspace"
+            workspace.mkdir()
+            docker_socket = Path(tmp) / "docker.sock"
+            docker_socket.touch()
+            spec = OracleSpec.from_dict(
+                {
+                    "type": "swe_bench",
+                    "dataset_name": "SWE-bench/SWE-bench_Lite",
+                    "split": "test",
+                    "instance_id": "django__django-11905",
+                    "model_name_or_path": "test/model",
+                    "run_id": "run-1",
+                    "max_workers": 1,
+                    "cache_level": "env",
+                    "timeout_sec": 1800,
+                    "docker_socket": str(docker_socket),
+                    "evaluator_image": "harness-bench/swebench-oracle:test",
+                }
+            )
+
+            def fake_run(command, **kwargs):
+                self.assertEqual(command[:3], ["docker", "run", "--rm"])
+                self.assertIn("harness-bench/swebench-oracle:test", command)
+                self.assertIn("--user", command)
+                self.assertIn("--group-add", command)
+                self.assertIn(f"{docker_socket}:{docker_socket}", command)
+                eval_root = Path(kwargs["cwd"])
+                self.assertIn(f"{eval_root}:{eval_root}", command)
+                self.assertIn("python", command)
+                self.assertIn("swebench.harness.run_evaluation", command)
+                self.assertIn("django__django-11905", command)
+                report_path = eval_root / "test__model.run-1.json"
+                report_path.write_text(
+                    json.dumps({"resolved_ids": ["django__django-11905"], "schema_version": 2}),
+                    encoding="utf-8",
+                )
+                return subprocess.CompletedProcess(command, 0, "ok", "")
+
+            with patch("importlib.util.find_spec", side_effect=AssertionError("host swebench should not be checked")):
+                with patch("subprocess.run", side_effect=fake_run):
+                    result = grade_oracle(spec, workspace)
+
+        self.assertTrue(result.success)
+        self.assertEqual(result.details["backend"], "docker")
+        self.assertEqual(result.details["evaluator_image"], "harness-bench/swebench-oracle:test")
+        self.assertEqual(result.details["docker_socket"], str(docker_socket))
+
+    def test_swe_bench_docker_command_uses_same_absolute_eval_root(self):
+        eval_root = Path("/tmp/harness-run/swebench_eval")
+
+        command = build_swe_bench_docker_command(
+            eval_command=["python", "-m", "swebench.harness.run_evaluation"],
+            eval_root=eval_root,
+        )
+
+        self.assertEqual(command[:3], ["docker", "run", "--rm"])
+        self.assertIn(DEFAULT_SWE_BENCH_ORACLE_IMAGE, command)
+        self.assertIn(f"{DEFAULT_DOCKER_SOCKET}:{DEFAULT_DOCKER_SOCKET}", command)
+        self.assertIn("--user", command)
+        self.assertIn("--group-add", command)
+        self.assertIn(f"{eval_root}:{eval_root}", command)
+        self.assertIn(str(eval_root), command)
 
 
 if __name__ == "__main__":

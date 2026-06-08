@@ -7,6 +7,7 @@ workspace_setup:
     base_commit: 863e49066ca4d61c9adfe62aca3bf21b90e1af8c
 oracle:
   type: swe_bench
+  backend: docker
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: pydata__xarray-3364

@@ -78,18 +78,21 @@ def run_command(
         return run_docker_command(command, context, stdin=stdin)
     rendered = render_command(command, context)
     shell = isinstance(rendered, str)
-    return subprocess.run(
-        rendered,
-        cwd=context.workspace,
-        env=merged_env(context.harness.env),
-        input=stdin,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=context.timeout_sec,
-        shell=shell,
-        check=False,
-    )
+    try:
+        return subprocess.run(
+            rendered,
+            cwd=context.workspace,
+            env=merged_env(context.harness.env),
+            input=stdin,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=context.timeout_sec,
+            shell=shell,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        return _completed_from_timeout(rendered, exc)
 
 
 def missing_required_env(context: AdapterRunContext) -> list[str]:
@@ -139,15 +142,20 @@ def run_docker_command(
     stdin: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
     docker_command = build_docker_command(command, context)
-    return subprocess.run(
-        docker_command,
-        input=stdin,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=context.timeout_sec,
-        check=False,
-    )
+    try:
+        return subprocess.run(
+            docker_command,
+            env=merged_env(context.harness.env),
+            input=stdin,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=context.timeout_sec,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        _remove_docker_containers_for_run(context)
+        return _completed_from_timeout(docker_command, exc)
 
 
 def build_docker_command(command: str | list[str], context: AdapterRunContext) -> list[str]:
@@ -191,7 +199,7 @@ def build_docker_command(command: str | list[str], context: AdapterRunContext) -
         docker_command.extend(["--add-host", str(host)])
     docker_user = context.harness.config.get("docker_user")
     if docker_user:
-        docker_command.extend(["--user", str(docker_user)])
+        docker_command.extend(["--user", _render_docker_template(str(docker_user))])
     docker_memory = context.harness.config.get("docker_memory")
     if docker_memory:
         docker_command.extend(["--memory", str(docker_memory)])
@@ -214,15 +222,15 @@ def build_docker_command(command: str | list[str], context: AdapterRunContext) -
         ]
     )
     for tmpfs in context.harness.config.get("docker_tmpfs", []):
-        docker_command.extend(["--tmpfs", str(tmpfs)])
+        docker_command.extend(["--tmpfs", _render_docker_template(str(tmpfs))])
     for mount in context.harness.config.get("docker_mounts", []):
         docker_command.extend(_docker_mount_args(mount))
-    for key, value in context.harness.env.items():
-        docker_command.extend(["-e", f"{key}={value}"])
+    for key in context.harness.env:
+        docker_command.extend(["-e", str(key)])
     for key in context.harness.config.get("docker_env_passthrough", []):
-        value = os.environ.get(str(key))
-        if value is not None:
-            docker_command.extend(["-e", f"{key}={value}"])
+        key_text = str(key)
+        if os.environ.get(key_text) is not None:
+            docker_command.extend(["-e", key_text])
     docker_command.append(str(image))
     if isinstance(rendered, str):
         docker_command.extend(["/bin/sh", "-lc", rendered])
@@ -243,6 +251,59 @@ def _docker_mount_args(mount: object) -> list[str]:
     source_path = Path(os.path.expandvars(os.path.expanduser(str(source)))).resolve()
     suffix = ":ro" if mount.get("read_only") else ""
     return ["-v", f"{source_path}:{target}{suffix}"]
+
+
+def _render_docker_template(value: str) -> str:
+    if value == "host":
+        return f"{os.getuid()}:{os.getgid()}"
+    return value.replace("{uid}", str(os.getuid())).replace("{gid}", str(os.getgid()))
+
+
+def _remove_docker_containers_for_run(context: AdapterRunContext) -> None:
+    ps = subprocess.run(
+        [
+            "docker",
+            "ps",
+            "-aq",
+            "--filter",
+            f"label=harness-efficiency-bench.run_id={context.run_id}",
+        ],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    container_ids = [line.strip() for line in ps.stdout.splitlines() if line.strip()]
+    if not container_ids:
+        return
+    subprocess.run(
+        ["docker", "rm", "-f", *container_ids],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+
+
+def _completed_from_timeout(
+    command: str | list[str],
+    exc: subprocess.TimeoutExpired,
+) -> subprocess.CompletedProcess[str]:
+    stdout = _timeout_stream_to_text(exc.stdout or exc.output)
+    stderr = _timeout_stream_to_text(exc.stderr)
+    message = f"Command timed out after {exc.timeout} seconds"
+    if stderr:
+        stderr = f"{stderr}\n{message}"
+    else:
+        stderr = message
+    return subprocess.CompletedProcess(command, 124, stdout, stderr)
+
+
+def _timeout_stream_to_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
 
 
 def parse_jsonl_events(text: str) -> list[dict[str, Any]]:

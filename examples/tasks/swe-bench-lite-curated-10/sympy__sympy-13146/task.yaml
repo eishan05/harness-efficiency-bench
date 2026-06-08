@@ -7,6 +7,7 @@ workspace_setup:
     base_commit: b678d8103e48fdb1af335dbf0080b3d5366f2d17
 oracle:
   type: swe_bench
+  backend: docker
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: sympy__sympy-13146

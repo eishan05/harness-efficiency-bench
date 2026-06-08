@@ -1,8 +1,10 @@
 import json
+import os
 import tempfile
 import textwrap
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from harness_efficiency_bench.adapters.base import AdapterRunContext
 from harness_efficiency_bench.adapters.codex import CodexAdapter
@@ -247,6 +249,67 @@ class CodexAdapterTest(unittest.TestCase):
         self.assertEqual(len(model_calls), 1)
         self.assertEqual(model_calls[0].data["input_tokens"], 11)
         self.assertFalse((workspace / ".codex_rollout_trace").exists())
+
+    def test_run_expands_model_from_environment(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            prompt_file = workspace / ".benchmark_prompt.txt"
+            prompt_file.write_text("prompt", encoding="utf-8")
+            fake_codex = root / "fake_codex.py"
+            fake_codex.write_text(
+                textwrap.dedent(
+                    """
+                    import json
+                    import pathlib
+                    import sys
+
+                    sys.stdin.read()
+                    pathlib.Path(sys.argv[1]).write_text(sys.argv[2], encoding="utf-8")
+                    print(
+                        json.dumps(
+                            {
+                                "type": "turn.completed",
+                                "usage": {
+                                    "input_tokens": 10,
+                                    "cached_input_tokens": 0,
+                                    "output_tokens": 1,
+                                    "reasoning_output_tokens": 0,
+                                },
+                            }
+                        )
+                    )
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            seen_model_path = root / "seen-model.txt"
+            harness = HarnessManifest(
+                id="codex-test",
+                adapter="codex",
+                path=root / "harness.yaml",
+                command=["python3", str(fake_codex), str(seen_model_path), "{model}"],
+                model="${OPENROUTER_MODEL}",
+            )
+            task = TaskManifest(id="task", prompt="prompt", path=root / "task.yaml")
+
+            with patch.dict(os.environ, {"OPENROUTER_MODEL": "nvidia/test-model:free"}):
+                result = CodexAdapter(harness).run(
+                    AdapterRunContext(
+                        run_id="run-1",
+                        task=task,
+                        harness=harness,
+                        workspace=workspace,
+                        prompt="prompt",
+                        prompt_file=prompt_file,
+                        timeout_sec=30,
+                    )
+                )
+            seen_model = seen_model_path.read_text(encoding="utf-8")
+
+        self.assertEqual(seen_model, "nvidia/test-model:free")
+        self.assertEqual(result.metadata["model_id"], "nvidia/test-model:free")
 
 
 if __name__ == "__main__":
