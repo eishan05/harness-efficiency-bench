@@ -12,7 +12,7 @@ A faithful SWE-bench Lite subset still needs an importer that creates task fixtu
 The current starter suite is intentionally local and cheap:
 
 - `python-fix-calculator` exercises ordinary unit-test-driven bug fixing.
-- `harness-stress-log-triage` exercises log reading and tool-output retention pressure.
+- `harness-stress-log-triage` exercises log reading and tool-output-heavy context pressure.
 - `toy-write-file` exercises deterministic smoke runs and context-bloat perturbations.
 
 Use these tasks to validate harness adapters, isolation, cleanup, and metric coverage before spending on SWE-bench Lite runs.

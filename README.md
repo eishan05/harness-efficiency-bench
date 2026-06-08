@@ -1,6 +1,6 @@
 # Harness Efficiency Bench
 
-Benchmark coding-agent harnesses on token efficiency, context growth, tool-output retention, cost, and solve rate.
+Benchmark coding-agent harnesses on startup tax, context growth, solve efficiency, cost, and solve rate.
 
 The v1 scaffold is designed around small task manifests and pluggable harness adapters. It can run a toy benchmark immediately, and it includes adapter entry points for Codex, Claude Code, Antigravity, Qwen Code, mini-swe-agent, nanobot, generic command-line harnesses, and Docker-only agent CLIs.
 
@@ -104,13 +104,14 @@ PYTHONPATH=src python3 -m unittest discover -s tests
 - **Metrics** are marked as full, partial, or unsupported based on trace visibility.
 - **Isolation** is explicit in each result. Host runs are for debugging; serious runs should use Docker-backed harnesses with `--require-docker-isolation`.
 
-Full observability requires either structured SDK/CLI events or visibility into model-call payloads through a proxy such as LiteLLM/OpenTelemetry. Black-box CLI runs can still be scored for success and runtime, but startup tax, context growth, and retention may be partial.
+Full A/B/C observability requires structured per-call usage from the harness, or routing OpenAI-compatible calls through the local usage-only proxy. Black-box CLI runs can still be scored for success and runtime, but startup tax, context growth, and solve efficiency are unsupported when neither native usage nor proxy routing is available.
 
 The starter task set includes:
 
 - `toy-write-file`: deterministic smoke/context-rot task.
+- `metrics-calibration-multicall`: small task for checking whether a harness emits at least two model calls for context-growth measurement.
 - `python-fix-calculator`: small Python bug-fix task.
-- `harness-stress-log-triage`: log-heavy bug-fix task intended to stress tool-output retention.
+- `harness-stress-log-triage`: log-heavy bug-fix task intended to stress tool-output-heavy context growth.
 
 Claude Code harnesses are split by auth and isolation:
 

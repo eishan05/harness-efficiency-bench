@@ -179,8 +179,8 @@ def _markdown_report(summary: dict[str, Any]) -> str:
         f"- Cost USD: {summary['cost_usd']:.6f}",
         f"- Cost per solved task: {summary['cost_per_solved_task']}",
         "",
-        "| Harness | Attempted | Solved | Solve Rate | Cost USD | Cost / Solved | Startup Tax | Growth | Retention |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Harness | Attempted | Solved | Solve Rate | Cost USD | Cost / Solved | Startup Tax | Growth |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for harness_id, bucket in sorted(summary["by_harness"].items()):
         cost_per = bucket["cost_per_solved_task"]
@@ -188,17 +188,16 @@ def _markdown_report(summary: dict[str, Any]) -> str:
         metrics = bucket.get("metrics", {})
         startup = _optional_number(metrics.get("startup_tax", {}).get("avg"))
         growth = _optional_number(metrics.get("context_growth_rate", {}).get("avg"))
-        retention = _optional_number(metrics.get("tool_output_retention_ratio", {}).get("avg"))
         lines.append(
             f"| {harness_id} | {bucket['attempted']} | {bucket['solved']} | "
             f"{bucket['solve_rate']:.3f} | {bucket['cost_usd']:.6f} | {cost_per_text} | "
-            f"{startup} | {growth} | {retention} |"
+            f"{startup} | {growth} |"
         )
     if summary.get("by_perturbation"):
         lines.extend(
             [
                 "",
-                "## Context Bloat",
+                "## Perturbations",
                 "",
                 "| Perturbation | Attempted | Solved | Solve Rate |",
                 "|---|---:|---:|---:|",

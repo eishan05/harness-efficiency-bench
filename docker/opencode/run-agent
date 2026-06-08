@@ -8,6 +8,7 @@ mkdir -p "$HOME/.config/opencode"
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
   : "${OPENCODE_MODEL:=openrouter/$OPENROUTER_MODEL}"
+  : "${OPENROUTER_BASE_URL:=https://openrouter.ai/api/v1}"
   model_name="${OPENCODE_MODEL#openrouter/}"
   mkdir -p "$HOME/.local/share/opencode"
   cat > "$HOME/.local/share/opencode/auth.json" <<EOF
@@ -24,6 +25,10 @@ EOF
   "model": "${OPENCODE_MODEL}",
   "provider": {
     "openrouter": {
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY}",
+        "baseURL": "${OPENROUTER_BASE_URL}"
+      },
       "models": {
         "${model_name}": {}
       }

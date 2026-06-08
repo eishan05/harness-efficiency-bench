@@ -1,6 +1,6 @@
 import unittest
 
-from harness_efficiency_bench.metrics import compute_run_metrics
+from harness_efficiency_bench.metrics import compute_run_metrics, research_metric_coverage
 from harness_efficiency_bench.tokenization import count_tokens
 from harness_efficiency_bench.tracing import model_call_event, tool_result_event
 
@@ -27,7 +27,28 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(metrics["tool_output_retention_ratio"]["status"], "full")
         self.assertGreater(metrics["tool_output_retention_ratio"]["value"], 0)
 
+    def test_research_coverage_tracks_research_metrics_only(self):
+        coverage = research_metric_coverage(
+            [
+                {
+                    "metrics": {
+                        "startup_tax": {"status": "full"},
+                        "context_growth_rate": {"status": "full"},
+                        "usage": {
+                            "input_tokens": 10,
+                            "output_tokens": 2,
+                            "reasoning_output_tokens": 0,
+                            "cost_usd": 0.01,
+                            "cost_available": True,
+                        },
+                    }
+                }
+            ]
+        )
+
+        self.assertEqual(set(coverage), {"startup_tax", "context_growth_rate", "solve_efficiency"})
+        self.assertEqual(coverage["solve_efficiency"]["status"], "full")
+
 
 if __name__ == "__main__":
     unittest.main()
-

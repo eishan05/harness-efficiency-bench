@@ -99,9 +99,27 @@ Docker-only agent CLI harnesses should use `adapter: docker_agent_cli` and inclu
 - `config.version_command`: command used to verify the installed CLI inside Docker.
 - `config.required_env`: API-key env vars required before launch.
 - `config.trace.parser`: native output parser name, usually `generic_json`, `goose_stream_json`, `kimi_stream_json`, or `opencode_json`.
+- `config.trace.proxy`: optional usage-only OpenAI-compatible proxy config. Set `enabled: true`, `upstream_base_url`, `upstream_api_key_env`, `base_url_env`, `api_key_env`, and `trace_path`.
 - `config.bench_ready: false`: use this when the image exists but the one-shot command path has not been smoke-verified.
 
-OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model.
+OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model. Prefer enabling `trace.proxy` for these variants so black-box CLIs can still emit per-call usage without storing request payloads.
+
+Example proxy block:
+
+```yaml
+trace:
+  parser: qwen_text_or_json
+  proxy:
+    enabled: true
+    protocol: openai_compatible
+    upstream_base_url: https://openrouter.ai/api/v1
+    upstream_api_key_env: OPENROUTER_API_KEY
+    base_url_env:
+      - QWEN_BASE_URL
+    api_key_env:
+      - OPENROUTER_API_KEY
+    trace_path: .harness-usage-proxy.jsonl
+```
 
 Claude Code can be configured as either a host debug harness or a Docker-isolated API-key harness. For serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used.
 

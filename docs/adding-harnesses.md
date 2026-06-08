@@ -74,6 +74,25 @@ The adapter fails fast unless `config.backend: docker` is set. It also checks `r
 
 When adding an OpenRouter route, prefer a separate `*-docker-openrouter.yaml` manifest over changing the direct-provider manifest. Require both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and pass only those plus harness-specific model override env vars into Docker.
 
+When the CLI can accept an OpenAI-compatible base URL, add a usage-only proxy block:
+
+```yaml
+trace:
+  parser: generic_json
+  proxy:
+    enabled: true
+    protocol: openai_compatible
+    upstream_base_url: https://openrouter.ai/api/v1
+    upstream_api_key_env: OPENROUTER_API_KEY
+    base_url_env:
+      - OPENROUTER_BASE_URL
+    api_key_env:
+      - OPENROUTER_API_KEY
+    trace_path: .harness-usage-proxy.jsonl
+```
+
+The adapter starts the proxy for the run, injects the configured base URL env vars, and records usage-only JSONL. Do not enable proxy mode for CLIs without a verified base URL path; mark those harnesses unsupported for A/B/C until native usage, a routeable endpoint, or an upstream patch exists.
+
 ## First-Class Adapter
 
 Add a Python adapter when the harness has structured JSON, JSONL, SDK events, or usage metadata.
@@ -93,11 +112,8 @@ model_call_event(
     cached_input_tokens=...,
     output_tokens=...,
     reasoning_output_tokens=...,
-    input_text="optional raw model-call input for retention",
 )
 ```
-
-If `input_text` is omitted, exact tool-output retention is marked unsupported.
 
 ## Current Adapter Intent
 

@@ -1,0 +1,16 @@
+id: metrics-calibration-multicall
+source: local
+fixtures: fixtures
+workspace_setup:
+  git_init: true
+prompt: |
+  Read stage1.txt in the workspace. It names a second file.
+  Read that second file and create answer.txt containing exactly the answer value in that file.
+  The answer.txt file must contain only that value and no trailing newline.
+oracle:
+  type: file_equals
+  path: answer.txt
+  text: "context growth works"
+tags:
+  - metrics-calibration
+  - multicall

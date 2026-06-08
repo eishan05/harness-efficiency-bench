@@ -44,13 +44,49 @@ class RunnerTest(unittest.TestCase):
         self.assertNotIn(".codex_rollout_trace", diff)
 
     def test_summary(self):
-        summary = summarize_results([{"success": True, "harness_id": "a", "metrics": {"usage": {"cost_usd": 2.0}}}])
+        summary = summarize_results(
+            [
+                {
+                    "success": True,
+                    "harness_id": "a",
+                    "metrics": {
+                        "usage": {
+                            "input_tokens": 10,
+                            "output_tokens": 2,
+                            "cost_usd": 2.0,
+                            "cost_available": True,
+                        }
+                    },
+                }
+            ]
+        )
         self.assertEqual(summary["attempted"], 1)
         self.assertEqual(summary["solved"], 1)
         self.assertEqual(summary["cost_per_solved_task"], 2.0)
         self.assertIn("metrics", summary["by_harness"]["a"])
         self.assertEqual(summary["by_perturbation"]["base"]["solve_rate"], 1.0)
         self.assertIn("research_metric_coverage", summary)
+
+    def test_summary_cost_per_solved_is_none_when_cost_missing(self):
+        summary = summarize_results(
+            [
+                {
+                    "success": True,
+                    "harness_id": "a",
+                    "metrics": {
+                        "usage": {
+                            "input_tokens": 10,
+                            "output_tokens": 2,
+                            "cost_usd": 0.0,
+                            "cost_available": False,
+                        }
+                    },
+                }
+            ]
+        )
+
+        self.assertIsNone(summary["cost_per_solved_task"])
+        self.assertIsNone(summary["by_harness"]["a"]["cost_per_solved_task"])
 
 
 if __name__ == "__main__":

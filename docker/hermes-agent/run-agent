@@ -7,6 +7,16 @@ prompt="$(cat "$prompt_file")"
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
   : "${HERMES_TOOLSETS:=terminal}"
+  if [ -n "${OPENROUTER_BASE_URL:-}" ]; then
+    export OPENAI_API_KEY="$OPENROUTER_API_KEY"
+    export OPENAI_BASE_URL="$OPENROUTER_BASE_URL"
+    exec hermes chat \
+      --provider openai \
+      --model "$OPENROUTER_MODEL" \
+      --toolsets "$HERMES_TOOLSETS" \
+      --yolo \
+      -q "$prompt"
+  fi
   exec hermes chat \
     --provider openrouter \
     --model "$OPENROUTER_MODEL" \

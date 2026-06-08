@@ -6,16 +6,23 @@ prompt="$(cat "$prompt_file")"
 
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  if [ -n "${OPENROUTER_BASE_URL:-}" ]; then
+    export OPENAI_API_KEY="$OPENROUTER_API_KEY"
+    export OPENAI_BASE_URL="$OPENROUTER_BASE_URL"
+    model_id="openai/$OPENROUTER_MODEL"
+  else
+    model_id="openrouter/$OPENROUTER_MODEL"
+  fi
   openclaw --dev agents add benchmark \
     --workspace /workspace \
-    --model "openrouter/$OPENROUTER_MODEL" \
+    --model "$model_id" \
     --non-interactive \
     --json >/tmp/openclaw-agent-add.json
   exec openclaw --dev agent \
     --local \
     --agent benchmark \
     --session-key agent:benchmark:benchmark \
-    --model "openrouter/$OPENROUTER_MODEL" \
+    --model "$model_id" \
     --message "$prompt" \
     --json
 fi

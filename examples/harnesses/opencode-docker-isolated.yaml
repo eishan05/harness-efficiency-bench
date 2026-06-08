@@ -35,3 +35,13 @@ config:
     - --version
   trace:
     parser: opencode_json
+    proxy:
+      enabled: true
+      protocol: openai_compatible
+      upstream_base_url: https://api.openai.com/v1
+      upstream_api_key_env: OPENAI_API_KEY
+      base_url_env:
+        - OPENAI_BASE_URL
+      api_key_env:
+        - OPENAI_API_KEY
+      trace_path: .harness-usage-proxy.jsonl

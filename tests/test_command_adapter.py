@@ -55,6 +55,26 @@ class CommandAdapterTest(unittest.TestCase):
             self.assertIn("GIT_CONFIG_KEY_0=safe.directory", command)
             self.assertIn("GIT_CONFIG_VALUE_0=/workspace", command)
 
+    def test_build_docker_command_can_add_host_gateway(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task = TaskManifest.load(ROOT / "examples/tasks/toy-write-file/task.yaml")
+            harness = HarnessManifest.load(ROOT / "examples/harnesses/generic-cli-docker.yaml")
+            harness.config["docker_add_host_gateway"] = True
+            context = AdapterRunContext(
+                run_id="run",
+                task=task,
+                harness=harness,
+                workspace=Path(tmp),
+                prompt="hello",
+                prompt_file=Path(tmp) / ".benchmark_prompt.txt",
+                timeout_sec=10,
+            )
+
+            command = build_docker_command(harness.command or "", context)
+
+            self.assertIn("--add-host", command)
+            self.assertIn("host.docker.internal:host-gateway", command)
+
 
 if __name__ == "__main__":
     unittest.main()

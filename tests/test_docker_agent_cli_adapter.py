@@ -7,10 +7,12 @@ from unittest.mock import patch
 from harness_efficiency_bench.adapters.base import AdapterRunContext
 from harness_efficiency_bench.adapters.docker_agent_cli import (
     DockerAgentCliAdapter,
+    _select_trace_events,
     parse_docker_agent_events,
     parse_proxy_trace_events,
 )
 from harness_efficiency_bench.manifests import HarnessManifest, TaskManifest
+from harness_efficiency_bench.tracing import model_call_event, tool_result_event
 
 
 class DockerAgentCliAdapterTest(unittest.TestCase):
@@ -150,6 +152,100 @@ class DockerAgentCliAdapterTest(unittest.TestCase):
         self.assertEqual(events[0].data["input_tokens"], 12)
         self.assertEqual(events[0].data["output_tokens"], 4)
         self.assertEqual(events[0].data["metadata"]["source"], "litellm_proxy")
+
+    def test_parse_opencode_step_finish_tokens(self):
+        stdout = json.dumps(
+            {
+                "type": "step_finish",
+                "part": {
+                    "tokens": {
+                        "input": 7977,
+                        "output": 38,
+                        "reasoning": 35,
+                        "cache": {"read": 12, "write": 0},
+                    },
+                    "cost": 0,
+                },
+                "cost": 0.0042,
+            }
+        )
+
+        events = parse_docker_agent_events(stdout, {"trace": {"parser": "opencode_json"}})
+
+        model_call = next(event for event in events if event.type == "model_call")
+        self.assertEqual(model_call.data["input_tokens"], 7977)
+        self.assertEqual(model_call.data["cached_input_tokens"], 12)
+        self.assertEqual(model_call.data["output_tokens"], 38)
+        self.assertEqual(model_call.data["reasoning_output_tokens"], 35)
+        self.assertEqual(model_call.data["cost_usd"], 0.0042)
+
+    def test_parse_goose_complete_top_level_usage(self):
+        stdout = json.dumps(
+            {
+                "type": "complete",
+                "total_tokens": 18727,
+                "input_tokens": 18396,
+                "output_tokens": 331,
+            }
+        )
+
+        events = parse_docker_agent_events(stdout, {"trace": {"parser": "goose_stream_json"}})
+
+        model_call = next(event for event in events if event.type == "model_call")
+        self.assertEqual(model_call.data["input_tokens"], 18396)
+        self.assertEqual(model_call.data["output_tokens"], 331)
+
+    def test_parse_aider_text_tokens(self):
+        stdout = "Tokens: 622 sent, 113 received. Cost: $0.0031\n"
+
+        events = parse_docker_agent_events(stdout, {"trace": {"parser": "aider_text"}})
+
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].data["input_tokens"], 622)
+        self.assertEqual(events[0].data["output_tokens"], 113)
+        self.assertEqual(events[0].data["cost_usd"], 0.0031)
+
+    def test_parse_usage_proxy_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            (workspace / ".harness-usage-proxy.jsonl").write_text(
+                json.dumps(
+                    {
+                        "source": "usage_proxy",
+                        "model": "nvidia/test",
+                        "usage": {
+                            "prompt_tokens": 12,
+                            "completion_tokens": 4,
+                            "prompt_tokens_details": {"cached_tokens": 3},
+                        },
+                        "cost_usd": 0,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            events = parse_proxy_trace_events(
+                workspace,
+                {"trace": {"proxy": {"trace_path": ".harness-usage-proxy.jsonl"}}},
+            )
+
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].data["input_tokens"], 12)
+        self.assertEqual(events[0].data["cached_input_tokens"], 3)
+        self.assertEqual(events[0].data["output_tokens"], 4)
+        self.assertEqual(events[0].data["cost_usd"], 0)
+        self.assertEqual(events[0].data["metadata"]["source"], "usage_proxy")
+
+    def test_select_trace_prefers_proxy_when_it_has_cost_for_same_call_count(self):
+        native = [tool_result_event(name="shell", output="ok"), model_call_event(call_index=0, input_tokens=10)]
+        proxy = [model_call_event(call_index=0, input_tokens=10, cost_usd=0.001)]
+
+        events, source = _select_trace_events(native, proxy)
+
+        self.assertEqual(source, "proxy")
+        self.assertEqual(len([event for event in events if event.type == "model_call"]), 1)
+        self.assertEqual(events[-1].data["cost_usd"], 0.001)
 
 
 if __name__ == "__main__":

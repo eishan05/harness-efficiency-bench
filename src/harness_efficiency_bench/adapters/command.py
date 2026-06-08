@@ -185,6 +185,10 @@ def build_docker_command(command: str | list[str], context: AdapterRunContext) -
     network = context.harness.config.get("docker_network", "bridge")
     if network:
         docker_command.extend(["--network", str(network)])
+    if context.harness.config.get("docker_add_host_gateway"):
+        docker_command.extend(["--add-host", "host.docker.internal:host-gateway"])
+    for host in context.harness.config.get("docker_add_hosts", []):
+        docker_command.extend(["--add-host", str(host)])
     docker_user = context.harness.config.get("docker_user")
     if docker_user:
         docker_command.extend(["--user", str(docker_user)])

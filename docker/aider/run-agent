@@ -4,9 +4,21 @@ set -eu
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
-  : "${AIDER_MODEL:=openrouter/$OPENROUTER_MODEL}"
+  if [ -n "${OPENROUTER_BASE_URL:-}" ]; then
+    : "${AIDER_MODEL:=openai/$OPENROUTER_MODEL}"
+    export AIDER_OPENAI_API_KEY="$OPENROUTER_API_KEY"
+    export AIDER_OPENAI_API_BASE="$OPENROUTER_BASE_URL"
+  else
+    : "${AIDER_MODEL:=openrouter/$OPENROUTER_MODEL}"
+  fi
 else
   : "${AIDER_MODEL:=openai/gpt-4o-mini}"
+  if [ -n "${OPENAI_API_KEY:-}" ]; then
+    export AIDER_OPENAI_API_KEY="${AIDER_OPENAI_API_KEY:-$OPENAI_API_KEY}"
+  fi
+  if [ -n "${OPENAI_BASE_URL:-}" ]; then
+    export AIDER_OPENAI_API_BASE="${AIDER_OPENAI_API_BASE:-$OPENAI_BASE_URL}"
+  fi
 fi
 
 aider \

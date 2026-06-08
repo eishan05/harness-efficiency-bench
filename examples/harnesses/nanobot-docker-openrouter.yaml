@@ -41,3 +41,13 @@ config:
     - --version
   trace:
     parser: nanobot_text
+    proxy:
+      enabled: true
+      protocol: openai_compatible
+      upstream_base_url: https://openrouter.ai/api/v1
+      upstream_api_key_env: OPENROUTER_API_KEY
+      base_url_env:
+        - OPENROUTER_BASE_URL
+      api_key_env:
+        - OPENROUTER_API_KEY
+      trace_path: .harness-usage-proxy.jsonl

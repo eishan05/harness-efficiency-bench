@@ -216,6 +216,7 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(results)
     solved = sum(1 for item in results if item.get("success"))
     total_cost = sum(float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0) for item in results)
+    all_costs_available = bool(results) and all(_result_cost_available(item) for item in results)
     by_harness: dict[str, dict[str, Any]] = {}
     for item in results:
         harness_id = str(item.get("harness_id"))
@@ -225,16 +226,17 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
                 "attempted": 0,
                 "solved": 0,
                 "cost_usd": 0.0,
+                "runs_with_cost": 0,
                 "metric_values": {
                     "startup_tax": [],
                     "context_growth_rate": [],
-                    "tool_output_retention_ratio": [],
                 },
             },
         )
         bucket["attempted"] += 1
         bucket["solved"] += 1 if item.get("success") else 0
         bucket["cost_usd"] += float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0)
+        bucket["runs_with_cost"] += 1 if _result_cost_available(item) else 0
         for metric_name in bucket["metric_values"]:
             metric = item.get("metrics", {}).get(metric_name, {})
             if metric.get("status") == "full" and metric.get("value") is not None:
@@ -242,7 +244,9 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     for bucket in by_harness.values():
         bucket["solve_rate"] = bucket["solved"] / bucket["attempted"] if bucket["attempted"] else 0.0
         bucket["cost_per_solved_task"] = (
-            bucket["cost_usd"] / bucket["solved"] if bucket["solved"] else None
+            bucket["cost_usd"] / bucket["solved"]
+            if bucket["solved"] and bucket["runs_with_cost"] == bucket["attempted"]
+            else None
         )
         bucket["metrics"] = {
             name: {
@@ -256,11 +260,21 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "solved": solved,
         "solve_rate": solved / total if total else 0.0,
         "cost_usd": total_cost,
-        "cost_per_solved_task": total_cost / solved if solved else None,
+        "cost_per_solved_task": total_cost / solved if solved and all_costs_available else None,
         "by_harness": by_harness,
         "by_perturbation": _summarize_by_perturbation(results),
         "research_metric_coverage": research_metric_coverage(results),
     }
+
+
+def _result_cost_available(item: dict[str, Any]) -> bool:
+    usage = item.get("metrics", {}).get("usage", {})
+    token_total = (
+        int(usage.get("input_tokens", 0) or 0)
+        + int(usage.get("output_tokens", 0) or 0)
+        + int(usage.get("reasoning_output_tokens", 0) or 0)
+    )
+    return token_total > 0 and bool(usage.get("cost_available"))
 
 
 def _summarize_by_perturbation(results: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:

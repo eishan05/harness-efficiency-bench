@@ -65,13 +65,20 @@ def total_usage(events: list[TraceEvent]) -> dict[str, int | float]:
         "output_tokens": 0,
         "reasoning_output_tokens": 0,
         "cost_usd": 0.0,
+        "cost_available": False,
     }
-    for call in _model_calls(events):
+    calls = _model_calls(events)
+    cost_available = bool(calls)
+    for call in calls:
         usage["input_tokens"] += int(call.get("input_tokens", 0) or 0)
         usage["cached_input_tokens"] += int(call.get("cached_input_tokens", 0) or 0)
         usage["output_tokens"] += int(call.get("output_tokens", 0) or 0)
         usage["reasoning_output_tokens"] += int(call.get("reasoning_output_tokens", 0) or 0)
-        usage["cost_usd"] += float(call.get("cost_usd", 0.0) or 0.0)
+        if call.get("cost_usd") is None:
+            cost_available = False
+        else:
+            usage["cost_usd"] += float(call.get("cost_usd", 0.0) or 0.0)
+    usage["cost_available"] = cost_available
     return usage
 
 
@@ -147,13 +154,7 @@ def research_metric_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
             "context_growth_rate",
             "full requires at least two model_call events with input_tokens per run",
         ),
-        "tool_output_retention_ratio": _run_metric_coverage(
-            results,
-            "tool_output_retention_ratio",
-            "full requires tool_result events plus model_call input_text for exact matching",
-        ),
         "solve_efficiency": _solve_efficiency_coverage(results),
-        "context_bloat_harm_curve": _context_bloat_coverage(results),
     }
 
 
@@ -191,7 +192,7 @@ def _solve_efficiency_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
             + int(usage.get("output_tokens", 0) or 0)
             + int(usage.get("reasoning_output_tokens", 0) or 0)
         )
-        if token_total > 0 and usage.get("cost_usd") is not None:
+        if token_total > 0 and bool(usage.get("cost_available")):
             runs_with_token_usage += 1
     if not results:
         status = "unsupported"

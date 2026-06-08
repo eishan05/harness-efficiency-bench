@@ -27,6 +27,7 @@ config:
     - OPENROUTER_API_KEY
     - OPENROUTER_MODEL
     - AIDER_MODEL
+    - OPENROUTER_BASE_URL
   required_env:
     - OPENROUTER_API_KEY
     - OPENROUTER_MODEL
@@ -37,3 +38,13 @@ config:
   trace:
     parser: aider_text
     litellm_log_path: .litellm-usage.jsonl
+    proxy:
+      enabled: true
+      protocol: openai_compatible
+      upstream_base_url: https://openrouter.ai/api/v1
+      upstream_api_key_env: OPENROUTER_API_KEY
+      base_url_env:
+        - OPENROUTER_BASE_URL
+      api_key_env:
+        - OPENROUTER_API_KEY
+      trace_path: .harness-usage-proxy.jsonl

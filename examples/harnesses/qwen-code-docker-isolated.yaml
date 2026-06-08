@@ -36,3 +36,13 @@ config:
     - --version
   trace:
     parser: qwen_text_or_json
+    proxy:
+      enabled: true
+      protocol: openai_compatible
+      upstream_base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      upstream_api_key_env: DASHSCOPE_API_KEY
+      base_url_env:
+        - QWEN_BASE_URL
+      api_key_env:
+        - DASHSCOPE_API_KEY
+      trace_path: .harness-usage-proxy.jsonl
