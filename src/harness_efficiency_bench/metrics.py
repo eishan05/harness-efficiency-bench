@@ -35,6 +35,12 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
     first_input = calls[0].get("input_tokens")
     if first_input is None:
         return MetricValue(None, "unsupported", {"reason": "first model call missing input_tokens"})
+    if _is_aggregate_model_call(calls[0]):
+        return MetricValue(
+            int(first_input) - user_prompt_tokens,
+            "partial",
+            {"reason": "model_call input_tokens are aggregate run usage, not first-call usage"},
+        )
     return MetricValue(int(first_input) - user_prompt_tokens, "full")
 
 
@@ -42,11 +48,13 @@ def context_growth_rate(events: list[TraceEvent]) -> MetricValue:
     calls = _model_calls(events)
     points: list[tuple[float, float]] = []
     for index, call in enumerate(calls):
+        if _is_aggregate_model_call(call):
+            continue
         input_tokens = call.get("input_tokens")
         if input_tokens is not None:
             points.append((float(call.get("call_index", index)), float(input_tokens)))
     if len(points) < 2:
-        return MetricValue(None, "unsupported", {"reason": "need at least two model calls"})
+        return MetricValue(None, "unsupported", {"reason": "need at least two non-aggregate model calls"})
     xs = [point[0] for point in points]
     ys = [point[1] for point in points]
     x_mean = sum(xs) / len(xs)
@@ -90,6 +98,11 @@ def usage_token_cost(usage: dict[str, Any]) -> int:
         + int(usage.get("output_tokens", 0) or 0)
         + int(usage.get("reasoning_output_tokens", 0) or 0)
     )
+
+
+def _is_aggregate_model_call(call: dict[str, Any]) -> bool:
+    metadata = call.get("metadata")
+    return isinstance(metadata, dict) and bool(metadata.get("aggregate"))
 
 
 def tool_output_retention_ratio(events: list[TraceEvent]) -> MetricValue:
@@ -157,12 +170,12 @@ def research_metric_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
         "startup_tax": _run_metric_coverage(
             results,
             "startup_tax",
-            "full requires structured model_call events with first-call input_tokens",
+            "full requires structured non-aggregate model_call events with first-call input_tokens",
         ),
         "context_growth_rate": _run_metric_coverage(
             results,
             "context_growth_rate",
-            "full requires at least two model_call events with input_tokens per run",
+            "full requires at least two non-aggregate model_call events with input_tokens per run",
         ),
         "solve_efficiency": _solve_efficiency_coverage(results),
     }

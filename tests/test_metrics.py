@@ -27,6 +27,43 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(metrics["tool_output_retention_ratio"]["status"], "full")
         self.assertGreater(metrics["tool_output_retention_ratio"]["value"], 0)
 
+    def test_aggregate_only_usage_marks_startup_tax_partial(self):
+        prompt = "fix the bug"
+        events = [
+            model_call_event(
+                call_index=0,
+                input_tokens=100,
+                output_tokens=5,
+                metadata={"source": "claude_openrouter_model_usage", "aggregate": True},
+            )
+        ]
+
+        metrics = compute_run_metrics(events, count_tokens(prompt))
+
+        self.assertEqual(metrics["startup_tax"]["status"], "partial")
+        self.assertEqual(metrics["startup_tax"]["value"], 97)
+        self.assertIn("aggregate run usage", metrics["startup_tax"]["details"]["reason"])
+        self.assertEqual(metrics["context_growth_rate"]["status"], "unsupported")
+        self.assertIn("non-aggregate", metrics["context_growth_rate"]["details"]["reason"])
+
+    def test_context_growth_ignores_aggregate_usage_points(self):
+        events = [
+            model_call_event(call_index=0, input_tokens=10, output_tokens=1),
+            model_call_event(
+                call_index=1,
+                input_tokens=100,
+                output_tokens=5,
+                metadata={"source": "aggregate_usage", "aggregate": True},
+            ),
+            model_call_event(call_index=2, input_tokens=20, output_tokens=1),
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        self.assertEqual(metrics["context_growth_rate"]["status"], "full")
+        self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(0.0, 10.0), (2.0, 20.0)])
+        self.assertEqual(metrics["context_growth_rate"]["value"], 5.0)
+
     def test_research_coverage_tracks_research_metrics_only(self):
         coverage = research_metric_coverage(
             [

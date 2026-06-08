@@ -8,6 +8,7 @@ RUN apt-get update \
         ca-certificates \
         git \
         ripgrep \
+        xxd \
     && npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
 
