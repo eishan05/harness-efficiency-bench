@@ -15,6 +15,16 @@ class ManifestTest(unittest.TestCase):
         self.assertTrue(task.workspace_setup["git_init"])
         self.assertEqual(task.perturbation("20k").tokens, 20000)
 
+    def test_load_swe_bench_task_manifest(self):
+        task = TaskManifest.load(
+            ROOT / "examples/tasks/swe-bench-lite-curated-10/django__django-11905/task.yaml"
+        )
+        self.assertEqual(task.id, "django__django-11905")
+        self.assertEqual(task.source, "swe-bench-lite")
+        self.assertEqual(task.oracle.type, "swe_bench")
+        self.assertEqual(task.oracle.data["instance_id"], "django__django-11905")
+        self.assertEqual(task.workspace_setup["git_clone"]["repo"], "django/django")
+
     def test_load_harness_manifest(self):
         harness = HarnessManifest.load(ROOT / "examples/harnesses/demo.yaml")
         self.assertEqual(harness.id, "demo")

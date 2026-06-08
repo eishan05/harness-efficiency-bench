@@ -1,3 +1,4 @@
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,11 +40,61 @@ class RunnerTest(unittest.TestCase):
             trace_dir = workspace / ".codex_rollout_trace" / "trace-1"
             trace_dir.mkdir(parents=True)
             (trace_dir / "trace.jsonl").write_text('{"payload": "large"}\n', encoding="utf-8")
+            cache_dir = workspace / "pkg" / "__pycache__"
+            cache_dir.mkdir(parents=True)
+            (cache_dir / "module.cpython-311.pyc").write_bytes(b"cache")
+            root_cache_dir = workspace / "__pycache__"
+            root_cache_dir.mkdir()
+            (root_cache_dir / "parser.cpython-312.pyc").write_bytes(b"root-cache")
 
             diff = BenchmarkRunner._collect_git_diff(workspace)
 
         self.assertIn("tracked.txt", diff)
         self.assertNotIn(".codex_rollout_trace", diff)
+        self.assertNotIn("__pycache__", diff)
+
+    def test_git_clone_workspace_setup_uses_repo_cache(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            source.mkdir()
+            BenchmarkRunner._run_setup_command(["git", "init"], source)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.email", "benchmark@example.invalid"], source)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.name", "Harness Benchmark"], source)
+            (source / "module.py").write_text("VALUE = 1\n", encoding="utf-8")
+            BenchmarkRunner._run_setup_command(["git", "add", "-A"], source)
+            BenchmarkRunner._run_setup_command(["git", "commit", "-m", "baseline"], source)
+            commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=source,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            ).stdout.strip()
+
+            workspace = root / "workspace"
+            workspace.mkdir()
+            task = TaskManifest(
+                id="git-task",
+                prompt="fix it",
+                path=root / "task.yaml",
+                workspace_setup={"git_clone": {"repo": str(source), "base_commit": commit}},
+            )
+            runner = BenchmarkRunner(root / "runs", repo_cache=root / "repo-cache")
+            runner._setup_workspace(task, workspace)
+
+            self.assertEqual((workspace / "module.py").read_text(encoding="utf-8"), "VALUE = 1\n")
+            self.assertTrue((root / "repo-cache").exists())
+            head = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=workspace,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            ).stdout.strip()
+            self.assertEqual(head, commit)
 
     def test_run_uses_adapter_reported_model_id(self):
         class StubAdapter:

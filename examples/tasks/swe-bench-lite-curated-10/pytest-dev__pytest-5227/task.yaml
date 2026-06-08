@@ -1,0 +1,21 @@
+id: pytest-dev__pytest-5227
+source: swe-bench-lite
+prompt_file: prompt.txt
+workspace_setup:
+  git_clone:
+    repo: pytest-dev/pytest
+    base_commit: 2051e30b9b596e944524ccb787ed20f9f5be93e3
+oracle:
+  type: swe_bench
+  dataset_name: SWE-bench/SWE-bench_Lite
+  split: test
+  instance_id: pytest-dev__pytest-5227
+  max_workers: 1
+  cache_level: env
+  timeout_sec: 1800
+budgets:
+  timeout_sec: 1800
+tags:
+- swe-bench-lite
+- curated-10
+- pytest

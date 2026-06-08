@@ -1,0 +1,21 @@
+id: pydata__xarray-3364
+source: swe-bench-lite
+prompt_file: prompt.txt
+workspace_setup:
+  git_clone:
+    repo: pydata/xarray
+    base_commit: 863e49066ca4d61c9adfe62aca3bf21b90e1af8c
+oracle:
+  type: swe_bench
+  dataset_name: SWE-bench/SWE-bench_Lite
+  split: test
+  instance_id: pydata__xarray-3364
+  max_workers: 1
+  cache_level: env
+  timeout_sec: 1800
+budgets:
+  timeout_sec: 1800
+tags:
+- swe-bench-lite
+- curated-10
+- xarray

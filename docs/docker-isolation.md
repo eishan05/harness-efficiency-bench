@@ -28,6 +28,12 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker --force --
 
 The cleanup command is dry-run by default. It removes images only by repository prefix, defaulting to `harness-bench/`; it does not remove arbitrary Docker images.
 
+SWE-bench evaluation creates official `sweb.*` images. They are kept by default because rebuilding or pulling them is expensive. Remove them explicitly when you need the disk back:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker --force --include-swebench
+```
+
 ## Codex
 
 Build the example Codex CLI image:

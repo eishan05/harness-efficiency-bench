@@ -33,7 +33,7 @@ This matters more than raw bloat: a harness that spends more tokens but solves m
 Run the same task with controlled irrelevant or stale context added:
 
 ```text
-success_rate(context = 20k, 50k, 100k, 200k, ...)
+success_rate(context = 20k, 50k, 100k)
 ```
 
 The slope of degradation is the "context rot" signal. LOCA-bench is aligned with this idea.

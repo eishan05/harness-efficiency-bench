@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "artifact_type": "benchmark_smoke_result_snapshot",
+  "captured_at": "2026-06-08T07:07:24.433451Z",
+  "benchmark": {
+    "suite": "swe-bench-lite-curated-10",
+    "tasks_dir": "examples/tasks/swe-bench-lite-curated-10",
+    "task_count": 10,
+    "run_started_at": "2026-06-08T05:58:41.043049Z",
+    "run_finished_at": "2026-06-08T07:07:24.433451Z",
+    "oracle_mode": "none",
+    "official_swe_bench_oracle": false,
+    "note": "Temporary task copies used oracle: none. Success means harness completion plus no-op oracle, not official SWE-bench resolution."
+  },
+  "harness": {
+    "id": "codex-local-smoke",
+    "base_manifest": "examples/harnesses/codex-local.yaml",
+    "adapter": "codex",
+    "model": "gpt-5.5",
+    "execution": "local subscription Codex CLI on host",
+    "extra_args": [
+      "--ephemeral"
+    ],
+    "timeout_sec": 900
+  },
+  "command": "PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-suite --tasks-dir /tmp/harness-swe-smoke.GSifP2/tasks --harness /tmp/harness-swe-smoke.GSifP2/harnesses/codex-local-smoke.yaml --delete-workspace",
+  "raw_result_files": [
+    "runs/results/django__django-11905__codex-local-smoke__515acc3829.json",
+    "runs/results/django__django-12308__codex-local-smoke__46a78556fc.json",
+    "runs/results/matplotlib__matplotlib-23913__codex-local-smoke__0678a82891.json",
+    "runs/results/matplotlib__matplotlib-24334__codex-local-smoke__e8174b2a63.json",
+    "runs/results/pydata__xarray-3364__codex-local-smoke__893e107141.json",
+    "runs/results/pydata__xarray-4248__codex-local-smoke__c8a7645bad.json",
+    "runs/results/pytest-dev__pytest-5221__codex-local-smoke__5842db5a45.json",
+    "runs/results/pytest-dev__pytest-5227__codex-local-smoke__857483b14f.json",
+    "runs/results/sympy__sympy-13146__codex-local-smoke__266915a1bd.json",
+    "runs/results/sympy__sympy-14308__codex-local-smoke__eec872a235.json"
+  ],
+  "summary": {
+    "attempted": 10,
+    "smoke_successes": 10,
+    "smoke_success_rate": 1.0,
+    "metrics": {
+      "startup_tax": {
+        "research_metric": "A",
+        "status": "full",
+        "unit": "first-call input tokens",
+        "avg": 11829.9,
+        "count": 10
+      },
+      "context_growth_rate": {
+        "research_metric": "B",
+        "status": "full",
+        "unit": "input tokens per model call",
+        "avg": 2085.3267051529847,
+        "count": 10
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "status": "full",
+        "unit": "tokens per smoke-successful task",
+        "total_token_cost": 18582309,
+        "token_cost_per_smoke_success": 1858230.9,
+        "runs_with_token_cost": 10
+      }
+    },
+    "pricing_estimate": {
+      "source": "manifest rates",
+      "cost_usd_total": 19.747709999999998,
+      "dollar_cost_per_smoke_success": 1.9747709999999998
+    }
+  },
+  "per_task": [
+    {
+      "task_id": "django__django-11905",
+      "smoke_success": true,
+      "startup_tax": 11838,
+      "context_growth_rate": 2265.97628458498,
+      "token_cost": 1183470,
+      "cost_usd": 1.5310360000000003
+    },
+    {
+      "task_id": "django__django-12308",
+      "smoke_success": true,
+      "startup_tax": 11821,
+      "context_growth_rate": 1073.8690005646527,
+      "token_cost": 694745,
+      "cost_usd": 0.954046
+    },
+    {
+      "task_id": "matplotlib__matplotlib-23913",
+      "smoke_success": true,
+      "startup_tax": 11820,
+      "context_growth_rate": 2137.612648221344,
+      "token_cost": 1125263,
+      "cost_usd": 1.5484
+    },
+    {
+      "task_id": "matplotlib__matplotlib-24334",
+      "smoke_success": true,
+      "startup_tax": 11828,
+      "context_growth_rate": 1434.0441558441557,
+      "token_cost": 804214,
+      "cost_usd": 0.9944779999999999
+    },
+    {
+      "task_id": "pydata__xarray-3364",
+      "smoke_success": true,
+      "startup_tax": 11827,
+      "context_growth_rate": 2052.6493703864526,
+      "token_cost": 4448158,
+      "cost_usd": 3.732825999999999
+    },
+    {
+      "task_id": "pydata__xarray-4248",
+      "smoke_success": true,
+      "startup_tax": 11849,
+      "context_growth_rate": 1675.6399193548386,
+      "token_cost": 2048478,
+      "cost_usd": 2.483868
+    },
+    {
+      "task_id": "pytest-dev__pytest-5221",
+      "smoke_success": true,
+      "startup_tax": 11826,
+      "context_growth_rate": 3634.8955882352943,
+      "token_cost": 856355,
+      "cost_usd": 1.079827
+    },
+    {
+      "task_id": "pytest-dev__pytest-5227",
+      "smoke_success": true,
+      "startup_tax": 11810,
+      "context_growth_rate": 1259.7855532064834,
+      "token_cost": 2896371,
+      "cost_usd": 2.771470999999999
+    },
+    {
+      "task_id": "sympy__sympy-13146",
+      "smoke_success": true,
+      "startup_tax": 11825,
+      "context_growth_rate": 3989.2391304347825,
+      "token_cost": 1853512,
+      "cost_usd": 1.7760819999999997
+    },
+    {
+      "task_id": "sympy__sympy-14308",
+      "smoke_success": true,
+      "startup_tax": 11855,
+      "context_growth_rate": 1329.5554006968641,
+      "token_cost": 2671743,
+      "cost_usd": 2.8756759999999995
+    }
+  ]
+}

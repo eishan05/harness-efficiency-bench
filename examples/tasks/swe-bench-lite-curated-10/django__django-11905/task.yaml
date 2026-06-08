@@ -1,0 +1,21 @@
+id: django__django-11905
+source: swe-bench-lite
+prompt_file: prompt.txt
+workspace_setup:
+  git_clone:
+    repo: django/django
+    base_commit: 2f72480fbd27896c986c45193e1603e35c0b19a7
+oracle:
+  type: swe_bench
+  dataset_name: SWE-bench/SWE-bench_Lite
+  split: test
+  instance_id: django__django-11905
+  max_workers: 1
+  cache_level: env
+  timeout_sec: 1800
+budgets:
+  timeout_sec: 1800
+tags:
+- swe-bench-lite
+- curated-10
+- django

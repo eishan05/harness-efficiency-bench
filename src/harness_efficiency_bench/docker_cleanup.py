@@ -9,6 +9,7 @@ from typing import Any
 
 
 DEFAULT_IMAGE_PREFIXES = ("harness-bench/",)
+SWEBENCH_IMAGE_PREFIXES = ("sweb.",)
 BENCHMARK_CONTAINER_LABEL = "harness-efficiency-bench=true"
 
 

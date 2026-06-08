@@ -34,11 +34,30 @@ Supported oracle types:
 - `file_equals`
 - `file_contains`
 - `command`
+- `swe_bench`
 
 Supported perturbation placements:
 
 - `prompt_prefix`
 - `prompt_suffix`
+
+SWE-bench tasks use a Git checkout instead of local fixtures and grade with the official Docker evaluator:
+
+```yaml
+workspace_setup:
+  git_clone:
+    repo: django/django
+    base_commit: 2f72480fbd27896c986c45193e1603e35c0b19a7
+oracle:
+  type: swe_bench
+  dataset_name: SWE-bench/SWE-bench_Lite
+  split: test
+  instance_id: django__django-11905
+  max_workers: 1
+  cache_level: env
+```
+
+The runner uses `.cache/harness-bench/repos` as a Git mirror cache by default. Pass `--repo-cache <path>` or `--no-repo-cache` on `run-task`/`run-suite` to change that behavior.
 
 ## Harness Manifest
 

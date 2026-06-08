@@ -74,6 +74,12 @@ Remove benchmark-owned Docker images and optional build cache:
 PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker --force --include-build-cache
 ```
 
+Remove official SWE-bench evaluation images too:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli cleanup-docker --force --include-swebench
+```
+
 Run the same task across all configured context-bloat perturbations:
 
 ```bash
@@ -112,6 +118,13 @@ The starter task set includes:
 - `metrics-calibration-multicall`: small task for checking whether a harness emits at least two model calls for context-growth measurement.
 - `python-fix-calculator`: small Python bug-fix task.
 - `harness-stress-log-triage`: log-heavy bug-fix task intended to stress tool-output-heavy context growth.
+- `swe-bench-lite-curated-10`: a Docker-evaluated SWE-bench Lite subset. Install `.[swebench]`, then run tasks from `examples/tasks/swe-bench-lite-curated-10` with Docker-isolated harnesses.
+
+Regenerate the SWE-bench Lite subset manifests:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli import-swe-bench-lite
+```
 
 Claude Code harnesses are split by auth and isolation:
 

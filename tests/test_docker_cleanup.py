@@ -19,6 +19,7 @@ class DockerCleanupTest(unittest.TestCase):
                     command,
                     0,
                     '{"Repository":"harness-bench/codex-cli","Tag":"0.137.0","ID":"abc"}\n'
+                    '{"Repository":"sweb.eval.x86_64.django__django-11905","Tag":"latest","ID":"ghi"}\n'
                     '{"Repository":"other/image","Tag":"latest","ID":"def"}\n',
                     "",
                 )
@@ -30,6 +31,31 @@ class DockerCleanupTest(unittest.TestCase):
         self.assertEqual(plan.containers, ["container1"])
         self.assertEqual(plan.images, ["harness-bench/codex-cli:0.137.0"])
         self.assertTrue(plan.prune_build_cache)
+
+    def test_plan_can_include_swebench_images(self):
+        def fake_run(command, *, check=True):
+            if command[:3] == ["docker", "ps", "-aq"]:
+                return subprocess.CompletedProcess(command, 0, "", "")
+            if command[:2] == ["docker", "images"]:
+                return subprocess.CompletedProcess(
+                    command,
+                    0,
+                    '{"Repository":"harness-bench/codex-cli","Tag":"0.137.0","ID":"abc"}\n'
+                    '{"Repository":"sweb.eval.x86_64.django__django-11905","Tag":"latest","ID":"ghi"}\n',
+                    "",
+                )
+            raise AssertionError(command)
+
+        with patch("harness_efficiency_bench.docker_cleanup._run", side_effect=fake_run):
+            plan = plan_docker_cleanup(image_prefixes=("harness-bench/", "sweb."))
+
+        self.assertEqual(
+            plan.images,
+            [
+                "harness-bench/codex-cli:0.137.0",
+                "sweb.eval.x86_64.django__django-11905:latest",
+            ],
+        )
 
     def test_dry_run_does_not_remove(self):
         plan = DockerCleanupPlan(containers=["container1"], images=["image1"], prune_build_cache=True)

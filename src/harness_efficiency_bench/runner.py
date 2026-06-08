@@ -10,6 +10,7 @@ from typing import Any
 
 from .adapters import create_adapter
 from .adapters.base import AdapterRunContext
+from .git_utils import collect_git_diff
 from .isolation import describe_isolation, require_docker_isolation
 from .manifests import HarnessManifest, TaskManifest
 from .metrics import compute_run_metrics, research_metric_coverage, usage_token_cost
@@ -20,10 +21,20 @@ from .tokenization import count_tokens, make_token_payload
 from .tracing import TraceEvent, utc_now
 
 
+DEFAULT_REPO_CACHE = Path(".cache/harness-bench/repos")
+
+
 class BenchmarkRunner:
-    def __init__(self, run_root: str | Path = "runs", *, require_docker: bool = False):
+    def __init__(
+        self,
+        run_root: str | Path = "runs",
+        *,
+        require_docker: bool = False,
+        repo_cache: str | Path | None = DEFAULT_REPO_CACHE,
+    ):
         self.store = ResultStore(run_root)
         self.require_docker = require_docker
+        self.repo_cache = Path(repo_cache).resolve() if repo_cache is not None else None
 
     def run_task(
         self,
@@ -119,7 +130,11 @@ class BenchmarkRunner:
 
     def _setup_workspace(self, task: TaskManifest, workspace: Path) -> None:
         setup = task.workspace_setup
-        if setup.get("git_init"):
+        if setup.get("git_clone"):
+            if setup.get("git_init"):
+                raise RuntimeError("workspace_setup cannot combine git_clone and git_init")
+            self._setup_git_clone(setup["git_clone"], workspace)
+        elif setup.get("git_init"):
             self._run_setup_command(["git", "init"], workspace)
             self._run_setup_command(["git", "config", "user.email", "benchmark@example.invalid"], workspace)
             self._run_setup_command(["git", "config", "user.name", "Harness Benchmark"], workspace)
@@ -127,6 +142,37 @@ class BenchmarkRunner:
             self._run_setup_command(["git", "commit", "--allow-empty", "-m", "baseline"], workspace)
         for command in setup.get("commands", []):
             self._run_setup_command(str(command), workspace)
+
+    def _setup_git_clone(self, raw: Any, workspace: Path) -> None:
+        if not isinstance(raw, dict):
+            raise RuntimeError("workspace_setup.git_clone must be an object")
+        repo = str(raw.get("repo", "")).strip()
+        base_commit = str(raw.get("base_commit", "")).strip()
+        if not repo:
+            raise RuntimeError("workspace_setup.git_clone missing repo")
+        if not base_commit:
+            raise RuntimeError("workspace_setup.git_clone missing base_commit")
+
+        repo_url = self._repo_url(repo)
+        clone_source = repo_url
+        workspace_abs = workspace.resolve()
+        workspace_parent = workspace_abs.parent
+        if self.repo_cache is not None:
+            self.repo_cache.mkdir(parents=True, exist_ok=True)
+            mirror = self.repo_cache / f"{self._repo_cache_name(repo)}.git"
+            if not mirror.exists():
+                self._run_setup_command(["git", "clone", "--mirror", repo_url, str(mirror)], self.repo_cache)
+            elif not self._mirror_has_commit(mirror, base_commit):
+                self._run_setup_command(["git", "-C", str(mirror), "fetch", "--prune", "origin"], self.repo_cache)
+            clone_source = str(mirror)
+
+        self._run_setup_command(["git", "clone", clone_source, str(workspace_abs)], workspace_parent)
+        self._run_setup_command(["git", "remote", "set-url", "origin", repo_url], workspace_abs)
+        self._run_setup_command(["git", "checkout", "--force", base_commit], workspace_abs)
+        self._run_setup_command(["git", "reset", "--hard", base_commit], workspace_abs)
+        self._run_setup_command(["git", "clean", "-fdx"], workspace_abs)
+        self._run_setup_command(["git", "config", "user.email", "benchmark@example.invalid"], workspace_abs)
+        self._run_setup_command(["git", "config", "user.name", "Harness Benchmark"], workspace_abs)
 
     @staticmethod
     def _run_setup_command(command: str | list[str], workspace: Path) -> None:
@@ -148,58 +194,41 @@ class BenchmarkRunner:
 
     @staticmethod
     def _collect_git_diff(workspace: Path) -> str:
-        if not (workspace / ".git").exists():
-            return ""
-        toplevel = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            cwd=workspace,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-        if toplevel.returncode != 0:
-            return ""
-        try:
-            if Path(toplevel.stdout.strip()).resolve() != workspace.resolve():
-                return ""
-        except OSError:
-            return ""
-        subprocess.run(
-            ["git", "add", "-N", "."],
-            cwd=workspace,
-            text=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-        subprocess.run(
-            ["git", "reset", "-q", "--", ".benchmark_prompt.txt"],
-            cwd=workspace,
-            text=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
+        return collect_git_diff(workspace)
+
+    @staticmethod
+    def _repo_url(repo: str) -> str:
+        path = Path(repo).expanduser()
+        if path.exists():
+            return str(path.resolve())
+        if "://" in repo or repo.startswith("git@"):
+            return repo
+        if repo.endswith(".git"):
+            return repo
+        if repo.count("/") == 1 and not repo.startswith("/"):
+            return f"https://github.com/{repo}.git"
+        return repo
+
+    @staticmethod
+    def _repo_cache_name(repo: str) -> str:
+        safe = repo
+        for prefix in ("https://github.com/", "http://github.com/", "git@github.com:"):
+            if safe.startswith(prefix):
+                safe = safe[len(prefix) :]
+        if safe.endswith(".git"):
+            safe = safe[:-4]
+        return "".join(char if char.isalnum() or char in "._-" else "__" for char in safe)
+
+    @staticmethod
+    def _mirror_has_commit(mirror: Path, commit: str) -> bool:
         completed = subprocess.run(
-            [
-                "git",
-                "diff",
-                "--binary",
-                "HEAD",
-                "--",
-                ".",
-                ":(exclude).benchmark_prompt.txt",
-                ":(exclude).codex_rollout_trace",
-                ":(exclude)**/.codex_rollout_trace",
-            ],
-            cwd=workspace,
+            ["git", "-C", str(mirror), "cat-file", "-e", f"{commit}^{{commit}}"],
             text=True,
-            stdout=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             check=False,
         )
-        return completed.stdout if completed.returncode == 0 else ""
+        return completed.returncode == 0
 
     def _render_prompt(self, task: TaskManifest, perturbation_id: str | None) -> str:
         prompt = task.prompt

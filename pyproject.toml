@@ -12,9 +12,13 @@ dependencies = [
   "PyYAML>=6.0",
 ]
 
+[project.optional-dependencies]
+swebench = [
+  "swebench==4.1.0",
+]
+
 [project.scripts]
 harness-bench = "harness_efficiency_bench.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

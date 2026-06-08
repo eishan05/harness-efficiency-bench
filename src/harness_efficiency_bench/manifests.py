@@ -35,17 +35,20 @@ class OracleSpec:
     text: str | None = None
     command: str | None = None
     timeout_sec: int = 120
+    data: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any] | None) -> "OracleSpec":
         if not raw:
             return cls(type="none")
+        known_keys = {"type", "path", "text", "command", "timeout_sec"}
         return cls(
             type=str(raw.get("type", "none")),
             path=raw.get("path"),
             text=raw.get("text"),
             command=raw.get("command"),
             timeout_sec=int(raw.get("timeout_sec", 120)),
+            data={str(k): v for k, v in raw.items() if k not in known_keys},
         )
 
 

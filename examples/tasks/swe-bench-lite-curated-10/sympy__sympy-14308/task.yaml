@@ -1,0 +1,21 @@
+id: sympy__sympy-14308
+source: swe-bench-lite
+prompt_file: prompt.txt
+workspace_setup:
+  git_clone:
+    repo: sympy/sympy
+    base_commit: fb536869fb7aa28b2695ad7a3b70949926b291c4
+oracle:
+  type: swe_bench
+  dataset_name: SWE-bench/SWE-bench_Lite
+  split: test
+  instance_id: sympy__sympy-14308
+  max_workers: 1
+  cache_level: env
+  timeout_sec: 1800
+budgets:
+  timeout_sec: 1800
+tags:
+- swe-bench-lite
+- curated-10
+- sympy
