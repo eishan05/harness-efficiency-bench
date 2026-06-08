@@ -102,7 +102,7 @@ Docker-only agent CLI harnesses should use `adapter: docker_agent_cli` and inclu
 - `config.trace.proxy`: optional usage-only OpenAI-compatible proxy config. Set `enabled: true`, `upstream_base_url`, `upstream_api_key_env`, `base_url_env`, `api_key_env`, and `trace_path`.
 - `config.bench_ready: false`: use this when the image exists but the one-shot command path has not been smoke-verified.
 
-OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model. Prefer enabling `trace.proxy` for these variants so black-box CLIs can still emit per-call usage without storing request payloads.
+OpenRouter variants should be separate manifests named `*-docker-openrouter.yaml`, require `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and use `pricing: {}` unless native trace output includes cost or the manifest pins a single priced model. Prefer enabling `trace.proxy` for OpenAI-compatible variants so black-box CLIs can still emit per-call usage without storing request payloads.
 
 Example proxy block:
 
@@ -121,7 +121,7 @@ trace:
     trace_path: .harness-usage-proxy.jsonl
 ```
 
-Claude Code can be configured as either a host debug harness or a Docker-isolated API-key harness. For serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used.
+Claude Code can be configured as a host subscription harness, host API-key harness, Docker-isolated API-key harness, or OpenRouter harness. For direct Anthropic serious runs, use `examples/harnesses/claude-code-docker-isolated.yaml`, build `docker/claude-code`, pass `ANTHROPIC_API_KEY`, and keep `pricing: {}` so native `total_cost_usd` from Claude Code is used. For OpenRouter, use `claude-code-openrouter.yaml` or `claude-code-docker-openrouter.yaml`; the adapter maps `OPENROUTER_API_KEY` to `ANTHROPIC_AUTH_TOKEN`, sets `ANTHROPIC_BASE_URL` to `https://openrouter.ai/api`, blanks `ANTHROPIC_API_KEY`, and parses Claude Code `modelUsage` when per-message usage is zero.
 
 ## SWE-bench Prediction Export
 

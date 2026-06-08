@@ -72,7 +72,7 @@ config:
 
 The adapter fails fast unless `config.backend: docker` is set. It also checks `required_env`, runs `version_command` when configured, and records version-check metadata in the result. Use `bench_ready: false` for images or wrappers that build but do not yet have a smoke-verified one-shot task path.
 
-When adding an OpenRouter route, prefer a separate `*-docker-openrouter.yaml` manifest over changing the direct-provider manifest. Require both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and pass only those plus harness-specific model override env vars into Docker.
+When adding an OpenRouter route, prefer a separate `*-docker-openrouter.yaml` manifest over changing the direct-provider manifest. Require both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, and pass only those plus harness-specific model override env vars into Docker. Claude Code is the exception to the OpenAI-compatible proxy pattern: use `adapter: claude_code` with `config.auth_mode: openrouter`, which routes through OpenRouter's Anthropic-compatible `https://openrouter.ai/api` gateway.
 
 When the CLI can accept an OpenAI-compatible base URL, add a usage-only proxy block:
 

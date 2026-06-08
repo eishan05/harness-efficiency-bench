@@ -1,6 +1,6 @@
 # Harness Efficiency Bench
 
-Benchmark coding-agent harnesses on startup tax, context growth, solve efficiency, cost, and solve rate.
+Benchmark coding-agent harnesses on startup tax, context growth, token-denominated solve efficiency, solve rate, and optional dollar-cost metadata.
 
 The v1 scaffold is designed around small task manifests and pluggable harness adapters. It can run a toy benchmark immediately, and it includes adapter entry points for Codex, Claude Code, Antigravity, Qwen Code, mini-swe-agent, nanobot, generic command-line harnesses, and Docker-only agent CLIs.
 
@@ -118,6 +118,8 @@ Claude Code harnesses are split by auth and isolation:
 - `claude-code`: host/local subscription debug harness. Requires `claude auth status` to show working account access.
 - `claude-code-api`: host/API-key debug harness. Requires `ANTHROPIC_API_KEY`.
 - `claude-code-docker-isolated`: Docker-isolated API-key harness for serious runs. Requires `ANTHROPIC_API_KEY` and the image build above.
+- `claude-code-openrouter`: host/OpenRouter debug harness. Requires `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`.
+- `claude-code-docker-openrouter`: Docker-isolated OpenRouter harness. Requires `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, and the Claude Code image build above.
 
 Antigravity CLI is split into host debug and Docker-isolated OAuth modes:
 
@@ -129,7 +131,7 @@ Use a persistent `ANTIGRAVITY_AUTH_DIR`, such as `~/.harness-bench/antigravity-a
 
 Docker-only agent CLI harnesses are API-key only and do not mount host OAuth or subscription state. Direct-provider examples are available for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, `hermes-agent`, and `grok-build`. Manifests marked `bench_ready: false` are scaffolds that still need live provider-key smoke verification before serious comparisons.
 
-OpenRouter variants are available as `*-docker-openrouter.yaml` manifests for Docker CLIs except Grok Build, which uses xAI directly. Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, for example:
+OpenRouter variants are available as `*-docker-openrouter.yaml` manifests for Docker CLIs except Grok Build, which uses xAI directly. Claude Code uses OpenRouter's Anthropic-compatible gateway at `https://openrouter.ai/api`; other Docker CLIs use OpenRouter's OpenAI-compatible `/api/v1` route when a base URL is configurable. Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, for example:
 
 ```bash
 export OPENROUTER_API_KEY=...

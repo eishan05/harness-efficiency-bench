@@ -1,7 +1,12 @@
 import json
+import os
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
-from harness_efficiency_bench.adapters.claude_code import ClaudeCodeAdapter
+from harness_efficiency_bench.adapters.base import AdapterRunContext
+from harness_efficiency_bench.adapters.claude_code import ClaudeCodeAdapter, _with_openrouter_environment
+from harness_efficiency_bench.manifests import HarnessManifest, TaskManifest
 
 
 class ClaudeCodeAdapterTest(unittest.TestCase):
@@ -126,6 +131,108 @@ class ClaudeCodeAdapterTest(unittest.TestCase):
         self.assertEqual(len(model_calls), 1)
         self.assertEqual(model_calls[0].data["input_tokens"], 7)
         self.assertEqual(model_calls[0].data["cost_usd"], 0.001)
+
+    def test_openrouter_model_usage_fallback_when_result_usage_is_zero(self):
+        stdout = "\n".join(
+            [
+                json.dumps(
+                    {
+                        "type": "assistant",
+                        "message": {
+                            "usage": {
+                                "input_tokens": 0,
+                                "cache_creation_input_tokens": None,
+                                "cache_read_input_tokens": None,
+                                "output_tokens": 0,
+                            }
+                        },
+                    }
+                ),
+                json.dumps(
+                    {
+                        "type": "result",
+                        "usage": {"input_tokens": 0, "output_tokens": 0},
+                        "modelUsage": {
+                            "nvidia/nemotron-3-ultra-550b-a55b:free": {
+                                "inputTokens": 10,
+                                "cacheReadInputTokens": 2,
+                                "cacheCreationInputTokens": 3,
+                                "outputTokens": 4,
+                                "reasoningTokens": 5,
+                                "costUSD": 0.0007,
+                            }
+                        },
+                    }
+                ),
+            ]
+        )
+
+        events = ClaudeCodeAdapter._parse_events(stdout)
+        model_calls = [event for event in events if event.type == "model_call"]
+
+        self.assertEqual(len(model_calls), 1)
+        self.assertEqual(model_calls[0].data["input_tokens"], 15)
+        self.assertEqual(model_calls[0].data["cached_input_tokens"], 2)
+        self.assertEqual(model_calls[0].data["output_tokens"], 4)
+        self.assertEqual(model_calls[0].data["reasoning_output_tokens"], 5)
+        self.assertEqual(model_calls[0].data["cost_usd"], 0.0007)
+        self.assertEqual(model_calls[0].data["metadata"]["source"], "claude_openrouter_model_usage")
+        self.assertTrue(model_calls[0].data["metadata"]["aggregate"])
+
+    def test_openrouter_model_usage_is_preferred_over_result_usage(self):
+        stdout = json.dumps(
+            {
+                "type": "result",
+                "usage": {"input_tokens": 10, "output_tokens": 2},
+                "modelUsage": {
+                    "nvidia/nemotron-3-ultra-550b-a55b:free": {
+                        "inputTokens": 20,
+                        "outputTokens": 4,
+                        "costUSD": 0.001,
+                    }
+                },
+            }
+        )
+
+        events = ClaudeCodeAdapter._parse_events(stdout)
+        model_calls = [event for event in events if event.type == "model_call"]
+
+        self.assertEqual(len(model_calls), 1)
+        self.assertEqual(model_calls[0].data["input_tokens"], 20)
+        self.assertEqual(model_calls[0].data["output_tokens"], 4)
+        self.assertEqual(model_calls[0].data["cost_usd"], 0.001)
+        self.assertEqual(model_calls[0].data["metadata"]["source"], "claude_openrouter_model_usage")
+
+    @patch.dict(
+        os.environ,
+        {"OPENROUTER_API_KEY": "sk-test-openrouter", "OPENROUTER_MODEL": "nvidia/test-model:free"},
+    )
+    def test_openrouter_environment_maps_to_anthropic_gateway_vars(self):
+        harness = HarnessManifest(
+            id="claude-code-openrouter",
+            adapter="claude_code",
+            path=Path("harness.yaml"),
+            model="${OPENROUTER_MODEL}",
+            config={"auth_mode": "openrouter"},
+        )
+        task = TaskManifest(id="task", prompt="prompt", path=Path("task.yaml"))
+        context = AdapterRunContext(
+            run_id="run",
+            task=task,
+            harness=harness,
+            workspace=Path("."),
+            prompt="prompt",
+            prompt_file=Path(".benchmark_prompt.txt"),
+            timeout_sec=1,
+        )
+
+        active_context = _with_openrouter_environment(context)
+
+        self.assertEqual(active_context.harness.model, "nvidia/test-model:free")
+        self.assertEqual(active_context.harness.env["ANTHROPIC_BASE_URL"], "https://openrouter.ai/api")
+        self.assertEqual(active_context.harness.env["ANTHROPIC_AUTH_TOKEN"], "sk-test-openrouter")
+        self.assertEqual(active_context.harness.env["ANTHROPIC_API_KEY"], "")
+        self.assertEqual(active_context.harness.env["ANTHROPIC_DEFAULT_SONNET_MODEL"], "nvidia/test-model:free")
 
 
 if __name__ == "__main__":

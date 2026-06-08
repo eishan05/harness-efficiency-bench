@@ -1,0 +1,32 @@
+id: claude-code-openrouter
+adapter: claude_code
+model: ${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: structured
+command:
+  - claude
+  - --bare
+  - -p
+  - "{prompt}"
+  - --output-format
+  - stream-json
+  - --verbose
+  - --model
+  - "{model}"
+  - --max-budget-usd
+  - "0.10"
+  - --no-session-persistence
+  - --permission-mode
+  - acceptEdits
+  - --allowedTools
+  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
+pricing: {}
+permissions:
+  sandbox: host-debug
+config:
+  auth_mode: openrouter
+  openrouter_base_url: https://openrouter.ai/api
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  execution_note: host OpenRouter debug harness; serious runs should use claude-code-docker-openrouter

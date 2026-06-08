@@ -1,0 +1,47 @@
+id: claude-code-docker-openrouter
+adapter: claude_code
+model: ${OPENROUTER_MODEL}
+timeout_sec: 900
+trace_mode: structured
+command:
+  - claude
+  - --bare
+  - -p
+  - "{prompt}"
+  - --output-format
+  - stream-json
+  - --verbose
+  - --model
+  - "{model}"
+  - --max-budget-usd
+  - "0.10"
+  - --no-session-persistence
+  - --permission-mode
+  - bypassPermissions
+  - --allowedTools
+  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  auth_mode: openrouter
+  openrouter_base_url: https://openrouter.ai/api
+  backend: docker
+  docker_image: harness-bench/claude-code:2.1.114
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /claude-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /claude-home:exec,size=512m,uid=1000,gid=1000
+  docker_env_passthrough:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL
+  required_env:
+    - OPENROUTER_API_KEY
+    - OPENROUTER_MODEL

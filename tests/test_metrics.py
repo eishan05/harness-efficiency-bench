@@ -38,8 +38,6 @@ class MetricsTest(unittest.TestCase):
                             "input_tokens": 10,
                             "output_tokens": 2,
                             "reasoning_output_tokens": 0,
-                            "cost_usd": 0.01,
-                            "cost_available": True,
                         },
                     }
                 }
@@ -48,6 +46,7 @@ class MetricsTest(unittest.TestCase):
 
         self.assertEqual(set(coverage), {"startup_tax", "context_growth_rate", "solve_efficiency"})
         self.assertEqual(coverage["solve_efficiency"]["status"], "full")
+        self.assertEqual(coverage["solve_efficiency"]["runs_with_token_cost"], 1)
 
 
 if __name__ == "__main__":

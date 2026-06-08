@@ -47,6 +47,7 @@ class ManifestTest(unittest.TestCase):
         ids = {HarnessManifest.load(path).id for path in paths}
         self.assertTrue(
             {
+                "claude-code-docker-openrouter",
                 "aider-docker-openrouter",
                 "goose-docker-openrouter",
                 "hermes-agent-docker-openrouter",
@@ -61,7 +62,10 @@ class ManifestTest(unittest.TestCase):
         for path in paths:
             harness = HarnessManifest.load(path)
             with self.subTest(path=path.name):
-                self.assertEqual(harness.adapter, "docker_agent_cli")
+                if harness.id == "claude-code-docker-openrouter":
+                    self.assertEqual(harness.adapter, "claude_code")
+                else:
+                    self.assertEqual(harness.adapter, "docker_agent_cli")
                 self.assertEqual(harness.config.get("backend"), "docker")
                 self.assertIn("docker_isolation", harness.capabilities)
                 self.assertIn("OPENROUTER_API_KEY", harness.config.get("docker_env_passthrough", []))

@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import json
+import os
+import re
+from dataclasses import replace
 from typing import Any
 
 from .base import AdapterResult, AdapterRunContext, BaseAdapter
-from .command import parse_jsonl_events, result_from_completed, run_command
+from .command import missing_required_env, parse_jsonl_events, result_from_completed, run_command
 from ..tracing import TraceEvent, model_call_event, tool_result_event
 
 
@@ -14,6 +17,14 @@ class ClaudeCodeAdapter(BaseAdapter):
     name = "claude_code"
 
     def run(self, context: AdapterRunContext) -> AdapterResult:
+        missing = missing_required_env(context)
+        if missing:
+            return AdapterResult(
+                exit_code=2,
+                stderr=f"missing required environment variables: {', '.join(missing)}\n",
+                metadata={"trace_quality": "none", "missing_required_env": missing},
+            )
+        active_context = _with_openrouter_environment(context)
         command = context.harness.command or [
             "claude",
             "--bare",
@@ -24,10 +35,11 @@ class ClaudeCodeAdapter(BaseAdapter):
             "--verbose",
             "--no-session-persistence",
         ]
-        completed = run_command(command, context)
+        completed = run_command(command, active_context)
         result = result_from_completed(completed)
         result.trace_events = self._parse_events(completed.stdout)
         result.metadata["trace_quality"] = "structured"
+        result.metadata["model_id"] = active_context.harness.model
         return result
 
     @staticmethod
@@ -48,9 +60,9 @@ class ClaudeCodeAdapter(BaseAdapter):
                             usage.get("cache_read_input_tokens", usage.get("cached_input_tokens", 0))
                         ),
                         output_tokens=_int_value(usage.get("output_tokens", usage.get("completion_tokens", 0))),
-                        reasoning_output_tokens=_int_value(usage.get("thinking_tokens", 0)),
-                        cost_usd=_float_or_none(raw.get("total_cost_usd")),
-                        metadata={"source": "claude_stream_json", "raw_event_type": event_type},
+                        reasoning_output_tokens=_reasoning_tokens(usage),
+                        cost_usd=_cost_usd(raw, usage),
+                        metadata=_usage_metadata(usage, "claude_stream_json", event_type),
                     )
                 )
                 model_call_positions.append(len(normalized) - 1)
@@ -75,14 +87,56 @@ class ClaudeCodeAdapter(BaseAdapter):
         return normalized
 
 
+def _with_openrouter_environment(context: AdapterRunContext) -> AdapterRunContext:
+    if context.harness.config.get("auth_mode") != "openrouter":
+        return context
+    source_env = {**os.environ, **context.harness.env}
+    api_key = source_env.get("OPENROUTER_API_KEY", "")
+    model = _expand_env_vars(context.harness.model or source_env.get("OPENROUTER_MODEL", ""), source_env)
+    base_url = str(context.harness.config.get("openrouter_base_url") or "https://openrouter.ai/api")
+    env = {
+        **context.harness.env,
+        "ANTHROPIC_BASE_URL": base_url,
+        "ANTHROPIC_AUTH_TOKEN": api_key,
+        "ANTHROPIC_API_KEY": "",
+    }
+    if model:
+        env.setdefault("ANTHROPIC_MODEL", model)
+        env.setdefault("ANTHROPIC_DEFAULT_OPUS_MODEL", model)
+        env.setdefault("ANTHROPIC_DEFAULT_SONNET_MODEL", model)
+        env.setdefault("ANTHROPIC_DEFAULT_HAIKU_MODEL", model)
+        env.setdefault("CLAUDE_CODE_SUBAGENT_MODEL", model)
+    harness = replace(context.harness, env=env, model=model or context.harness.model)
+    return replace(context, harness=harness)
+
+
+def _expand_env_vars(value: str | None, env: dict[str, str]) -> str:
+    if not value:
+        return ""
+
+    def replace_match(match: re.Match[str]) -> str:
+        key = match.group("braced") or match.group("plain") or ""
+        return str(env.get(key, match.group(0)))
+
+    return re.sub(r"\$\{(?P<braced>[A-Za-z_][A-Za-z0-9_]*)\}|\$(?P<plain>[A-Za-z_][A-Za-z0-9_]*)", replace_match, value)
+
+
 def _event_usage(raw: dict[str, Any]) -> dict[str, Any] | None:
+    model_usage = _model_usage(raw.get("modelUsage"))
+    if isinstance(model_usage, dict) and _usage_has_activity(model_usage):
+        return model_usage
     usage = raw.get("usage")
-    if isinstance(usage, dict):
+    if isinstance(usage, dict) and _usage_has_activity(usage):
         return usage
     message = raw.get("message")
-    if isinstance(message, dict) and isinstance(message.get("usage"), dict):
-        return message["usage"]
-    return None
+    message_usage = message.get("usage") if isinstance(message, dict) else None
+    if isinstance(message_usage, dict) and _usage_has_activity(message_usage):
+        return message_usage
+    if isinstance(usage, dict):
+        return usage
+    if isinstance(message_usage, dict):
+        return message_usage
+    return model_usage
 
 
 def _apply_result_usage(
@@ -91,7 +145,7 @@ def _apply_result_usage(
     result_event: dict[str, Any],
     next_call_index: int,
 ) -> None:
-    total_cost = _float_or_none(result_event.get("total_cost_usd"))
+    total_cost = _cost_usd(result_event)
     if model_call_positions:
         if total_cost is None:
             return
@@ -114,9 +168,12 @@ def _apply_result_usage(
             input_tokens=_input_tokens(usage),
             cached_input_tokens=_int_value(usage.get("cache_read_input_tokens", usage.get("cached_input_tokens", 0))),
             output_tokens=_int_value(usage.get("output_tokens", usage.get("completion_tokens", 0))),
-            reasoning_output_tokens=_int_value(usage.get("thinking_tokens", 0)),
-            cost_usd=total_cost,
-            metadata={"source": "claude_result_usage", "cost_source": "claude_result_total"},
+            reasoning_output_tokens=_reasoning_tokens(usage),
+            cost_usd=_cost_usd(result_event, usage),
+            metadata={
+                **_usage_metadata(usage, "claude_result_usage", result_event.get("type")),
+                "cost_source": "claude_result_total",
+            },
         )
     )
 
@@ -125,25 +182,113 @@ def _usage_has_activity(usage: dict[str, Any]) -> bool:
     return (
         _input_tokens(usage)
         + _int_value(usage.get("output_tokens", usage.get("completion_tokens", 0)))
-        + _int_value(usage.get("thinking_tokens", 0))
+        + _reasoning_tokens(usage)
     ) > 0
 
 
 def _input_tokens(usage: dict[str, Any]) -> int:
-    base_input = _int_value(usage.get("input_tokens", usage.get("prompt_tokens", 0)))
-    cache_read = _int_value(usage.get("cache_read_input_tokens", usage.get("cached_input_tokens", 0)))
+    base_input = _int_value(usage.get("input_tokens", usage.get("prompt_tokens", usage.get("inputTokens", 0))))
+    cache_read = _int_value(
+        usage.get(
+            "cache_read_input_tokens",
+            usage.get("cached_input_tokens", usage.get("cacheReadInputTokens", 0)),
+        )
+    )
     cache_creation = _cache_creation_tokens(usage)
     return base_input + cache_read + cache_creation
 
 
 def _cache_creation_tokens(usage: dict[str, Any]) -> int:
-    explicit = _int_value(usage.get("cache_creation_input_tokens", 0))
+    explicit = _int_value(usage.get("cache_creation_input_tokens", usage.get("cacheCreationInputTokens", 0)))
     if explicit:
         return explicit
     details = usage.get("cache_creation")
     if isinstance(details, dict):
         return sum(_int_value(value) for value in details.values())
     return 0
+
+
+def _reasoning_tokens(usage: dict[str, Any]) -> int:
+    return _int_value(
+        usage.get(
+            "reasoning_output_tokens",
+            usage.get("reasoning_tokens", usage.get("reasoningTokens", usage.get("thinking_tokens", 0))),
+        )
+    )
+
+
+def _model_usage(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    entries: list[tuple[str | None, dict[str, Any]]] = []
+    if any(key in value for key in ("inputTokens", "input_tokens", "outputTokens", "output_tokens")):
+        entries.append((None, value))
+    else:
+        entries.extend(
+            (str(model_id), usage)
+            for model_id, usage in value.items()
+            if isinstance(usage, dict)
+        )
+    if not entries:
+        return None
+    usage = {
+        "input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "cost_usd": 0.0,
+        "_source": "claude_openrouter_model_usage",
+        "_models": [],
+    }
+    cost_available = False
+    for model_id, item in entries:
+        usage["input_tokens"] += _int_value(item.get("inputTokens", item.get("input_tokens", item.get("prompt_tokens", 0))))
+        usage["cache_read_input_tokens"] += _int_value(
+            item.get("cacheReadInputTokens", item.get("cache_read_input_tokens", item.get("cached_input_tokens", 0)))
+        )
+        usage["cache_creation_input_tokens"] += _int_value(
+            item.get("cacheCreationInputTokens", item.get("cache_creation_input_tokens", 0))
+        )
+        usage["output_tokens"] += _int_value(item.get("outputTokens", item.get("output_tokens", item.get("completion_tokens", 0))))
+        usage["reasoning_output_tokens"] += _int_value(
+            item.get(
+                "reasoningOutputTokens",
+                item.get("reasoningTokens", item.get("reasoning_output_tokens", item.get("thinking_tokens", 0))),
+            )
+        )
+        cost = _float_or_none(item.get("costUSD", item.get("cost_usd", item.get("total_cost_usd"))))
+        if cost is not None:
+            usage["cost_usd"] += cost
+            cost_available = True
+        if model_id:
+            usage["_models"].append(model_id)
+    if not cost_available:
+        usage.pop("cost_usd", None)
+    return usage
+
+
+def _usage_metadata(usage: dict[str, Any], default_source: str, event_type: Any) -> dict[str, Any]:
+    metadata = {
+        "source": str(usage.get("_source") or default_source),
+        "raw_event_type": event_type,
+    }
+    models = usage.get("_models")
+    if isinstance(models, list) and models:
+        metadata["models"] = [str(model) for model in models]
+        metadata["aggregate"] = True
+    return metadata
+
+
+def _cost_usd(raw: dict[str, Any], usage: dict[str, Any] | None = None) -> float | None:
+    candidates: list[Any] = [raw.get("total_cost_usd"), raw.get("cost_usd")]
+    if isinstance(usage, dict):
+        candidates.extend([usage.get("cost_usd"), usage.get("costUSD"), usage.get("total_cost_usd")])
+    for candidate in candidates:
+        value = _float_or_none(candidate)
+        if value is not None:
+            return value
+    return None
 
 
 def _tool_results(raw: dict[str, Any]) -> list[dict[str, Any]]:

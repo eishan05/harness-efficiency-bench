@@ -21,12 +21,12 @@ This tells you how quickly the harness accumulates baggage.
 ## C. Solve Efficiency
 
 ```text
-cost_per_solved_task =
-  (total_uncached_input_cost + cache_read_cost + output_cost)
+token_cost_per_solved_task =
+  (total_input_tokens + output_tokens + reasoning_output_tokens)
   / number_of_successful_tasks
 ```
 
-This matters more than raw bloat: a harness that spends more tokens but solves more tasks may still be better.
+This matters more than raw bloat: a harness that spends more tokens but solves more tasks may still be better. If cached input is reported separately, it is included once through total input tokens.
 
 ## D. Context-Bloat Harm Curve
 

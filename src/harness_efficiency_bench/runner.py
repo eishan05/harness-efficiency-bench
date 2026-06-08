@@ -12,7 +12,7 @@ from .adapters import create_adapter
 from .adapters.base import AdapterRunContext
 from .isolation import describe_isolation, require_docker_isolation
 from .manifests import HarnessManifest, TaskManifest
-from .metrics import compute_run_metrics, research_metric_coverage
+from .metrics import compute_run_metrics, research_metric_coverage, usage_token_cost
 from .oracles import grade_oracle
 from .pricing import apply_pricing
 from .store import ResultStore
@@ -79,7 +79,7 @@ class BenchmarkRunner:
             "task_id": task.id,
             "harness_id": harness.id,
             "adapter": harness.adapter,
-            "model_id": harness.model,
+            "model_id": adapter_result.metadata.get("model_id") or harness.model,
             "perturbation_id": perturbation_id,
             "started_at": started_at,
             "finished_at": finished_at,
@@ -216,7 +216,8 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(results)
     solved = sum(1 for item in results if item.get("success"))
     total_cost = sum(float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0) for item in results)
-    all_costs_available = bool(results) and all(_result_cost_available(item) for item in results)
+    total_token_cost = sum(_result_token_cost(item) for item in results)
+    all_dollar_costs_available = bool(results) and all(_result_dollar_cost_available(item) for item in results)
     by_harness: dict[str, dict[str, Any]] = {}
     for item in results:
         harness_id = str(item.get("harness_id"))
@@ -225,8 +226,9 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
             {
                 "attempted": 0,
                 "solved": 0,
+                "token_cost": 0,
                 "cost_usd": 0.0,
-                "runs_with_cost": 0,
+                "runs_with_dollar_cost": 0,
                 "metric_values": {
                     "startup_tax": [],
                     "context_growth_rate": [],
@@ -235,17 +237,21 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         )
         bucket["attempted"] += 1
         bucket["solved"] += 1 if item.get("success") else 0
+        bucket["token_cost"] += _result_token_cost(item)
         bucket["cost_usd"] += float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0)
-        bucket["runs_with_cost"] += 1 if _result_cost_available(item) else 0
+        bucket["runs_with_dollar_cost"] += 1 if _result_dollar_cost_available(item) else 0
         for metric_name in bucket["metric_values"]:
             metric = item.get("metrics", {}).get(metric_name, {})
             if metric.get("status") == "full" and metric.get("value") is not None:
                 bucket["metric_values"][metric_name].append(float(metric["value"]))
     for bucket in by_harness.values():
         bucket["solve_rate"] = bucket["solved"] / bucket["attempted"] if bucket["attempted"] else 0.0
-        bucket["cost_per_solved_task"] = (
+        bucket["token_cost_per_solved_task"] = (
+            bucket["token_cost"] / bucket["solved"] if bucket["solved"] else None
+        )
+        bucket["dollar_cost_per_solved_task"] = (
             bucket["cost_usd"] / bucket["solved"]
-            if bucket["solved"] and bucket["runs_with_cost"] == bucket["attempted"]
+            if bucket["solved"] and bucket["runs_with_dollar_cost"] == bucket["attempted"]
             else None
         )
         bucket["metrics"] = {
@@ -259,22 +265,26 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "attempted": total,
         "solved": solved,
         "solve_rate": solved / total if total else 0.0,
+        "token_cost": total_token_cost,
+        "token_cost_per_solved_task": total_token_cost / solved if solved else None,
         "cost_usd": total_cost,
-        "cost_per_solved_task": total_cost / solved if solved and all_costs_available else None,
+        "dollar_cost_per_solved_task": (
+            total_cost / solved if solved and all_dollar_costs_available else None
+        ),
         "by_harness": by_harness,
         "by_perturbation": _summarize_by_perturbation(results),
         "research_metric_coverage": research_metric_coverage(results),
     }
 
 
-def _result_cost_available(item: dict[str, Any]) -> bool:
+def _result_token_cost(item: dict[str, Any]) -> int:
     usage = item.get("metrics", {}).get("usage", {})
-    token_total = (
-        int(usage.get("input_tokens", 0) or 0)
-        + int(usage.get("output_tokens", 0) or 0)
-        + int(usage.get("reasoning_output_tokens", 0) or 0)
-    )
-    return token_total > 0 and bool(usage.get("cost_available"))
+    return usage_token_cost(usage)
+
+
+def _result_dollar_cost_available(item: dict[str, Any]) -> bool:
+    usage = item.get("metrics", {}).get("usage", {})
+    return usage_token_cost(usage) > 0 and bool(usage.get("cost_available"))
 
 
 def _summarize_by_perturbation(results: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:

@@ -130,14 +130,14 @@ Then run the matching `examples/harnesses/*-docker-isolated.yaml` manifest with 
 
 Tier 1 manifests are intended to be directly runnable after image build and API-key setup. Manifests marked `bench_ready: false` are registered with pinned image scaffolds, but their image builds and one-shot command paths still need live smoke verification before serious benchmark runs.
 
-OpenRouter-specific variants use the same images and are named `*-docker-openrouter.yaml`. They are available for `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, and `hermes-agent`. They require:
+OpenRouter-specific variants use the same images and are named `*-docker-openrouter.yaml`. They are available for `claude-code`, `goose`, `qwen-code`, `kimi-code`, `aider`, `opencode`, `kilo`, `nanobot`, `openclaw`, and `hermes-agent`. They require:
 
 ```bash
 export OPENROUTER_API_KEY=...
 export OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b:free"
 ```
 
-These manifests keep provider-specific baselines unchanged while letting the same CLI run through OpenRouter. Trace quality depends on each CLI's output; many OpenRouter runs are black-box or partial even when the task oracle passes. Grok Build is not an OpenRouter variant; use `XAI_API_KEY` or `GROK_CODE_XAI_API_KEY` with `grok-build-docker-isolated.yaml`.
+These manifests keep provider-specific baselines unchanged while letting the same CLI run through OpenRouter. Claude Code uses OpenRouter's Anthropic-compatible `https://openrouter.ai/api` gateway; the other OpenRouter manifests use OpenAI-compatible routing when the CLI supports it. Trace quality depends on each CLI's output; many OpenRouter runs are black-box or partial even when the task oracle passes. Grok Build is not an OpenRouter variant; use `XAI_API_KEY` or `GROK_CODE_XAI_API_KEY` with `grok-build-docker-isolated.yaml`.
 
 Some agents initialize their own workspace metadata in the mounted task workspace. Task oracles should grade the required files or repository diff and ignore unrelated harness metadata unless the task explicitly forbids extra files.
 

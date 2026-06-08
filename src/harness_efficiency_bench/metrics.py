@@ -58,12 +58,13 @@ def context_growth_rate(events: list[TraceEvent]) -> MetricValue:
     return MetricValue(slope, "full", {"points": points})
 
 
-def total_usage(events: list[TraceEvent]) -> dict[str, int | float]:
+def total_usage(events: list[TraceEvent]) -> dict[str, int | float | bool]:
     usage = {
         "input_tokens": 0,
         "cached_input_tokens": 0,
         "output_tokens": 0,
         "reasoning_output_tokens": 0,
+        "token_cost": 0,
         "cost_usd": 0.0,
         "cost_available": False,
     }
@@ -78,8 +79,17 @@ def total_usage(events: list[TraceEvent]) -> dict[str, int | float]:
             cost_available = False
         else:
             usage["cost_usd"] += float(call.get("cost_usd", 0.0) or 0.0)
+    usage["token_cost"] = usage_token_cost(usage)
     usage["cost_available"] = cost_available
     return usage
+
+
+def usage_token_cost(usage: dict[str, Any]) -> int:
+    return (
+        int(usage.get("input_tokens", 0) or 0)
+        + int(usage.get("output_tokens", 0) or 0)
+        + int(usage.get("reasoning_output_tokens", 0) or 0)
+    )
 
 
 def tool_output_retention_ratio(events: list[TraceEvent]) -> MetricValue:
@@ -187,12 +197,7 @@ def _solve_efficiency_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
     runs_with_token_usage = 0
     for item in results:
         usage = item.get("metrics", {}).get("usage", {})
-        token_total = (
-            int(usage.get("input_tokens", 0) or 0)
-            + int(usage.get("output_tokens", 0) or 0)
-            + int(usage.get("reasoning_output_tokens", 0) or 0)
-        )
-        if token_total > 0 and bool(usage.get("cost_available")):
+        if usage_token_cost(usage) > 0:
             runs_with_token_usage += 1
     if not results:
         status = "unsupported"
@@ -204,9 +209,9 @@ def _solve_efficiency_coverage(results: list[dict[str, Any]]) -> dict[str, Any]:
         status = "unsupported"
     return {
         "status": status,
-        "runs_with_cost": runs_with_token_usage,
+        "runs_with_token_cost": runs_with_token_usage,
         "runs_total": len(results),
-        "requirement": "full requires token usage plus cost estimates or native cost for every run",
+        "requirement": "full requires token usage for every run",
     }
 
 

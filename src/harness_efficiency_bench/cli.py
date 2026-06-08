@@ -176,21 +176,26 @@ def _markdown_report(summary: dict[str, Any]) -> str:
         f"- Attempted: {summary['attempted']}",
         f"- Solved: {summary['solved']}",
         f"- Solve rate: {summary['solve_rate']:.3f}",
+        f"- Token cost: {summary['token_cost']}",
+        f"- Token cost per solved task: {summary['token_cost_per_solved_task']}",
         f"- Cost USD: {summary['cost_usd']:.6f}",
-        f"- Cost per solved task: {summary['cost_per_solved_task']}",
+        f"- Dollar cost per solved task: {summary['dollar_cost_per_solved_task']}",
         "",
-        "| Harness | Attempted | Solved | Solve Rate | Cost USD | Cost / Solved | Startup Tax | Growth |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
+        "| Harness | Attempted | Solved | Solve Rate | Token Cost | Tokens / Solved | Cost USD | USD / Solved | Startup Tax | Growth |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for harness_id, bucket in sorted(summary["by_harness"].items()):
-        cost_per = bucket["cost_per_solved_task"]
-        cost_per_text = "" if cost_per is None else f"{cost_per:.6f}"
+        token_cost_per = bucket["token_cost_per_solved_task"]
+        token_cost_per_text = "" if token_cost_per is None else f"{token_cost_per:.3f}"
+        dollar_cost_per = bucket["dollar_cost_per_solved_task"]
+        dollar_cost_per_text = "" if dollar_cost_per is None else f"{dollar_cost_per:.6f}"
         metrics = bucket.get("metrics", {})
         startup = _optional_number(metrics.get("startup_tax", {}).get("avg"))
         growth = _optional_number(metrics.get("context_growth_rate", {}).get("avg"))
         lines.append(
             f"| {harness_id} | {bucket['attempted']} | {bucket['solved']} | "
-            f"{bucket['solve_rate']:.3f} | {bucket['cost_usd']:.6f} | {cost_per_text} | "
+            f"{bucket['solve_rate']:.3f} | {bucket['token_cost']} | {token_cost_per_text} | "
+            f"{bucket['cost_usd']:.6f} | {dollar_cost_per_text} | "
             f"{startup} | {growth} |"
         )
     if summary.get("by_perturbation"):
