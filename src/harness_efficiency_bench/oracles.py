@@ -55,12 +55,18 @@ def grade_oracle(spec: OracleSpec, workspace: Path) -> OracleResult:
             return OracleResult(False, 0.0, f"expected file missing: {spec.path}", {})
         actual = target.read_text(encoding="utf-8")
         expected = spec.text or ""
-        success = actual == expected
+        allow_trailing_newline = bool(spec.data.get("allow_trailing_newline", False))
+        success = actual == expected or (allow_trailing_newline and actual == expected + "\n")
         return OracleResult(
             success,
             1.0 if success else 0.0,
             "file matched" if success else "file content mismatch",
-            {"path": spec.path, "expected": expected, "actual": actual},
+            {
+                "path": spec.path,
+                "expected": expected,
+                "actual": actual,
+                "allow_trailing_newline": allow_trailing_newline,
+            },
         )
     if spec.type == "file_contains":
         if not spec.path:

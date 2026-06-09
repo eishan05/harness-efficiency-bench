@@ -15,6 +15,7 @@ workspace_setup:
 oracle:
   type: file_equals
   path: answer.txt
+  allow_trailing_newline: true
   text: |
     hello benchmark
 budgets:
@@ -35,6 +36,10 @@ Supported oracle types:
 - `file_contains`
 - `command`
 - `swe_bench`
+
+For `file_equals`, set `allow_trailing_newline: true` to accept either the exact
+expected text or the expected text followed by one newline. The default remains
+strict equality.
 
 Supported perturbation placements:
 
