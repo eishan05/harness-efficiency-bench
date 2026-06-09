@@ -25,6 +25,7 @@ These compact snapshots preserve benchmark metrics without keeping the large raw
 - `nanobot-docker-openrouter-nvidia-swe-bench-lite-curated-10-partial-2026-06-08.json`: partial Nanobot SWE-bench Lite diagnostic. The first task hit the 1800-second task timeout after 153 agent iterations, so the full suite was stopped before spending hours on the remaining tasks.
 - `openclaw-docker-openrouter-nvidia-examples-full-2026-06-08.json`: Docker-isolated OpenClaw via OpenRouter `nvidia/nemotron-3-ultra-550b-a55b:free`, covering the non-SWE example tasks with all configured perturbations.
 - `opencode-docker-openrouter-nvidia-examples-full-2026-06-08.json`: Docker-isolated Opencode via OpenRouter `nvidia/nemotron-3-ultra-550b-a55b:free`, covering the non-SWE example tasks with all configured perturbations.
+- `opencode-docker-openrouter-nvidia-swe-bench-lite-first-stopped-2026-06-09.json`: first-task Opencode SWE-bench Lite diagnostic. A/B/C are full, but the agent made 72 model calls and used about 3.0M tokens before being manually stopped so the partial patch could be graded. The patch was unresolved; a full Opencode SWE subset still needs an external loop cap or a more reliable bounded run mode.
 - `qwen-code-docker-openrouter-nvidia-examples-full-2026-06-08.json`: Docker-isolated Qwen Code via OpenRouter `nvidia/nemotron-3-ultra-550b-a55b:free`, covering the non-SWE example tasks with all configured perturbations.
 
 Raw result and trace files remain under ignored `runs*/` directories when present locally.
