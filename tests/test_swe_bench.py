@@ -205,6 +205,10 @@ class SweBenchTest(unittest.TestCase):
         self.assertIn("--group-add", command)
         self.assertIn(f"{eval_root}:{eval_root}", command)
         self.assertIn(str(eval_root), command)
+        self.assertIn(f"HOME={eval_root}", command)
+        self.assertIn(f"HF_HOME={eval_root / '.cache' / 'huggingface'}", command)
+        self.assertIn(f"HF_DATASETS_CACHE={eval_root / '.cache' / 'huggingface' / 'datasets'}", command)
+        self.assertIn(f"HUGGINGFACE_HUB_CACHE={eval_root / '.cache' / 'huggingface' / 'hub'}", command)
 
 
 if __name__ == "__main__":

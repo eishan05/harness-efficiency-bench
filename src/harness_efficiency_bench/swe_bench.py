@@ -191,6 +191,7 @@ def build_swe_bench_docker_command(
 ) -> list[str]:
     eval_root = eval_root.resolve()
     docker_socket_gid = Path(docker_socket).stat().st_gid if Path(docker_socket).exists() else os.getgid()
+    hf_home = eval_root / ".cache" / "huggingface"
     return [
         "docker",
         "run",
@@ -207,6 +208,14 @@ def build_swe_bench_docker_command(
         f"{docker_socket}:{docker_socket}",
         "-e",
         f"DOCKER_HOST=unix://{docker_socket}",
+        "-e",
+        f"HOME={eval_root}",
+        "-e",
+        f"HF_HOME={hf_home}",
+        "-e",
+        f"HF_DATASETS_CACHE={hf_home / 'datasets'}",
+        "-e",
+        f"HUGGINGFACE_HUB_CACHE={hf_home / 'hub'}",
         "-v",
         f"{eval_root}:{eval_root}",
         "-w",

@@ -66,7 +66,7 @@ class BenchmarkRunner:
                 workspace=workspace,
                 prompt=prompt,
                 prompt_file=prompt_file,
-                timeout_sec=harness.timeout_sec,
+                timeout_sec=self._effective_timeout_sec(task, harness),
             )
         )
         finished_at = utc_now()
@@ -241,6 +241,13 @@ class BenchmarkRunner:
         if perturbation.placement == "prompt_suffix":
             return f"{prompt}\n\n[Injected context]\n{payload}\n"
         return f"[Injected context]\n{payload}\n\n{prompt}"
+
+    @staticmethod
+    def _effective_timeout_sec(task: TaskManifest, harness: HarnessManifest) -> int:
+        raw_timeout = task.budgets.get("timeout_sec")
+        if raw_timeout is None:
+            return harness.timeout_sec
+        return int(raw_timeout)
 
 
 def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:

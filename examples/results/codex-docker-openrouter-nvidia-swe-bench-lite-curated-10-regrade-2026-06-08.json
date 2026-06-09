@@ -1,0 +1,2846 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 10,
+    "oracle_mode": "external fixed Docker SWE-bench regrade report",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-08T20:56:28.972533+00:00",
+    "run_started_at": "2026-06-08T18:40:36.151403+00:00",
+    "suite": "swe-bench-lite-curated-10",
+    "tasks_dir": "examples/tasks/swe-bench-lite-curated-10"
+  },
+  "captured_at": "2026-06-09T03:14:22.823577Z",
+  "commands": [
+    "uv run scripts/save_result_snapshot.py --run-root runs/codex-openrouter-nvidia-full-20260608 --out examples/results/codex-docker-openrouter-nvidia-swe-bench-lite-curated-10-regrade-2026-06-08.json --harness examples/harnesses/codex-docker-openrouter.yaml --model nvidia/nemotron-3-ultra-550b-a55b:free --suite swe-bench-lite-curated-10 --tasks-dir examples/tasks/swe-bench-lite-curated-10 --filter-to-tasks-dir --perturbation-mode base-only --oracle-mode \"external fixed Docker SWE-bench regrade report\" --swe-report runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json --swe-predictions runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/predictions.jsonl"
+  ],
+  "harness": {
+    "adapter": "codex",
+    "base_manifest": "examples/harnesses/codex-docker-openrouter.yaml",
+    "docker_image": "harness-bench/codex-cli:0.137.0",
+    "execution": "Docker-isolated Codex via OpenRouter, saved trace metrics plus fixed SWE-bench Docker oracle regrade",
+    "id": "codex-docker-openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-11905__codex-docker-openrouter__cbfc04b688/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-11905__codex-docker-openrouter__cbfc04b688/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-11905__codex-docker-openrouter__cbfc04b688/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-11905__codex-docker-openrouter__cbfc04b688/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "django__django-11905",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "django__django-11905-aee335edb5",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 712,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-11905__codex-docker-openrouter__cbfc04b688/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-11905__codex-docker-openrouter__cbfc04b688/swebench_eval/harness-efficiency-bench.django__django-11905-aee335edb5.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 18:55:37,311 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 18:55:37,312 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 18:55:37,327 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "error",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "perturbation_id": "base",
+      "reason": "swe-bench evaluation error",
+      "task_id": "django__django-11905",
+      "token_cost": 991110
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-12308__codex-docker-openrouter__f0f18233f2/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-12308__codex-docker-openrouter__f0f18233f2/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-12308__codex-docker-openrouter__f0f18233f2/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-12308__codex-docker-openrouter__f0f18233f2/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "django__django-12308",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "django__django-12308-86178da6bf",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-12308__codex-docker-openrouter__f0f18233f2/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/django__django-12308__codex-docker-openrouter__f0f18233f2/swebench_eval/harness-efficiency-bench.django__django-12308-86178da6bf.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 19:10:39,594 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 19:10:39,594 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 19:10:39,610 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "empty_patch",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved (empty patch)",
+      "task_id": "django__django-12308",
+      "token_cost": 1168015
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-23913__codex-docker-openrouter__494658b5a4/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-23913__codex-docker-openrouter__494658b5a4/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-23913__codex-docker-openrouter__494658b5a4/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-23913__codex-docker-openrouter__494658b5a4/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "matplotlib__matplotlib-23913",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "matplotlib__matplotlib-23913-2fa66b371b",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 1189,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-23913__codex-docker-openrouter__494658b5a4/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-23913__codex-docker-openrouter__494658b5a4/swebench_eval/harness-efficiency-bench.matplotlib__matplotlib-23913-2fa66b371b.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 19:25:42,312 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 19:25:42,332 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "error",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "perturbation_id": "base",
+      "reason": "swe-bench evaluation error",
+      "task_id": "matplotlib__matplotlib-23913",
+      "token_cost": 1522186
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-24334__codex-docker-openrouter__41848fa355/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-24334__codex-docker-openrouter__41848fa355/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-24334__codex-docker-openrouter__41848fa355/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-24334__codex-docker-openrouter__41848fa355/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "matplotlib__matplotlib-24334",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "matplotlib__matplotlib-24334-6749f9d1a7",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-24334__codex-docker-openrouter__41848fa355/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/matplotlib__matplotlib-24334__codex-docker-openrouter__41848fa355/swebench_eval/harness-efficiency-bench.matplotlib__matplotlib-24334-6749f9d1a7.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 19:40:44,824 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 19:40:44,841 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "empty_patch",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved (empty patch)",
+      "task_id": "matplotlib__matplotlib-24334",
+      "token_cost": 860525
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-3364__codex-docker-openrouter__9a9de78e10/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-3364__codex-docker-openrouter__9a9de78e10/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-3364__codex-docker-openrouter__9a9de78e10/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-3364__codex-docker-openrouter__9a9de78e10/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pydata__xarray-3364",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pydata__xarray-3364-f4193a8c50",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 1214,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-3364__codex-docker-openrouter__9a9de78e10/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-3364__codex-docker-openrouter__9a9de78e10/swebench_eval/harness-efficiency-bench.pydata__xarray-3364-f4193a8c50.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 19:55:46,369 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 19:55:46,386 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "error",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "perturbation_id": "base",
+      "reason": "swe-bench evaluation error",
+      "task_id": "pydata__xarray-3364",
+      "token_cost": 1090834
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-4248__codex-docker-openrouter__a1a0e655a1/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-4248__codex-docker-openrouter__a1a0e655a1/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-4248__codex-docker-openrouter__a1a0e655a1/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-4248__codex-docker-openrouter__a1a0e655a1/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pydata__xarray-4248",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pydata__xarray-4248-450b8e15ed",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 2738,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-4248__codex-docker-openrouter__a1a0e655a1/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pydata__xarray-4248__codex-docker-openrouter__a1a0e655a1/swebench_eval/harness-efficiency-bench.pydata__xarray-4248-450b8e15ed.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:10:47,874 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 20:10:47,874 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 20:10:47,893 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "error",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "perturbation_id": "base",
+      "reason": "swe-bench evaluation error",
+      "task_id": "pydata__xarray-4248",
+      "token_cost": 1072945
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5221__codex-docker-openrouter__433fd13573/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5221__codex-docker-openrouter__433fd13573/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5221__codex-docker-openrouter__433fd13573/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5221__codex-docker-openrouter__433fd13573/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pytest-dev__pytest-5221",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pytest-dev__pytest-5221-50b365d539",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5221__codex-docker-openrouter__433fd13573/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5221__codex-docker-openrouter__433fd13573/swebench_eval/harness-efficiency-bench.pytest-dev__pytest-5221-50b365d539.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:25:49,341 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 20:25:49,359 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "empty_patch",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved (empty patch)",
+      "task_id": "pytest-dev__pytest-5221",
+      "token_cost": 852822
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5227__codex-docker-openrouter__f9ba52cb7d/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5227__codex-docker-openrouter__f9ba52cb7d/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5227__codex-docker-openrouter__f9ba52cb7d/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5227__codex-docker-openrouter__f9ba52cb7d/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pytest-dev__pytest-5227",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pytest-dev__pytest-5227-ff82574312",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 2664,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5227__codex-docker-openrouter__f9ba52cb7d/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/pytest-dev__pytest-5227__codex-docker-openrouter__f9ba52cb7d/swebench_eval/harness-efficiency-bench.pytest-dev__pytest-5227-ff82574312.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:40:50,786 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 20:40:50,805 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "error",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "perturbation_id": "base",
+      "reason": "swe-bench evaluation error",
+      "task_id": "pytest-dev__pytest-5227",
+      "token_cost": 1136497
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-13146__codex-docker-openrouter__62ac967820/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-13146__codex-docker-openrouter__62ac967820/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-13146__codex-docker-openrouter__62ac967820/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-13146__codex-docker-openrouter__62ac967820/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "sympy__sympy-13146",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "sympy__sympy-13146-3697786d06",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-13146__codex-docker-openrouter__62ac967820/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-13146__codex-docker-openrouter__62ac967820/swebench_eval/harness-efficiency-bench.sympy__sympy-13146-3697786d06.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:41:28,074 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 20:41:28,092 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "empty_patch",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved (empty patch)",
+      "task_id": "sympy__sympy-13146",
+      "token_cost": 9068
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-14308__codex-docker-openrouter__c62ce12f29/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-14308__codex-docker-openrouter__c62ce12f29/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-14308__codex-docker-openrouter__c62ce12f29/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "-m",
+          "swebench.harness.run_evaluation",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-14308__codex-docker-openrouter__c62ce12f29/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "sympy__sympy-14308",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "sympy__sympy-14308-ad0bd4b077",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "swebench"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "patch_bytes": 12826,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-14308__codex-docker-openrouter__c62ce12f29/swebench_eval/predictions.jsonl",
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/codex-openrouter-nvidia-full-20260608/work/sympy__sympy-14308__codex-docker-openrouter__c62ce12f29/swebench_eval/harness-efficiency-bench.sympy__sympy-14308-ad0bd4b077.json",
+        "returncode": 1,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:56:29,911 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 20:56:29,928 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
+        "stdout": "",
+        "swe_bench_regrade": {
+          "outcome": "error",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+        }
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "perturbation_id": "base",
+      "reason": "swe-bench evaluation error",
+      "task_id": "sympy__sympy-14308",
+      "token_cost": 1485272
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8456.0
+            ],
+            [
+              1.0,
+              8771.0
+            ],
+            [
+              2.0,
+              10044.0
+            ],
+            [
+              3.0,
+              10239.0
+            ],
+            [
+              4.0,
+              12706.0
+            ],
+            [
+              5.0,
+              13918.0
+            ],
+            [
+              6.0,
+              14276.0
+            ],
+            [
+              7.0,
+              14618.0
+            ],
+            [
+              8.0,
+              14796.0
+            ],
+            [
+              9.0,
+              15452.0
+            ],
+            [
+              10.0,
+              16524.0
+            ],
+            [
+              11.0,
+              16904.0
+            ],
+            [
+              12.0,
+              17426.0
+            ],
+            [
+              13.0,
+              17617.0
+            ],
+            [
+              14.0,
+              17961.0
+            ],
+            [
+              15.0,
+              18064.0
+            ],
+            [
+              16.0,
+              19039.0
+            ],
+            [
+              17.0,
+              19139.0
+            ],
+            [
+              18.0,
+              19908.0
+            ],
+            [
+              19.0,
+              20409.0
+            ],
+            [
+              20.0,
+              20588.0
+            ],
+            [
+              21.0,
+              20760.0
+            ],
+            [
+              22.0,
+              20891.0
+            ],
+            [
+              23.0,
+              21314.0
+            ],
+            [
+              24.0,
+              21532.0
+            ],
+            [
+              25.0,
+              23080.0
+            ],
+            [
+              26.0,
+              23273.0
+            ],
+            [
+              27.0,
+              23363.0
+            ],
+            [
+              28.0,
+              24020.0
+            ],
+            [
+              29.0,
+              24146.0
+            ],
+            [
+              30.0,
+              24603.0
+            ],
+            [
+              31.0,
+              24820.0
+            ],
+            [
+              32.0,
+              24938.0
+            ],
+            [
+              33.0,
+              25059.0
+            ],
+            [
+              34.0,
+              25256.0
+            ],
+            [
+              35.0,
+              25448.0
+            ],
+            [
+              36.0,
+              25873.0
+            ],
+            [
+              37.0,
+              25987.0
+            ],
+            [
+              38.0,
+              26472.0
+            ],
+            [
+              39.0,
+              27212.0
+            ],
+            [
+              40.0,
+              27356.0
+            ],
+            [
+              41.0,
+              27542.0
+            ],
+            [
+              42.0,
+              28195.0
+            ],
+            [
+              43.0,
+              28338.0
+            ],
+            [
+              44.0,
+              28517.0
+            ],
+            [
+              45.0,
+              28739.0
+            ],
+            [
+              46.0,
+              28903.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 411.84840425531917
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8377,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8377
+        },
+        "status": "full",
+        "value": 8377
+      },
+      "success": false,
+      "task_id": "django__django-11905",
+      "token_cost": 991110,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8456.0
+            ],
+            [
+              1.0,
+              8774.0
+            ],
+            [
+              2.0,
+              8881.0
+            ],
+            [
+              3.0,
+              11163.0
+            ],
+            [
+              4.0,
+              11300.0
+            ],
+            [
+              5.0,
+              13620.0
+            ],
+            [
+              6.0,
+              15363.0
+            ],
+            [
+              7.0,
+              15475.0
+            ],
+            [
+              8.0,
+              16127.0
+            ],
+            [
+              9.0,
+              16220.0
+            ],
+            [
+              10.0,
+              16315.0
+            ],
+            [
+              11.0,
+              16423.0
+            ],
+            [
+              12.0,
+              16558.0
+            ],
+            [
+              13.0,
+              16664.0
+            ],
+            [
+              14.0,
+              17133.0
+            ],
+            [
+              15.0,
+              17265.0
+            ],
+            [
+              16.0,
+              17481.0
+            ],
+            [
+              17.0,
+              17583.0
+            ],
+            [
+              18.0,
+              17703.0
+            ],
+            [
+              19.0,
+              18680.0
+            ],
+            [
+              20.0,
+              19026.0
+            ],
+            [
+              21.0,
+              19438.0
+            ],
+            [
+              22.0,
+              22739.0
+            ],
+            [
+              23.0,
+              23306.0
+            ],
+            [
+              24.0,
+              23856.0
+            ],
+            [
+              25.0,
+              23954.0
+            ],
+            [
+              26.0,
+              24575.0
+            ],
+            [
+              27.0,
+              24691.0
+            ],
+            [
+              28.0,
+              24815.0
+            ],
+            [
+              29.0,
+              25036.0
+            ],
+            [
+              30.0,
+              25147.0
+            ],
+            [
+              31.0,
+              25263.0
+            ],
+            [
+              32.0,
+              25556.0
+            ],
+            [
+              33.0,
+              25720.0
+            ],
+            [
+              34.0,
+              28239.0
+            ],
+            [
+              35.0,
+              29255.0
+            ],
+            [
+              36.0,
+              29509.0
+            ],
+            [
+              37.0,
+              29602.0
+            ],
+            [
+              38.0,
+              29981.0
+            ],
+            [
+              39.0,
+              30482.0
+            ],
+            [
+              40.0,
+              30637.0
+            ],
+            [
+              41.0,
+              30976.0
+            ],
+            [
+              42.0,
+              31214.0
+            ],
+            [
+              43.0,
+              31336.0
+            ],
+            [
+              44.0,
+              31432.0
+            ],
+            [
+              45.0,
+              31856.0
+            ],
+            [
+              46.0,
+              32187.0
+            ],
+            [
+              47.0,
+              32278.0
+            ],
+            [
+              48.0,
+              33109.0
+            ],
+            [
+              49.0,
+              33199.0
+            ],
+            [
+              50.0,
+              34331.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 493.94823529411764
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8355,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8355
+        },
+        "status": "full",
+        "value": 8355
+      },
+      "success": false,
+      "task_id": "django__django-12308",
+      "token_cost": 1168015,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8501.0
+            ],
+            [
+              1.0,
+              9006.0
+            ],
+            [
+              2.0,
+              10453.0
+            ],
+            [
+              3.0,
+              10686.0
+            ],
+            [
+              4.0,
+              10782.0
+            ],
+            [
+              5.0,
+              11220.0
+            ],
+            [
+              6.0,
+              13561.0
+            ],
+            [
+              7.0,
+              16092.0
+            ],
+            [
+              8.0,
+              18466.0
+            ],
+            [
+              9.0,
+              20763.0
+            ],
+            [
+              10.0,
+              22519.0
+            ],
+            [
+              11.0,
+              22678.0
+            ],
+            [
+              12.0,
+              23642.0
+            ],
+            [
+              13.0,
+              24962.0
+            ],
+            [
+              14.0,
+              25086.0
+            ],
+            [
+              15.0,
+              26375.0
+            ],
+            [
+              16.0,
+              27489.0
+            ],
+            [
+              17.0,
+              27678.0
+            ],
+            [
+              18.0,
+              27849.0
+            ],
+            [
+              19.0,
+              28076.0
+            ],
+            [
+              20.0,
+              28200.0
+            ],
+            [
+              21.0,
+              28380.0
+            ],
+            [
+              22.0,
+              29048.0
+            ],
+            [
+              23.0,
+              29372.0
+            ],
+            [
+              24.0,
+              29680.0
+            ],
+            [
+              25.0,
+              29827.0
+            ],
+            [
+              26.0,
+              30144.0
+            ],
+            [
+              27.0,
+              30269.0
+            ],
+            [
+              28.0,
+              30658.0
+            ],
+            [
+              29.0,
+              30916.0
+            ],
+            [
+              30.0,
+              31614.0
+            ],
+            [
+              31.0,
+              31941.0
+            ],
+            [
+              32.0,
+              32118.0
+            ],
+            [
+              33.0,
+              32432.0
+            ],
+            [
+              34.0,
+              32579.0
+            ],
+            [
+              35.0,
+              33000.0
+            ],
+            [
+              36.0,
+              33340.0
+            ],
+            [
+              37.0,
+              33988.0
+            ],
+            [
+              38.0,
+              34239.0
+            ],
+            [
+              39.0,
+              34418.0
+            ],
+            [
+              40.0,
+              34511.0
+            ],
+            [
+              41.0,
+              34597.0
+            ],
+            [
+              42.0,
+              34724.0
+            ],
+            [
+              43.0,
+              34958.0
+            ],
+            [
+              44.0,
+              35201.0
+            ],
+            [
+              45.0,
+              35359.0
+            ],
+            [
+              46.0,
+              35495.0
+            ],
+            [
+              47.0,
+              35914.0
+            ],
+            [
+              48.0,
+              36152.0
+            ],
+            [
+              49.0,
+              36267.0
+            ],
+            [
+              50.0,
+              36443.0
+            ],
+            [
+              51.0,
+              36604.0
+            ],
+            [
+              52.0,
+              37019.0
+            ],
+            [
+              53.0,
+              37655.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 488.19134743663045
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8351,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8351
+        },
+        "status": "full",
+        "value": 8351
+      },
+      "success": false,
+      "task_id": "matplotlib__matplotlib-23913",
+      "token_cost": 1522186,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8535.0
+            ],
+            [
+              1.0,
+              8883.0
+            ],
+            [
+              2.0,
+              9146.0
+            ],
+            [
+              3.0,
+              11696.0
+            ],
+            [
+              4.0,
+              11848.0
+            ],
+            [
+              5.0,
+              13038.0
+            ],
+            [
+              6.0,
+              13160.0
+            ],
+            [
+              7.0,
+              14467.0
+            ],
+            [
+              8.0,
+              14572.0
+            ],
+            [
+              9.0,
+              14677.0
+            ],
+            [
+              10.0,
+              14983.0
+            ],
+            [
+              11.0,
+              15761.0
+            ],
+            [
+              12.0,
+              15937.0
+            ],
+            [
+              13.0,
+              16278.0
+            ],
+            [
+              14.0,
+              16448.0
+            ],
+            [
+              15.0,
+              16724.0
+            ],
+            [
+              16.0,
+              16901.0
+            ],
+            [
+              17.0,
+              17422.0
+            ],
+            [
+              18.0,
+              17672.0
+            ],
+            [
+              19.0,
+              17779.0
+            ],
+            [
+              20.0,
+              18576.0
+            ],
+            [
+              21.0,
+              18842.0
+            ],
+            [
+              22.0,
+              21772.0
+            ],
+            [
+              23.0,
+              22018.0
+            ],
+            [
+              24.0,
+              22137.0
+            ],
+            [
+              25.0,
+              22713.0
+            ],
+            [
+              26.0,
+              22822.0
+            ],
+            [
+              27.0,
+              23311.0
+            ],
+            [
+              28.0,
+              23425.0
+            ],
+            [
+              29.0,
+              23803.0
+            ],
+            [
+              30.0,
+              24385.0
+            ],
+            [
+              31.0,
+              24858.0
+            ],
+            [
+              32.0,
+              25823.0
+            ],
+            [
+              33.0,
+              25977.0
+            ],
+            [
+              34.0,
+              26271.0
+            ],
+            [
+              35.0,
+              26614.0
+            ],
+            [
+              36.0,
+              26785.0
+            ],
+            [
+              37.0,
+              27181.0
+            ],
+            [
+              38.0,
+              27487.0
+            ],
+            [
+              39.0,
+              27918.0
+            ],
+            [
+              40.0,
+              28412.0
+            ],
+            [
+              41.0,
+              28564.0
+            ],
+            [
+              42.0,
+              29037.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 475.2527937179101
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8359,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8359
+        },
+        "status": "full",
+        "value": 8359
+      },
+      "success": false,
+      "task_id": "matplotlib__matplotlib-24334",
+      "token_cost": 860525,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8492.0
+            ],
+            [
+              1.0,
+              8811.0
+            ],
+            [
+              2.0,
+              9378.0
+            ],
+            [
+              3.0,
+              10647.0
+            ],
+            [
+              4.0,
+              12933.0
+            ],
+            [
+              5.0,
+              13076.0
+            ],
+            [
+              6.0,
+              13786.0
+            ],
+            [
+              7.0,
+              14453.0
+            ],
+            [
+              8.0,
+              14570.0
+            ],
+            [
+              9.0,
+              15136.0
+            ],
+            [
+              10.0,
+              15297.0
+            ],
+            [
+              11.0,
+              15392.0
+            ],
+            [
+              12.0,
+              15501.0
+            ],
+            [
+              13.0,
+              15600.0
+            ],
+            [
+              14.0,
+              18601.0
+            ],
+            [
+              15.0,
+              18704.0
+            ],
+            [
+              16.0,
+              18933.0
+            ],
+            [
+              17.0,
+              19234.0
+            ],
+            [
+              18.0,
+              19576.0
+            ],
+            [
+              19.0,
+              19805.0
+            ],
+            [
+              20.0,
+              20302.0
+            ],
+            [
+              21.0,
+              20731.0
+            ],
+            [
+              22.0,
+              21139.0
+            ],
+            [
+              23.0,
+              22375.0
+            ],
+            [
+              24.0,
+              22484.0
+            ],
+            [
+              25.0,
+              22748.0
+            ],
+            [
+              26.0,
+              22994.0
+            ],
+            [
+              27.0,
+              23237.0
+            ],
+            [
+              28.0,
+              23477.0
+            ],
+            [
+              29.0,
+              23717.0
+            ],
+            [
+              30.0,
+              24387.0
+            ],
+            [
+              31.0,
+              24717.0
+            ],
+            [
+              32.0,
+              24816.0
+            ],
+            [
+              33.0,
+              24951.0
+            ],
+            [
+              34.0,
+              25423.0
+            ],
+            [
+              35.0,
+              25724.0
+            ],
+            [
+              36.0,
+              25830.0
+            ],
+            [
+              37.0,
+              26916.0
+            ],
+            [
+              38.0,
+              27153.0
+            ],
+            [
+              39.0,
+              27385.0
+            ],
+            [
+              40.0,
+              28060.0
+            ],
+            [
+              41.0,
+              28262.0
+            ],
+            [
+              42.0,
+              28592.0
+            ],
+            [
+              43.0,
+              29451.0
+            ],
+            [
+              44.0,
+              29749.0
+            ],
+            [
+              45.0,
+              30122.0
+            ],
+            [
+              46.0,
+              30222.0
+            ],
+            [
+              47.0,
+              31837.0
+            ],
+            [
+              48.0,
+              32945.0
+            ],
+            [
+              49.0,
+              33785.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 448.4911404561823
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8360,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8360
+        },
+        "status": "full",
+        "value": 8360
+      },
+      "success": false,
+      "task_id": "pydata__xarray-3364",
+      "token_cost": 1090834,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8621.0
+            ],
+            [
+              1.0,
+              9062.0
+            ],
+            [
+              2.0,
+              9303.0
+            ],
+            [
+              3.0,
+              11979.0
+            ],
+            [
+              4.0,
+              12298.0
+            ],
+            [
+              5.0,
+              12947.0
+            ],
+            [
+              6.0,
+              13050.0
+            ],
+            [
+              7.0,
+              13512.0
+            ],
+            [
+              8.0,
+              13608.0
+            ],
+            [
+              9.0,
+              13706.0
+            ],
+            [
+              10.0,
+              14371.0
+            ],
+            [
+              11.0,
+              14468.0
+            ],
+            [
+              12.0,
+              15982.0
+            ],
+            [
+              13.0,
+              16595.0
+            ],
+            [
+              14.0,
+              17850.0
+            ],
+            [
+              15.0,
+              18015.0
+            ],
+            [
+              16.0,
+              18487.0
+            ],
+            [
+              17.0,
+              18601.0
+            ],
+            [
+              18.0,
+              18730.0
+            ],
+            [
+              19.0,
+              19069.0
+            ],
+            [
+              20.0,
+              19165.0
+            ],
+            [
+              21.0,
+              19338.0
+            ],
+            [
+              22.0,
+              19702.0
+            ],
+            [
+              23.0,
+              20153.0
+            ],
+            [
+              24.0,
+              20251.0
+            ],
+            [
+              25.0,
+              20351.0
+            ],
+            [
+              26.0,
+              20444.0
+            ],
+            [
+              27.0,
+              20558.0
+            ],
+            [
+              28.0,
+              20950.0
+            ],
+            [
+              29.0,
+              21290.0
+            ],
+            [
+              30.0,
+              21444.0
+            ],
+            [
+              31.0,
+              22027.0
+            ],
+            [
+              32.0,
+              22309.0
+            ],
+            [
+              33.0,
+              22409.0
+            ],
+            [
+              34.0,
+              22511.0
+            ],
+            [
+              35.0,
+              23582.0
+            ],
+            [
+              36.0,
+              23922.0
+            ],
+            [
+              37.0,
+              24023.0
+            ],
+            [
+              38.0,
+              24465.0
+            ],
+            [
+              39.0,
+              25214.0
+            ],
+            [
+              40.0,
+              25707.0
+            ],
+            [
+              41.0,
+              26371.0
+            ],
+            [
+              42.0,
+              26822.0
+            ],
+            [
+              43.0,
+              27318.0
+            ],
+            [
+              44.0,
+              27593.0
+            ],
+            [
+              45.0,
+              27926.0
+            ],
+            [
+              46.0,
+              28460.0
+            ],
+            [
+              47.0,
+              28886.0
+            ],
+            [
+              48.0,
+              29552.0
+            ],
+            [
+              49.0,
+              29875.0
+            ],
+            [
+              50.0,
+              30351.0
+            ],
+            [
+              51.0,
+              30817.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 385.6007854520618
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8394,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8394
+        },
+        "status": "full",
+        "value": 8394
+      },
+      "success": false,
+      "task_id": "pydata__xarray-4248",
+      "token_cost": 1072945,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8411.0
+            ],
+            [
+              1.0,
+              8550.0
+            ],
+            [
+              2.0,
+              8662.0
+            ],
+            [
+              3.0,
+              8989.0
+            ],
+            [
+              4.0,
+              9653.0
+            ],
+            [
+              5.0,
+              9951.0
+            ],
+            [
+              6.0,
+              10866.0
+            ],
+            [
+              7.0,
+              11066.0
+            ],
+            [
+              8.0,
+              11954.0
+            ],
+            [
+              9.0,
+              12095.0
+            ],
+            [
+              10.0,
+              12640.0
+            ],
+            [
+              11.0,
+              13268.0
+            ],
+            [
+              12.0,
+              13683.0
+            ],
+            [
+              13.0,
+              14344.0
+            ],
+            [
+              14.0,
+              14826.0
+            ],
+            [
+              15.0,
+              14978.0
+            ],
+            [
+              16.0,
+              15409.0
+            ],
+            [
+              17.0,
+              16024.0
+            ],
+            [
+              18.0,
+              36894.0
+            ],
+            [
+              19.0,
+              38250.0
+            ],
+            [
+              20.0,
+              17123.0
+            ],
+            [
+              21.0,
+              17253.0
+            ],
+            [
+              22.0,
+              97760.0
+            ],
+            [
+              23.0,
+              18581.0
+            ],
+            [
+              24.0,
+              18759.0
+            ],
+            [
+              25.0,
+              43620.0
+            ],
+            [
+              26.0,
+              19588.0
+            ],
+            [
+              27.0,
+              20077.0
+            ],
+            [
+              28.0,
+              20365.0
+            ],
+            [
+              29.0,
+              20464.0
+            ],
+            [
+              30.0,
+              20726.0
+            ],
+            [
+              31.0,
+              20934.0
+            ],
+            [
+              32.0,
+              21054.0
+            ],
+            [
+              33.0,
+              21178.0
+            ],
+            [
+              34.0,
+              21315.0
+            ],
+            [
+              35.0,
+              21501.0
+            ],
+            [
+              36.0,
+              21613.0
+            ],
+            [
+              37.0,
+              21804.0
+            ],
+            [
+              38.0,
+              21927.0
+            ],
+            [
+              39.0,
+              22157.0
+            ],
+            [
+              40.0,
+              22589.0
+            ],
+            [
+              41.0,
+              22863.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 395.1930961834536
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8357,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8357
+        },
+        "status": "full",
+        "value": 8357
+      },
+      "success": false,
+      "task_id": "pytest-dev__pytest-5221",
+      "token_cost": 852822,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8662.0
+            ],
+            [
+              1.0,
+              8820.0
+            ],
+            [
+              2.0,
+              11184.0
+            ],
+            [
+              3.0,
+              11353.0
+            ],
+            [
+              4.0,
+              11485.0
+            ],
+            [
+              5.0,
+              11609.0
+            ],
+            [
+              6.0,
+              11731.0
+            ],
+            [
+              7.0,
+              12094.0
+            ],
+            [
+              8.0,
+              13622.0
+            ],
+            [
+              9.0,
+              13737.0
+            ],
+            [
+              10.0,
+              13831.0
+            ],
+            [
+              11.0,
+              13935.0
+            ],
+            [
+              12.0,
+              14089.0
+            ],
+            [
+              13.0,
+              14181.0
+            ],
+            [
+              14.0,
+              14281.0
+            ],
+            [
+              15.0,
+              14584.0
+            ],
+            [
+              16.0,
+              14683.0
+            ],
+            [
+              17.0,
+              15007.0
+            ],
+            [
+              18.0,
+              16421.0
+            ],
+            [
+              19.0,
+              16523.0
+            ],
+            [
+              20.0,
+              16677.0
+            ],
+            [
+              21.0,
+              17201.0
+            ],
+            [
+              22.0,
+              17469.0
+            ],
+            [
+              23.0,
+              17737.0
+            ],
+            [
+              24.0,
+              18080.0
+            ],
+            [
+              25.0,
+              18401.0
+            ],
+            [
+              26.0,
+              18743.0
+            ],
+            [
+              27.0,
+              20001.0
+            ],
+            [
+              28.0,
+              22416.0
+            ],
+            [
+              29.0,
+              22508.0
+            ],
+            [
+              30.0,
+              22635.0
+            ],
+            [
+              31.0,
+              22730.0
+            ],
+            [
+              32.0,
+              22840.0
+            ],
+            [
+              33.0,
+              23169.0
+            ],
+            [
+              34.0,
+              23326.0
+            ],
+            [
+              35.0,
+              23600.0
+            ],
+            [
+              36.0,
+              25005.0
+            ],
+            [
+              37.0,
+              25501.0
+            ],
+            [
+              38.0,
+              25596.0
+            ],
+            [
+              39.0,
+              25863.0
+            ],
+            [
+              40.0,
+              27495.0
+            ],
+            [
+              41.0,
+              27616.0
+            ],
+            [
+              42.0,
+              27857.0
+            ],
+            [
+              43.0,
+              27981.0
+            ],
+            [
+              44.0,
+              28224.0
+            ],
+            [
+              45.0,
+              28392.0
+            ],
+            [
+              46.0,
+              28653.0
+            ],
+            [
+              47.0,
+              28785.0
+            ],
+            [
+              48.0,
+              29009.0
+            ],
+            [
+              49.0,
+              30071.0
+            ],
+            [
+              50.0,
+              30167.0
+            ],
+            [
+              51.0,
+              30303.0
+            ],
+            [
+              52.0,
+              30956.0
+            ],
+            [
+              53.0,
+              31121.0
+            ],
+            [
+              54.0,
+              31228.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 426.03441558441557
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8365,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8365
+        },
+        "status": "full",
+        "value": 8365
+      },
+      "success": false,
+      "task_id": "pytest-dev__pytest-5227",
+      "token_cost": 1136497,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "swe-bench instance unresolved (empty patch)",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8351,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8351
+        },
+        "status": "full",
+        "value": 8351
+      },
+      "success": false,
+      "task_id": "sympy__sympy-13146",
+      "token_cost": 9068,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              8482.0
+            ],
+            [
+              1.0,
+              8886.0
+            ],
+            [
+              2.0,
+              9405.0
+            ],
+            [
+              3.0,
+              12321.0
+            ],
+            [
+              4.0,
+              14822.0
+            ],
+            [
+              5.0,
+              15002.0
+            ],
+            [
+              6.0,
+              15318.0
+            ],
+            [
+              7.0,
+              15646.0
+            ],
+            [
+              8.0,
+              15733.0
+            ],
+            [
+              9.0,
+              16039.0
+            ],
+            [
+              10.0,
+              16130.0
+            ],
+            [
+              11.0,
+              17144.0
+            ],
+            [
+              12.0,
+              17236.0
+            ],
+            [
+              13.0,
+              17541.0
+            ],
+            [
+              14.0,
+              17766.0
+            ],
+            [
+              15.0,
+              17873.0
+            ],
+            [
+              16.0,
+              17988.0
+            ],
+            [
+              17.0,
+              18295.0
+            ],
+            [
+              18.0,
+              18769.0
+            ],
+            [
+              19.0,
+              21270.0
+            ],
+            [
+              20.0,
+              21383.0
+            ],
+            [
+              21.0,
+              21781.0
+            ],
+            [
+              22.0,
+              21886.0
+            ],
+            [
+              23.0,
+              22253.0
+            ],
+            [
+              24.0,
+              22361.0
+            ],
+            [
+              25.0,
+              23103.0
+            ],
+            [
+              26.0,
+              24145.0
+            ],
+            [
+              27.0,
+              24609.0
+            ],
+            [
+              28.0,
+              24935.0
+            ],
+            [
+              29.0,
+              25327.0
+            ],
+            [
+              30.0,
+              25450.0
+            ],
+            [
+              31.0,
+              26305.0
+            ],
+            [
+              32.0,
+              26856.0
+            ],
+            [
+              33.0,
+              26951.0
+            ],
+            [
+              34.0,
+              27172.0
+            ],
+            [
+              35.0,
+              27981.0
+            ],
+            [
+              36.0,
+              28605.0
+            ],
+            [
+              37.0,
+              28785.0
+            ],
+            [
+              38.0,
+              28944.0
+            ],
+            [
+              39.0,
+              29070.0
+            ],
+            [
+              40.0,
+              29289.0
+            ],
+            [
+              41.0,
+              29403.0
+            ],
+            [
+              42.0,
+              31358.0
+            ],
+            [
+              43.0,
+              31518.0
+            ],
+            [
+              44.0,
+              33136.0
+            ],
+            [
+              45.0,
+              33246.0
+            ],
+            [
+              46.0,
+              33414.0
+            ],
+            [
+              47.0,
+              34169.0
+            ],
+            [
+              48.0,
+              34989.0
+            ],
+            [
+              49.0,
+              35211.0
+            ],
+            [
+              50.0,
+              35485.0
+            ],
+            [
+              51.0,
+              35768.0
+            ],
+            [
+              52.0,
+              36048.0
+            ],
+            [
+              53.0,
+              36337.0
+            ],
+            [
+              54.0,
+              36650.0
+            ],
+            [
+              55.0,
+              37324.0
+            ],
+            [
+              56.0,
+              37450.0
+            ],
+            [
+              57.0,
+              38205.0
+            ],
+            [
+              58.0,
+              38434.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 481.74932787843375
+      },
+      "oracle_message": "swe-bench evaluation error",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 8386,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 8386
+        },
+        "status": "full",
+        "value": 8386
+      },
+      "success": false,
+      "task_id": "sympy__sympy-14308",
+      "token_cost": 1485272,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 10,
+    "by_perturbation": {
+      "base": {
+        "attempted": 10,
+        "solve_rate": 0.0,
+        "solved": 0
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 445.14550513983596,
+        "research_metric": "B",
+        "runs_full": 9,
+        "runs_unsupported": 1,
+        "status": "partial",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 8365.5,
+        "research_metric": "A",
+        "runs_full": 10,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 10,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": null,
+        "total_token_cost": 10189274,
+        "unit": "tokens per solved task"
+      }
+    },
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 0,
+      "source": "No manifest pricing configured; dollars remain zero unless the provider/proxy reports cost_usd."
+    },
+    "solve_rate": 0.0,
+    "solved": 0
+  }
+}

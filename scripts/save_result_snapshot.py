@@ -33,10 +33,27 @@ def main() -> int:
     parser.add_argument("--model", help="Resolved model id to record.")
     parser.add_argument("--suite", default="examples-non-swe-full")
     parser.add_argument("--tasks-dir", default="examples/tasks")
+    parser.add_argument(
+        "--filter-to-tasks-dir",
+        action="store_true",
+        help="Only include result files whose task_id appears under --tasks-dir.",
+    )
     parser.add_argument("--perturbation-mode", default="all-perturbations")
     parser.add_argument("--oracle-mode", default="task manifests")
     parser.add_argument("--execution", help="Human-readable execution description.")
     parser.add_argument("--command", action="append", default=[])
+    parser.add_argument(
+        "--swe-report",
+        action="append",
+        default=[],
+        help="SWE-bench evaluator JSON report used to override SWE oracle labels.",
+    )
+    parser.add_argument(
+        "--swe-predictions",
+        action="append",
+        default=[],
+        help="SWE-bench predictions JSONL paired with --swe-report; marks submitted empty/no-op patches.",
+    )
     args = parser.parse_args()
 
     run_root = Path(args.run_root)
@@ -47,7 +64,13 @@ def main() -> int:
     )
     if not results:
         parser.error(f"no result files found under {run_root}")
-    results = _recompute_metrics(results, run_root, Path(args.tasks_dir))
+    tasks_dir = Path(args.tasks_dir)
+    if args.filter_to_tasks_dir:
+        results = _filter_results_to_tasks_dir(results, tasks_dir)
+        if not results:
+            parser.error(f"no result files under {run_root} match tasks from {tasks_dir}")
+    results = _recompute_metrics(results, run_root, tasks_dir)
+    results = _apply_swe_report_overrides(results, args.swe_report, args.swe_predictions)
 
     summary = summarize_results(results)
     harness_bucket = summary["by_harness"].get(harness.id)
@@ -117,8 +140,115 @@ def _recompute_metrics(
     return recomputed
 
 
+def _apply_swe_report_overrides(
+    results: list[dict[str, Any]],
+    report_paths: list[str],
+    prediction_paths: list[str],
+) -> list[dict[str, Any]]:
+    if not report_paths:
+        return results
+    outcomes = _load_swe_outcomes([Path(path) for path in report_paths], [Path(path) for path in prediction_paths])
+    if not outcomes:
+        return results
+
+    updated = []
+    for item in results:
+        task_id = str(item.get("task_id") or "")
+        outcome = outcomes.get(task_id)
+        if outcome is None:
+            updated.append(item)
+            continue
+        next_item = dict(item)
+        oracle_result = dict(next_item.get("oracle_result") or {})
+        oracle_result.update(
+            {
+                "success": outcome["success"],
+                "score": 1.0 if outcome["success"] else 0.0,
+                "message": outcome["message"],
+            }
+        )
+        details = dict(oracle_result.get("details") or {})
+        details["swe_bench_regrade"] = {
+            "report_path": outcome["report_path"],
+            "outcome": outcome["outcome"],
+        }
+        oracle_result["details"] = details
+        next_item["oracle_result"] = oracle_result
+        next_item["success"] = bool(outcome["success"] and next_item.get("adapter_exit_code") == 0)
+        metadata = dict(next_item.get("metadata") or {})
+        metadata["swe_bench_regraded_from_report"] = outcome["report_path"]
+        next_item["metadata"] = metadata
+        updated.append(next_item)
+    return updated
+
+
+def _load_swe_outcomes(report_paths: list[Path], prediction_paths: list[Path]) -> dict[str, dict[str, Any]]:
+    submitted_ids = _load_prediction_ids(prediction_paths)
+    outcomes: dict[str, dict[str, Any]] = {}
+    for report_path in report_paths:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        resolved = set(_string_list(report.get("resolved_ids")))
+        unresolved = set(_string_list(report.get("unresolved_ids")))
+        error = set(_string_list(report.get("error_ids")))
+        empty_patch = set(_string_list(report.get("empty_patch_ids")))
+        incomplete = set(_string_list(report.get("incomplete_ids")))
+        all_ids = set(_string_list(report.get("submitted_ids"))) or set(submitted_ids)
+        all_ids.update(resolved)
+        all_ids.update(unresolved)
+        all_ids.update(error)
+        all_ids.update(empty_patch)
+        all_ids.update(incomplete)
+        for instance_id in sorted(all_ids):
+            if instance_id in resolved:
+                outcome = "resolved"
+                success = True
+                message = "swe-bench instance resolved"
+            elif instance_id in error:
+                outcome = "error"
+                success = False
+                message = "swe-bench evaluation error"
+            elif instance_id in empty_patch:
+                outcome = "empty_patch"
+                success = False
+                message = "swe-bench instance unresolved (empty patch)"
+            elif instance_id in incomplete:
+                outcome = "incomplete"
+                success = False
+                message = "swe-bench evaluation incomplete"
+            else:
+                outcome = "unresolved"
+                success = False
+                message = "swe-bench instance unresolved"
+            outcomes[instance_id] = {
+                "success": success,
+                "message": message,
+                "outcome": outcome,
+                "report_path": str(report_path),
+            }
+    return outcomes
+
+
+def _load_prediction_ids(paths: list[Path]) -> set[str]:
+    ids: set[str] = set()
+    for path in paths:
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            payload = json.loads(line)
+            instance_id = payload.get("instance_id")
+            if instance_id is not None:
+                ids.add(str(instance_id))
+    return ids
+
+
+def _string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value]
+
+
 def _load_tasks(tasks_dir: Path) -> dict[str, TaskManifest]:
-    paths = [tasks_dir] if tasks_dir.is_file() else sorted({*tasks_dir.rglob("task.yaml"), *tasks_dir.glob("*.yaml"), *tasks_dir.glob("*.json")})
+    paths = _task_manifest_paths(tasks_dir)
     tasks: dict[str, TaskManifest] = {}
     for path in paths:
         try:
@@ -127,6 +257,19 @@ def _load_tasks(tasks_dir: Path) -> dict[str, TaskManifest]:
             continue
         tasks[task.id] = task
     return tasks
+
+
+def _filter_results_to_tasks_dir(results: list[dict[str, Any]], tasks_dir: Path) -> list[dict[str, Any]]:
+    task_ids = set(_load_tasks(tasks_dir))
+    if not task_ids:
+        return results
+    return [item for item in results if str(item.get("task_id")) in task_ids]
+
+
+def _task_manifest_paths(tasks_dir: Path) -> list[Path]:
+    if tasks_dir.is_file():
+        return [tasks_dir]
+    return sorted({*tasks_dir.rglob("task.yaml"), *tasks_dir.glob("*.yaml"), *tasks_dir.glob("*.json")})
 
 
 def _resolve_trace_path(raw_path: Any, run_root: Path) -> Path | None:
