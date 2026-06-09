@@ -155,6 +155,8 @@ The OpenRouter smoke calibration in `examples/results/openrouter-docker-smoke-ca
 
 For Aider, use `AIDER_ARCHITECT=1` when measuring B context growth. Normal Aider mode is often a single model call, so B is unsupported even when A and C are available. The wrapper defaults to `AIDER_FILE_MODE=auto`: small repositories get tracked files added to the chat, while large repositories use repo-map mode instead of passing every tracked file. On the OpenRouter free `nvidia/nemotron-3-ultra-550b-a55b:free` model, SWE-scale Aider runs with repo-map context have stalled before usage is returned; `AIDER_MAP_TOKENS=0` is bounded and measurable but usually produces empty SWE patches.
 
+For Qwen Code, use `QWEN_MAX_TOOL_CALLS`, `QWEN_MAX_SESSION_TURNS`, and `QWEN_MAX_WALL_TIME` to bound unattended SWE-scale runs. Qwen exits nonzero when a cap is exceeded, but the benchmark still grades any produced patch with the task oracle and preserves both strict benchmark success and `oracle_solved` counts in result snapshots.
+
 Some agents initialize their own workspace metadata in the mounted task workspace. Task oracles should grade the required files or repository diff and ignore unrelated harness metadata unless the task explicitly forbids extra files.
 
 ## Harness Config Keys

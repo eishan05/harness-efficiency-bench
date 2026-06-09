@@ -37,8 +37,19 @@ cat > "$HOME/.qwen/settings.json" <<EOF
 }
 EOF
 
-qwen \
+set -- qwen \
   --yolo \
   --input-format text \
-  --output-format stream-json \
-  < "$prompt_file"
+  --output-format stream-json
+
+if [ -n "${QWEN_MAX_SESSION_TURNS:-}" ]; then
+  set -- "$@" --max-session-turns "$QWEN_MAX_SESSION_TURNS"
+fi
+if [ -n "${QWEN_MAX_TOOL_CALLS:-}" ]; then
+  set -- "$@" --max-tool-calls "$QWEN_MAX_TOOL_CALLS"
+fi
+if [ -n "${QWEN_MAX_WALL_TIME:-}" ]; then
+  set -- "$@" --max-wall-time "$QWEN_MAX_WALL_TIME"
+fi
+
+"$@" < "$prompt_file"

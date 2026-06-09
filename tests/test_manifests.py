@@ -121,6 +121,19 @@ class ManifestTest(unittest.TestCase):
                 self.assertTrue(harness.config.get("cli_version"))
                 self.assertTrue(harness.config.get("version_command"))
 
+    def test_qwen_docker_examples_expose_run_limits(self):
+        paths = [
+            ROOT / "examples/harnesses/qwen-code-docker-isolated.yaml",
+            ROOT / "examples/harnesses/qwen-code-docker-openrouter.yaml",
+        ]
+        for path in paths:
+            harness = HarnessManifest.load(path)
+            env_passthrough = harness.config.get("docker_env_passthrough", [])
+            with self.subTest(path=path.name):
+                self.assertIn("QWEN_MAX_SESSION_TURNS", env_passthrough)
+                self.assertIn("QWEN_MAX_TOOL_CALLS", env_passthrough)
+                self.assertIn("QWEN_MAX_WALL_TIME", env_passthrough)
+
 
 if __name__ == "__main__":
     unittest.main()
