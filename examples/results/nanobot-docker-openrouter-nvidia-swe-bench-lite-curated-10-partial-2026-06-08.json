@@ -1,0 +1,815 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 1,
+    "oracle_mode": "task manifests; suite manually stopped after first 1800s timeout",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-09T04:21:02.552483+00:00",
+    "run_started_at": "2026-06-09T03:51:01.360366+00:00",
+    "suite": "swe-bench-lite-curated-10-partial",
+    "tasks_dir": "examples/tasks/swe-bench-lite-curated-10"
+  },
+  "captured_at": "2026-06-09T04:24:05.677293Z",
+  "commands": [
+    "OPENROUTER_MODEL=\"nvidia/nemotron-3-ultra-550b-a55b:free\" PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608 run-suite --tasks-dir examples/tasks/swe-bench-lite-curated-10 --harness examples/harnesses/nanobot-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/nanobot-docker-openrouter.yaml",
+    "docker_image": "harness-bench/nanobot:0.2.1",
+    "execution": "Docker-isolated Nanobot via OpenRouter; partial SWE-bench Lite diagnostic stopped after first task timeout",
+    "id": "nanobot-docker-openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "django__django-11905",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "django__django-11905-3b7f61e9c3",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 333255,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [
+            "django__django-11905"
+          ],
+          "completed_instances": 1,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "django__django-11905"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [
+            "django__django-11905"
+          ],
+          "unresolved_instances": 1
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/nanobot-openrouter-nvidia-swe-bench-lite-curated-10-20260608/work/django__django-11905__nanobot-docker-openrouter__4b2114520b/swebench_eval/harness-efficiency-bench.django__django-11905-3b7f61e9c3.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-09 04:21:03,582 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-09 04:21:03,602 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:03,620 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:03,673 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 04:21:03,809 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 04:21:03,857 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:03,903 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-09 04:21:04,027 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:04,077 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:04,128 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:04,185 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-09 04:21:04,185 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-09 04:21:04,238 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-09 04:21:04,287 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:04,793 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5722.45 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 45504.53 examples/s]\n2026-06-09 04:21:05,090 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-09 04:21:05,109 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:05,155 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 04:21:05,195 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 04:21:05,242 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-09 04:21:05,300 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-09 04:21:05,346 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [01:05<?, ?it/s, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [01:05<00:00, 65.44s/it, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [01:05<00:00, 65.44s/it, \u2713=0, \u2716=1, error=0]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nNo environment images need to be built.\nRunning 1 instances...\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 1\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 1\nInstances with empty patches: 0\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.django__django-11905-3b7f61e9c3.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "django__django-11905",
+      "token_cost": 3956786
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              9788.0
+            ],
+            [
+              1.0,
+              9927.0
+            ],
+            [
+              2.0,
+              10327.0
+            ],
+            [
+              3.0,
+              10818.0
+            ],
+            [
+              4.0,
+              10900.0
+            ],
+            [
+              5.0,
+              11039.0
+            ],
+            [
+              6.0,
+              11501.0
+            ],
+            [
+              7.0,
+              12479.0
+            ],
+            [
+              8.0,
+              12989.0
+            ],
+            [
+              9.0,
+              14865.0
+            ],
+            [
+              10.0,
+              15912.0
+            ],
+            [
+              11.0,
+              17849.0
+            ],
+            [
+              12.0,
+              17769.0
+            ],
+            [
+              13.0,
+              17876.0
+            ],
+            [
+              14.0,
+              18281.0
+            ],
+            [
+              15.0,
+              18984.0
+            ],
+            [
+              16.0,
+              19262.0
+            ],
+            [
+              17.0,
+              18626.0
+            ],
+            [
+              18.0,
+              18651.0
+            ],
+            [
+              19.0,
+              17544.0
+            ],
+            [
+              20.0,
+              18626.0
+            ],
+            [
+              21.0,
+              17063.0
+            ],
+            [
+              22.0,
+              17636.0
+            ],
+            [
+              23.0,
+              18091.0
+            ],
+            [
+              24.0,
+              18031.0
+            ],
+            [
+              25.0,
+              18777.0
+            ],
+            [
+              26.0,
+              18518.0
+            ],
+            [
+              27.0,
+              19295.0
+            ],
+            [
+              28.0,
+              20873.0
+            ],
+            [
+              29.0,
+              20567.0
+            ],
+            [
+              30.0,
+              19089.0
+            ],
+            [
+              31.0,
+              20518.0
+            ],
+            [
+              32.0,
+              21482.0
+            ],
+            [
+              33.0,
+              22148.0
+            ],
+            [
+              34.0,
+              23553.0
+            ],
+            [
+              35.0,
+              23748.0
+            ],
+            [
+              36.0,
+              24182.0
+            ],
+            [
+              37.0,
+              24732.0
+            ],
+            [
+              38.0,
+              24170.0
+            ],
+            [
+              39.0,
+              22608.0
+            ],
+            [
+              40.0,
+              22738.0
+            ],
+            [
+              41.0,
+              22776.0
+            ],
+            [
+              42.0,
+              21718.0
+            ],
+            [
+              43.0,
+              21632.0
+            ],
+            [
+              44.0,
+              20471.0
+            ],
+            [
+              45.0,
+              19724.0
+            ],
+            [
+              46.0,
+              19286.0
+            ],
+            [
+              47.0,
+              19231.0
+            ],
+            [
+              48.0,
+              19419.0
+            ],
+            [
+              49.0,
+              19952.0
+            ],
+            [
+              50.0,
+              21145.0
+            ],
+            [
+              51.0,
+              21060.0
+            ],
+            [
+              52.0,
+              22260.0
+            ],
+            [
+              53.0,
+              21293.0
+            ],
+            [
+              54.0,
+              21539.0
+            ],
+            [
+              55.0,
+              21323.0
+            ],
+            [
+              56.0,
+              21123.0
+            ],
+            [
+              57.0,
+              22448.0
+            ],
+            [
+              58.0,
+              24143.0
+            ],
+            [
+              59.0,
+              23875.0
+            ],
+            [
+              60.0,
+              24181.0
+            ],
+            [
+              61.0,
+              24684.0
+            ],
+            [
+              62.0,
+              26422.0
+            ],
+            [
+              63.0,
+              26163.0
+            ],
+            [
+              64.0,
+              27286.0
+            ],
+            [
+              65.0,
+              27911.0
+            ],
+            [
+              66.0,
+              28115.0
+            ],
+            [
+              67.0,
+              28312.0
+            ],
+            [
+              68.0,
+              27129.0
+            ],
+            [
+              69.0,
+              25869.0
+            ],
+            [
+              70.0,
+              26622.0
+            ],
+            [
+              71.0,
+              25884.0
+            ],
+            [
+              72.0,
+              25267.0
+            ],
+            [
+              73.0,
+              25702.0
+            ],
+            [
+              74.0,
+              25405.0
+            ],
+            [
+              75.0,
+              26109.0
+            ],
+            [
+              76.0,
+              26805.0
+            ],
+            [
+              77.0,
+              27018.0
+            ],
+            [
+              78.0,
+              27835.0
+            ],
+            [
+              79.0,
+              28067.0
+            ],
+            [
+              80.0,
+              28713.0
+            ],
+            [
+              81.0,
+              29357.0
+            ],
+            [
+              82.0,
+              29162.0
+            ],
+            [
+              83.0,
+              28631.0
+            ],
+            [
+              84.0,
+              28834.0
+            ],
+            [
+              85.0,
+              28956.0
+            ],
+            [
+              86.0,
+              28628.0
+            ],
+            [
+              87.0,
+              28735.0
+            ],
+            [
+              88.0,
+              28288.0
+            ],
+            [
+              89.0,
+              27935.0
+            ],
+            [
+              90.0,
+              27680.0
+            ],
+            [
+              91.0,
+              27300.0
+            ],
+            [
+              92.0,
+              27270.0
+            ],
+            [
+              93.0,
+              27549.0
+            ],
+            [
+              94.0,
+              27088.0
+            ],
+            [
+              95.0,
+              26547.0
+            ],
+            [
+              96.0,
+              26789.0
+            ],
+            [
+              97.0,
+              26506.0
+            ],
+            [
+              98.0,
+              26415.0
+            ],
+            [
+              99.0,
+              27150.0
+            ],
+            [
+              100.0,
+              27437.0
+            ],
+            [
+              101.0,
+              27996.0
+            ],
+            [
+              102.0,
+              27949.0
+            ],
+            [
+              103.0,
+              28126.0
+            ],
+            [
+              104.0,
+              28061.0
+            ],
+            [
+              105.0,
+              28498.0
+            ],
+            [
+              106.0,
+              28716.0
+            ],
+            [
+              107.0,
+              29269.0
+            ],
+            [
+              108.0,
+              29851.0
+            ],
+            [
+              109.0,
+              29764.0
+            ],
+            [
+              110.0,
+              29822.0
+            ],
+            [
+              111.0,
+              30184.0
+            ],
+            [
+              112.0,
+              30290.0
+            ],
+            [
+              113.0,
+              30113.0
+            ],
+            [
+              114.0,
+              30591.0
+            ],
+            [
+              115.0,
+              31007.0
+            ],
+            [
+              116.0,
+              30998.0
+            ],
+            [
+              117.0,
+              31113.0
+            ],
+            [
+              118.0,
+              31435.0
+            ],
+            [
+              119.0,
+              31718.0
+            ],
+            [
+              120.0,
+              32023.0
+            ],
+            [
+              121.0,
+              31695.0
+            ],
+            [
+              122.0,
+              31981.0
+            ],
+            [
+              123.0,
+              32286.0
+            ],
+            [
+              124.0,
+              32615.0
+            ],
+            [
+              125.0,
+              32665.0
+            ],
+            [
+              126.0,
+              33009.0
+            ],
+            [
+              127.0,
+              33172.0
+            ],
+            [
+              128.0,
+              33035.0
+            ],
+            [
+              129.0,
+              33040.0
+            ],
+            [
+              130.0,
+              33146.0
+            ],
+            [
+              131.0,
+              33553.0
+            ],
+            [
+              132.0,
+              33595.0
+            ],
+            [
+              133.0,
+              33798.0
+            ],
+            [
+              134.0,
+              33920.0
+            ],
+            [
+              135.0,
+              34000.0
+            ],
+            [
+              136.0,
+              34051.0
+            ],
+            [
+              137.0,
+              34077.0
+            ],
+            [
+              138.0,
+              34316.0
+            ],
+            [
+              139.0,
+              34463.0
+            ],
+            [
+              140.0,
+              34581.0
+            ],
+            [
+              141.0,
+              34799.0
+            ],
+            [
+              142.0,
+              34900.0
+            ],
+            [
+              143.0,
+              34799.0
+            ],
+            [
+              144.0,
+              34816.0
+            ],
+            [
+              145.0,
+              34934.0
+            ],
+            [
+              146.0,
+              34976.0
+            ],
+            [
+              147.0,
+              35179.0
+            ],
+            [
+              148.0,
+              35301.0
+            ],
+            [
+              149.0,
+              35381.0
+            ],
+            [
+              150.0,
+              35814.0
+            ],
+            [
+              151.0,
+              35993.0
+            ],
+            [
+              152.0,
+              36134.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 141.44575007036303
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 9709,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 9709
+        },
+        "status": "full",
+        "value": 9709
+      },
+      "success": false,
+      "task_id": "django__django-11905",
+      "token_cost": 3956786,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 1,
+    "by_perturbation": {
+      "base": {
+        "attempted": 1,
+        "solve_rate": 0.0,
+        "solved": 0
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 141.44575007036303,
+        "research_metric": "B",
+        "runs_full": 1,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 9709.0,
+        "research_metric": "A",
+        "runs_full": 1,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 1,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": null,
+        "total_token_cost": 3956786,
+        "unit": "tokens per solved task"
+      }
+    },
+    "oracle_solve_rate": 0.0,
+    "oracle_solved": 0,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 0,
+      "source": "No manifest pricing configured; dollars remain zero unless the provider/proxy reports cost_usd."
+    },
+    "solve_rate": 0.0,
+    "solved": 0
+  }
+}
