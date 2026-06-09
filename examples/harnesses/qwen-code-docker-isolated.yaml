@@ -49,4 +49,4 @@ config:
         - QWEN_BASE_URL
       api_key_env:
         - DASHSCOPE_API_KEY
-      trace_path: .harness-usage-proxy.jsonl
+      trace_path: ../.harness-usage-proxy.jsonl

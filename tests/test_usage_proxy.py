@@ -143,6 +143,33 @@ class UsageProxyTest(unittest.TestCase):
             upstream.server_close()
             thread.join(timeout=5)
 
+    def test_proxy_recreates_missing_trace_parent_on_write(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            trace_path = Path(tmp) / "deleted-workspace" / ".harness-usage-proxy.jsonl"
+            proxy = UsageProxy(
+                UsageProxyConfig(
+                    upstream_base_url="https://example.test/api",
+                    trace_path=trace_path,
+                )
+            )
+
+            proxy._write_usage_record(
+                method="POST",
+                path="/chat/completions",
+                status_code=200,
+                response_headers={},
+                request_started_at="2026-06-09T00:00:00+00:00",
+                request_finished_at="2026-06-09T00:00:01+00:00",
+                request_payload={"model": "test-model"},
+                response_body=json.dumps(
+                    {"usage": {"prompt_tokens": 12, "completion_tokens": 3}}
+                ).encode("utf-8"),
+            )
+
+            record = json.loads(trace_path.read_text(encoding="utf-8"))
+            self.assertEqual(record["model"], "test-model")
+            self.assertEqual(record["usage"]["prompt_tokens"], 12)
+
     def test_proxy_binds_all_interfaces_for_docker_backend(self):
         workspace = Path("/tmp/workspace")
 

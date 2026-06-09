@@ -239,6 +239,7 @@ class UsageProxy:
         if cost is not None:
             record["cost_usd"] = cost
         with self._lock:
+            self.config.trace_path.parent.mkdir(parents=True, exist_ok=True)
             with self.config.trace_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, sort_keys=True) + "\n")
 
