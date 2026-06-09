@@ -1,0 +1,242 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 3,
+    "oracle_mode": "task manifest local oracle",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-09T16:32:57.914434+00:00",
+    "run_started_at": "2026-06-09T16:32:13.959478+00:00",
+    "suite": "non-swe-initial-3",
+    "tasks_dir": "runs/non-swe-initial-3-tasks"
+  },
+  "captured_at": "2026-06-09T16:59:08.805224Z",
+  "commands": [
+    "OPENROUTER_MODEL=deepseek/deepseek-v4-flash PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-deepseek-v4-flash-non-swe-initial-3-20260609/claude-code-docker-openrouter run-suite --tasks-dir runs/non-swe-initial-3-tasks --harness examples/harnesses/claude-code-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "claude_code",
+    "base_manifest": "examples/harnesses/claude-code-docker-openrouter.yaml",
+    "docker_image": "harness-bench/claude-code:2.1.114",
+    "execution": "Docker-isolated claude-code-docker-openrouter via OpenRouter using deepseek/deepseek-v4-flash over toy-write-file, python-fix-calculator, and harness-stress-log-triage base tasks.",
+    "id": "claude-code-docker-openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "timeout_sec": 900
+  },
+  "known_failures": [],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              1.0,
+              4299.0
+            ],
+            [
+              2.0,
+              4744.0
+            ],
+            [
+              3.0,
+              5373.0
+            ],
+            [
+              4.0,
+              5867.0
+            ],
+            [
+              5.0,
+              5990.0
+            ],
+            [
+              6.0,
+              6195.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 391.77142857142854
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 187,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 4275
+        },
+        "status": "full",
+        "value": 4462
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 34554,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              1.0,
+              4297.0
+            ],
+            [
+              2.0,
+              4532.0
+            ],
+            [
+              3.0,
+              4847.0
+            ],
+            [
+              4.0,
+              5103.0
+            ],
+            [
+              5.0,
+              5507.0
+            ],
+            [
+              6.0,
+              5620.0
+            ],
+            [
+              7.0,
+              6076.0
+            ],
+            [
+              8.0,
+              6556.0
+            ],
+            [
+              9.0,
+              6802.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 317.78333333333336
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 213,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 4279
+        },
+        "status": "full",
+        "value": 4492
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 51500,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              1.0,
+              4308.0
+            ],
+            [
+              2.0,
+              4443.0
+            ],
+            [
+              3.0,
+              4564.0
+            ],
+            [
+              4.0,
+              4704.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 130.9
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 183,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 4281
+        },
+        "status": "full",
+        "value": 4464
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 19181,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 3,
+    "by_perturbation": {
+      "base": {
+        "attempted": 3,
+        "solve_rate": 1.0,
+        "solved": 3
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 280.1515873015873,
+        "research_metric": "B",
+        "runs_full": 3,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 4472.666666666667,
+        "research_metric": "A",
+        "runs_full": 3,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 3,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": 35078.333333333336,
+        "total_token_cost": 105235,
+        "unit": "tokens per solved task"
+      }
+    },
+    "oracle_solve_rate": 1.0,
+    "oracle_solved": 3,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0143604239,
+      "runs_with_dollar_cost": 3,
+      "source": "Provider/proxy-reported cost_usd from trace events; manifest pricing is empty."
+    },
+    "solve_rate": 1.0,
+    "solved": 3
+  }
+}
