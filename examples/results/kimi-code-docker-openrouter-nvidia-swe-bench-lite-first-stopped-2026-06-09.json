@@ -1,0 +1,341 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 1,
+    "oracle_mode": "task manifest; ARM-local SWE-bench Docker oracle; first task only",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-09T05:57:31.500517+00:00",
+    "run_started_at": "2026-06-09T05:50:41.769682+00:00",
+    "suite": "swe-bench-lite-first-stopped",
+    "tasks_dir": "examples/tasks/swe-bench-lite-curated-10"
+  },
+  "captured_at": "2026-06-09T05:58:19.105013Z",
+  "commands": [
+    "OPENROUTER_MODEL=\"nvidia/nemotron-3-ultra-550b-a55b:free\" PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609 run-task --task examples/tasks/swe-bench-lite-curated-10/django__django-11905/task.yaml --harness examples/harnesses/kimi-code-docker-openrouter.yaml --require-docker-isolation --delete-workspace; docker stop <agent-container-after-prolonged-loop>"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/kimi-code-docker-openrouter.yaml",
+    "docker_image": "harness-bench/kimi-code:0.11.0",
+    "execution": "Docker-isolated Kimi Code via OpenRouter; Docker isolation required and workspace deleted. Agent was manually stopped after prolonged first-task loop so the runner could grade the partial patch.",
+    "id": "kimi-code-docker-openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 137,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "django__django-11905",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "django__django-11905-f467d3dd6b",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [],
+          "completed_instances": 0,
+          "empty_patch_ids": [
+            "django__django-11905"
+          ],
+          "empty_patch_instances": 1,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "django__django-11905"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [],
+          "unresolved_instances": 0
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/kimi-openrouter-nvidia-swe-bench-lite-first-20260609/work/django__django-11905__kimi-code-docker-openrouter__2b971b8025/swebench_eval/harness-efficiency-bench.django__django-11905-f467d3dd6b.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-09 05:57:32,554 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-09 05:57:32,569 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:32,585 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:32,630 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 05:57:32,794 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 05:57:32,898 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:32,956 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-09 05:57:32,956 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-09 05:57:33,103 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:33,151 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:33,207 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:33,255 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-09 05:57:33,302 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-09 05:57:33,346 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:33,912 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 7322.68 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 47359.37 examples/s]\n2026-06-09 05:57:34,303 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-09 05:57:34,324 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:34,367 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 05:57:34,408 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-09 05:57:34,455 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-09 05:57:34,518 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-09 05:57:34,563 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n",
+        "stdout": "No instances to run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 0\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 0\nInstances with empty patches: 1\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.django__django-11905-f467d3dd6b.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "django__django-11905",
+      "token_cost": 1631190
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 137,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              17014.0
+            ],
+            [
+              1.0,
+              17505.0
+            ],
+            [
+              2.0,
+              17635.0
+            ],
+            [
+              3.0,
+              24572.0
+            ],
+            [
+              4.0,
+              38562.0
+            ],
+            [
+              5.0,
+              39444.0
+            ],
+            [
+              6.0,
+              39853.0
+            ],
+            [
+              7.0,
+              40160.0
+            ],
+            [
+              8.0,
+              40277.0
+            ],
+            [
+              9.0,
+              40387.0
+            ],
+            [
+              10.0,
+              41590.0
+            ],
+            [
+              11.0,
+              42615.0
+            ],
+            [
+              12.0,
+              48499.0
+            ],
+            [
+              13.0,
+              48770.0
+            ],
+            [
+              14.0,
+              49409.0
+            ],
+            [
+              15.0,
+              49971.0
+            ],
+            [
+              16.0,
+              50900.0
+            ],
+            [
+              17.0,
+              51829.0
+            ],
+            [
+              18.0,
+              52718.0
+            ],
+            [
+              19.0,
+              52817.0
+            ],
+            [
+              20.0,
+              52910.0
+            ],
+            [
+              21.0,
+              53258.0
+            ],
+            [
+              22.0,
+              53645.0
+            ],
+            [
+              23.0,
+              53701.0
+            ],
+            [
+              24.0,
+              54113.0
+            ],
+            [
+              25.0,
+              54195.0
+            ],
+            [
+              26.0,
+              54271.0
+            ],
+            [
+              27.0,
+              54350.0
+            ],
+            [
+              28.0,
+              54475.0
+            ],
+            [
+              29.0,
+              55013.0
+            ],
+            [
+              30.0,
+              55664.0
+            ],
+            [
+              31.0,
+              55998.0
+            ],
+            [
+              32.0,
+              56296.0
+            ],
+            [
+              33.0,
+              56418.0
+            ],
+            [
+              34.0,
+              56560.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 974.4949579831931
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16935,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16935
+        },
+        "status": "full",
+        "value": 16935
+      },
+      "success": false,
+      "task_id": "django__django-11905",
+      "token_cost": 1631190,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 1,
+    "by_perturbation": {
+      "base": {
+        "attempted": 1,
+        "solve_rate": 0.0,
+        "solved": 0
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 974.4949579831931,
+        "research_metric": "B",
+        "runs_full": 1,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 16935.0,
+        "research_metric": "A",
+        "runs_full": 1,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 1,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": null,
+        "total_token_cost": 1631190,
+        "unit": "tokens per solved task"
+      }
+    },
+    "oracle_solve_rate": 0.0,
+    "oracle_solved": 0,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 1,
+      "source": "Provider/proxy reported zero cost_usd for usage-bearing runs; manifest pricing is empty."
+    },
+    "solve_rate": 0.0,
+    "solved": 0
+  }
+}
