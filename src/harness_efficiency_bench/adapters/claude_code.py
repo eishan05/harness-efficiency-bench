@@ -50,8 +50,9 @@ class ClaudeCodeAdapter(BaseAdapter):
             "--verbose",
             "--no-session-persistence",
         ]
+        stdin = context.prompt if active_context.harness.config.get("stdin_prompt") else None
         try:
-            completed = run_command(command, active_context)
+            completed = run_command(command, active_context, stdin=stdin)
         finally:
             if proxy is not None:
                 proxy.stop()

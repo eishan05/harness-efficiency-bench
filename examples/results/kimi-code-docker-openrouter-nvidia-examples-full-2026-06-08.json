@@ -1,0 +1,723 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 14,
+    "oracle_mode": "task manifests",
+    "perturbation_mode": "all-perturbations",
+    "run_finished_at": "2026-06-08T23:41:26.523008+00:00",
+    "run_started_at": "2026-06-08T23:34:53.729134+00:00",
+    "suite": "examples-non-swe-full",
+    "tasks_dir": "examples/tasks"
+  },
+  "captured_at": "2026-06-09T02:26:52.252655Z",
+  "commands": [
+    "OPENROUTER_MODEL='nvidia/nemotron-3-ultra-550b-a55b:free' PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608 run-suite --tasks-dir examples/tasks --harness examples/harnesses/kimi-code-docker-openrouter.yaml --all-perturbations --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/kimi-code-docker-openrouter.yaml",
+    "docker_image": "harness-bench/kimi-code:0.11.0",
+    "execution": "Docker OpenRouter run with all non-SWE example perturbations; Docker isolation required and workspaces deleted.",
+    "id": "kimi-code-docker-openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": "F.F\n======================================================================\nFAIL: test_combined_seconds (test_parser.ParserTest.test_combined_seconds)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/harness-stress-log-triage__kimi-code-docker-openrouter__93981c8b5c/workspace/tests/test_parser.py\", line 14, in test_combined_seconds\n    self.assertEqual(parse_duration(\"1h 90s\"), 61)\nAssertionError: 150 != 61\n\n======================================================================\nFAIL: test_seconds_are_rounded_down_to_minutes (test_parser.ParserTest.test_seconds_are_rounded_down_to_minutes)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/harness-stress-log-triage__kimi-code-docker-openrouter__93981c8b5c/workspace/tests/test_parser.py\", line 11, in test_seconds_are_rounded_down_to_minutes\n    self.assertEqual(parse_duration(\"90s\"), 1)\nAssertionError: 90 != 1\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "100k",
+      "reason": "command failed",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 0
+    },
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": "F.F\n======================================================================\nFAIL: test_combined_seconds (test_parser.ParserTest.test_combined_seconds)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/harness-stress-log-triage__kimi-code-docker-openrouter__f99afb7c91/workspace/tests/test_parser.py\", line 14, in test_combined_seconds\n    self.assertEqual(parse_duration(\"1h 90s\"), 61)\nAssertionError: 150 != 61\n\n======================================================================\nFAIL: test_seconds_are_rounded_down_to_minutes (test_parser.ParserTest.test_seconds_are_rounded_down_to_minutes)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/harness-stress-log-triage__kimi-code-docker-openrouter__f99afb7c91/workspace/tests/test_parser.py\", line 11, in test_seconds_are_rounded_down_to_minutes\n    self.assertEqual(parse_duration(\"90s\"), 1)\nAssertionError: 90 != 1\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "50k",
+      "reason": "command failed",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 0
+    },
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": ".FF.\n======================================================================\nFAIL: test_average_preserves_fractional_result (test_calculator.CalculatorTest.test_average_preserves_fractional_result)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/python-fix-calculator__kimi-code-docker-openrouter__a8e10ca7e4/workspace/tests/test_calculator.py\", line 17, in test_average_preserves_fractional_result\n    self.assertEqual(average([1, 2]), 1.5)\nAssertionError: 1 != 1.5\n\n======================================================================\nFAIL: test_multiply_handles_negative_left_operand (test_calculator.CalculatorTest.test_multiply_handles_negative_left_operand)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/python-fix-calculator__kimi-code-docker-openrouter__a8e10ca7e4/workspace/tests/test_calculator.py\", line 11, in test_multiply_handles_negative_left_operand\n    self.assertEqual(multiply(-3, 4), -12)\nAssertionError: 0 != -12\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "100k",
+      "reason": "command failed",
+      "task_id": "python-fix-calculator",
+      "token_cost": 0
+    },
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": ".FF.\n======================================================================\nFAIL: test_average_preserves_fractional_result (test_calculator.CalculatorTest.test_average_preserves_fractional_result)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/python-fix-calculator__kimi-code-docker-openrouter__3715e73713/workspace/tests/test_calculator.py\", line 17, in test_average_preserves_fractional_result\n    self.assertEqual(average([1, 2]), 1.5)\nAssertionError: 1 != 1.5\n\n======================================================================\nFAIL: test_multiply_handles_negative_left_operand (test_calculator.CalculatorTest.test_multiply_handles_negative_left_operand)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/kimi-code-openrouter-nvidia-examples-full-v2-20260608/work/python-fix-calculator__kimi-code-docker-openrouter__3715e73713/workspace/tests/test_calculator.py\", line 11, in test_multiply_handles_negative_left_operand\n    self.assertEqual(multiply(-3, 4), -12)\nAssertionError: 0 != -12\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "50k",
+      "reason": "command failed",
+      "task_id": "python-fix-calculator",
+      "token_cost": 0
+    },
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {},
+      "oracle_message": "expected file missing: answer.txt",
+      "perturbation_id": "100k",
+      "reason": "expected file missing: answer.txt",
+      "task_id": "toy-write-file",
+      "token_cost": 0
+    },
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {},
+      "oracle_message": "expected file missing: answer.txt",
+      "perturbation_id": "200k",
+      "reason": "expected file missing: answer.txt",
+      "task_id": "toy-write-file",
+      "token_cost": 0
+    },
+    {
+      "adapter_exit_code": 1,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {},
+      "oracle_message": "expected file missing: answer.txt",
+      "perturbation_id": "50k",
+      "reason": "expected file missing: answer.txt",
+      "task_id": "toy-write-file",
+      "token_cost": 0
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "100k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              36547.0
+            ],
+            [
+              1.0,
+              37311.0
+            ],
+            [
+              2.0,
+              37668.0
+            ],
+            [
+              3.0,
+              37771.0
+            ],
+            [
+              4.0,
+              37865.0
+            ],
+            [
+              5.0,
+              38024.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 261.42857142857144
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16519,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16519
+        },
+        "status": "full",
+        "value": 16519
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 226248,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "50k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16540.0
+            ],
+            [
+              1.0,
+              17259.0
+            ],
+            [
+              2.0,
+              17565.0
+            ],
+            [
+              3.0,
+              17668.0
+            ],
+            [
+              4.0,
+              17763.0
+            ],
+            [
+              5.0,
+              17892.0
+            ],
+            [
+              6.0,
+              17979.0
+            ],
+            [
+              7.0,
+              18253.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 198.41666666666666
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16516,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16516
+        },
+        "status": "full",
+        "value": 16516
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 142112,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16543.0
+            ],
+            [
+              1.0,
+              16694.0
+            ],
+            [
+              2.0,
+              16794.0
+            ],
+            [
+              3.0,
+              16892.0
+            ],
+            [
+              4.0,
+              17003.0
+            ],
+            [
+              5.0,
+              17070.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 104.57142857142857
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16496,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16496
+        },
+        "status": "full",
+        "value": 16496
+      },
+      "success": true,
+      "task_id": "metrics-calibration-multicall",
+      "token_cost": 101591,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "100k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-fix-calculator",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              36538.0
+            ],
+            [
+              1.0,
+              36990.0
+            ],
+            [
+              2.0,
+              37170.0
+            ],
+            [
+              3.0,
+              37267.0
+            ],
+            [
+              4.0,
+              37400.0
+            ],
+            [
+              5.0,
+              37728.0
+            ],
+            [
+              6.0,
+              38135.0
+            ],
+            [
+              7.0,
+              38226.0
+            ],
+            [
+              8.0,
+              38440.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 228.45
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16516,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16516
+        },
+        "status": "full",
+        "value": 16516
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 339230,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "50k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-fix-calculator",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16531.0
+            ],
+            [
+              1.0,
+              17001.0
+            ],
+            [
+              2.0,
+              17444.0
+            ],
+            [
+              3.0,
+              17554.0
+            ],
+            [
+              4.0,
+              17654.0
+            ],
+            [
+              5.0,
+              17864.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 249.54285714285714
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16513,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16513
+        },
+        "status": "full",
+        "value": 16513
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 105157,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "expected file missing: answer.txt",
+      "oracle_success": false,
+      "perturbation_id": "100k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "toy-write-file",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "expected file missing: answer.txt",
+      "oracle_success": false,
+      "perturbation_id": "200k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "toy-write-file",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              36522.0
+            ],
+            [
+              1.0,
+              36629.0
+            ],
+            [
+              2.0,
+              36733.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 105.5
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16491,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16491
+        },
+        "status": "full",
+        "value": 16491
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 110162,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 1,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "expected file missing: answer.txt",
+      "oracle_success": false,
+      "perturbation_id": "50k",
+      "selected_trace_source": null,
+      "startup_tax": {
+        "details": {
+          "reason": "no model_call events"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "toy-write-file",
+      "token_cost": 0,
+      "trace_quality": "partial"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16515.0
+            ],
+            [
+              1.0,
+              16619.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 104.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16488,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16488
+        },
+        "status": "full",
+        "value": 16488
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 33320,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 14,
+    "by_perturbation": {
+      "100k": {
+        "attempted": 3,
+        "solve_rate": 0.0,
+        "solved": 0
+      },
+      "200k": {
+        "attempted": 1,
+        "solve_rate": 0.0,
+        "solved": 0
+      },
+      "20k": {
+        "attempted": 3,
+        "solve_rate": 1.0,
+        "solved": 3
+      },
+      "50k": {
+        "attempted": 3,
+        "solve_rate": 0.0,
+        "solved": 0
+      },
+      "base": {
+        "attempted": 4,
+        "solve_rate": 1.0,
+        "solved": 4
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 178.84421768707483,
+        "research_metric": "B",
+        "runs_full": 7,
+        "runs_unsupported": 7,
+        "status": "partial",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 16505.571428571428,
+        "research_metric": "A",
+        "runs_full": 7,
+        "runs_partial": 0,
+        "runs_unsupported": 7,
+        "status": "partial",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 7,
+        "runs_without_token_cost": 7,
+        "status": "partial",
+        "token_cost_per_solved_task": 151117.14285714287,
+        "total_token_cost": 1057820,
+        "unit": "tokens per solved task"
+      }
+    },
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 7,
+      "source": "Provider/proxy reported zero cost_usd for usage-bearing runs; manifest pricing is empty."
+    },
+    "solve_rate": 0.5,
+    "solved": 7
+  }
+}

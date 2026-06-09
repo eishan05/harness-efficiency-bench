@@ -205,6 +205,34 @@ class DockerAgentCliAdapterTest(unittest.TestCase):
         self.assertEqual(events[0].data["output_tokens"], 113)
         self.assertEqual(events[0].data["cost_usd"], 0.0031)
 
+    def test_parse_aider_text_token_suffixes(self):
+        stdout = "Tokens: 1.1k sent, 423 received.\nTokens: 2m sent, 1.2k received.\n"
+
+        events = parse_docker_agent_events(stdout, {"trace": {"parser": "aider_text"}})
+
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0].data["input_tokens"], 1100)
+        self.assertEqual(events[0].data["output_tokens"], 423)
+        self.assertEqual(events[1].data["input_tokens"], 2_000_000)
+        self.assertEqual(events[1].data["output_tokens"], 1200)
+
+    def test_parse_nanobot_stderr_usage(self):
+        stderr = "\n".join(
+            [
+                "2026-06-08 DEBUG Starting agent loop iteration 0",
+                "2026-06-08 DEBUG LLM usage: prompt=9,734 completion=86 cached=12",
+                "2026-06-08 DEBUG LLM usage: prompt=9852 completion=42 cached=0",
+            ]
+        )
+
+        events = parse_docker_agent_events("", {"trace": {"parser": "nanobot_text"}}, stderr=stderr)
+
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0].data["input_tokens"], 9734)
+        self.assertEqual(events[0].data["cached_input_tokens"], 12)
+        self.assertEqual(events[0].data["output_tokens"], 86)
+        self.assertEqual(events[1].data["input_tokens"], 9852)
+
     def test_parse_usage_proxy_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             workspace = Path(tmp)

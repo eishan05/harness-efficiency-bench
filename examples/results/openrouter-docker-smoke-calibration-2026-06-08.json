@@ -1,0 +1,1688 @@
+{
+  "date": "2026-06-08",
+  "excluded_harnesses": {
+    "antigravity-cli-docker-isolated": "Skipped by user; not currently full A/B/C via CLI.",
+    "grok-build-docker-isolated": "Skipped by user; not currently full A/B/C via CLI."
+  },
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "per_harness": {
+    "aider-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [
+        {
+          "adapter_exit_code": 0,
+          "oracle_details": {
+            "actual": "context growth works```",
+            "expected": "context growth works",
+            "path": "answer.txt"
+          },
+          "oracle_message": "file content mismatch",
+          "task_id": "metrics-calibration-multicall"
+        },
+        {
+          "adapter_exit_code": 0,
+          "oracle_details": {
+            "actual": "hello benchmark```",
+            "expected": "hello benchmark",
+            "path": "answer.txt"
+          },
+          "oracle_message": "file content mismatch",
+          "task_id": "toy-write-file"
+        }
+      ],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 1,
+          "partial": 0,
+          "unsupported": 1
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 0.0,
+      "solved": 0,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  773.0
+                ],
+                [
+                  1.0,
+                  835.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 62.0
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works```",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file content mismatch",
+            "score": 0.0,
+            "success": false
+          },
+          "proxy_trace": "enabled",
+          "selected_trace_source": "native",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 726,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 726
+            },
+            "status": "full",
+            "value": 726
+          },
+          "success": false,
+          "token_cost": 1816,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "reason": "need at least two non-aggregate non-preflight model calls"
+            },
+            "status": "unsupported",
+            "value": null
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark```",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file content mismatch",
+            "score": 0.0,
+            "success": false
+          },
+          "proxy_trace": "enabled",
+          "selected_trace_source": "native",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 595,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 595
+            },
+            "status": "full",
+            "value": 595
+          },
+          "success": false,
+          "token_cost": 719,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "claude-code-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  4426.0
+                ],
+                [
+                  1.0,
+                  4552.0
+                ],
+                [
+                  2.0,
+                  4638.0
+                ],
+                [
+                  3.0,
+                  4748.0
+                ],
+                [
+                  4.0,
+                  4835.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 101.4
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 4379,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 4379
+            },
+            "status": "full",
+            "value": 4379
+          },
+          "success": true,
+          "token_cost": 23786,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  1.0,
+                  4411.0
+                ],
+                [
+                  2.0,
+                  4523.0
+                ],
+                [
+                  3.0,
+                  4675.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 132.0
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "composition": "provider_first_startup_tax + task_first_startup_tax",
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 229,
+              "task_first_call_index": 1,
+              "task_first_startup_tax": 4384
+            },
+            "status": "full",
+            "value": 4613
+          },
+          "success": true,
+          "token_cost": 14337,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "codex-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  8402.0
+                ],
+                [
+                  1.0,
+                  8488.0
+                ],
+                [
+                  2.0,
+                  8577.0
+                ],
+                [
+                  3.0,
+                  8667.0
+                ],
+                [
+                  4.0,
+                  8756.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 88.7
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": null,
+          "selected_trace_source": null,
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 8355,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 8355
+            },
+            "status": "full",
+            "value": 8355
+          },
+          "success": true,
+          "token_cost": 43412,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  8386.0
+                ],
+                [
+                  1.0,
+                  8474.0
+                ],
+                [
+                  2.0,
+                  8581.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 97.5
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": null,
+          "selected_trace_source": null,
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 8359,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 8359
+            },
+            "status": "full",
+            "value": 8359
+          },
+          "success": true,
+          "token_cost": 25711,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "goose-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [
+        {
+          "adapter_exit_code": 0,
+          "oracle_details": {
+            "actual": "hello world",
+            "expected": "context growth works",
+            "path": "answer.txt"
+          },
+          "oracle_message": "file content mismatch",
+          "task_id": "metrics-calibration-multicall"
+        }
+      ],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 0.5,
+      "solved": 1,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  4478.0
+                ],
+                [
+                  1.0,
+                  4572.0
+                ],
+                [
+                  2.0,
+                  4642.0
+                ],
+                [
+                  3.0,
+                  4696.0
+                ],
+                [
+                  4.0,
+                  4747.0
+                ],
+                [
+                  5.0,
+                  4800.0
+                ],
+                [
+                  6.0,
+                  4850.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 59.892857142857146
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello world",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file content mismatch",
+            "score": 0.0,
+            "success": false
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 4431,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 4431
+            },
+            "status": "full",
+            "value": 4431
+          },
+          "success": false,
+          "token_cost": 33518,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  4462.0
+                ],
+                [
+                  1.0,
+                  4548.0
+                ],
+                [
+                  2.0,
+                  4633.0
+                ],
+                [
+                  3.0,
+                  4741.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 92.2
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 4435,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 4435
+            },
+            "status": "full",
+            "value": 4435
+          },
+          "success": true,
+          "token_cost": 18864,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "hermes-agent-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  2585.0
+                ],
+                [
+                  1.0,
+                  2720.0
+                ],
+                [
+                  2.0,
+                  2812.0
+                ],
+                [
+                  3.0,
+                  2920.0
+                ],
+                [
+                  4.0,
+                  3008.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 104.6
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 2538,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 2538
+            },
+            "status": "full",
+            "value": 2538
+          },
+          "success": true,
+          "token_cost": 14595,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  2568.0
+                ],
+                [
+                  1.0,
+                  2676.0
+                ],
+                [
+                  2.0,
+                  2776.0
+                ],
+                [
+                  3.0,
+                  2893.0
+                ],
+                [
+                  4.0,
+                  3036.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 115.3
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 2541,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 2541
+            },
+            "status": "full",
+            "value": 2541
+          },
+          "success": true,
+          "token_cost": 14488,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "kilo-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  13515.0
+                ],
+                [
+                  1.0,
+                  13667.0
+                ],
+                [
+                  2.0,
+                  13770.0
+                ],
+                [
+                  3.0,
+                  13857.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 112.9
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "enabled",
+          "selected_trace_source": "native",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 13468,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 13468
+            },
+            "status": "full",
+            "value": 13468
+          },
+          "success": true,
+          "token_cost": 55054,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  13499.0
+                ],
+                [
+                  1.0,
+                  13599.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 100.0
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "enabled",
+          "selected_trace_source": "native",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 13472,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 13472
+            },
+            "status": "full",
+            "value": 13472
+          },
+          "success": true,
+          "token_cost": 27224,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "kimi-code-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  16543.0
+                ],
+                [
+                  1.0,
+                  16682.0
+                ],
+                [
+                  2.0,
+                  16790.0
+                ],
+                [
+                  3.0,
+                  16900.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 117.9
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 16496,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 16496
+            },
+            "status": "full",
+            "value": 16496
+          },
+          "success": true,
+          "token_cost": 67365,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  16514.0
+                ],
+                [
+                  1.0,
+                  16621.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 107.0
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 16487,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 16487
+            },
+            "status": "full",
+            "value": 16487
+          },
+          "success": true,
+          "token_cost": 33328,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "nanobot-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  11158.0
+                ],
+                [
+                  1.0,
+                  11276.0
+                ],
+                [
+                  2.0,
+                  11353.0
+                ],
+                [
+                  3.0,
+                  11456.0
+                ],
+                [
+                  4.0,
+                  11542.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 94.8
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 11111,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 11111
+            },
+            "status": "full",
+            "value": 11111
+          },
+          "success": true,
+          "token_cost": 57283,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  11142.0
+                ],
+                [
+                  1.0,
+                  11249.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 107.0
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 11115,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 11115
+            },
+            "status": "full",
+            "value": 11115
+          },
+          "success": true,
+          "token_cost": 22592,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "openclaw-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  29079.0
+                ],
+                [
+                  1.0,
+                  29128.0
+                ],
+                [
+                  2.0,
+                  29179.0
+                ],
+                [
+                  3.0,
+                  29248.0
+                ],
+                [
+                  4.0,
+                  29296.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 55.4
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 29032,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 29032
+            },
+            "status": "full",
+            "value": 29032
+          },
+          "success": true,
+          "token_cost": 146422,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  29060.0
+                ],
+                [
+                  1.0,
+                  29128.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 68.0
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 29033,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 29033
+            },
+            "status": "full",
+            "value": 29033
+          },
+          "success": true,
+          "token_cost": 58380,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "opencode-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  7993.0
+                ],
+                [
+                  1.0,
+                  8147.0
+                ],
+                [
+                  2.0,
+                  8250.0
+                ],
+                [
+                  3.0,
+                  8348.0
+                ],
+                [
+                  4.0,
+                  8445.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 110.5
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "enabled",
+          "selected_trace_source": "native",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 7946,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 7946
+            },
+            "status": "full",
+            "value": 7946
+          },
+          "success": true,
+          "token_cost": 41531,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  7977.0
+                ],
+                [
+                  1.0,
+                  8075.0
+                ],
+                [
+                  2.0,
+                  8190.0
+                ],
+                [
+                  3.0,
+                  8315.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 112.9
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "enabled",
+          "selected_trace_source": "native",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 7950,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 7950
+            },
+            "status": "full",
+            "value": 7950
+          },
+          "success": true,
+          "token_cost": 32825,
+          "trace_quality": "structured"
+        }
+      }
+    },
+    "qwen-code-docker-openrouter": {
+      "attempted": 2,
+      "known_failures": [],
+      "metric_status_counts": {
+        "context_growth_rate": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        },
+        "solve_efficiency_tokens": {
+          "full": 2,
+          "unsupported": 0
+        },
+        "startup_tax": {
+          "full": 2,
+          "partial": 0,
+          "unsupported": 0
+        }
+      },
+      "solve_rate": 1.0,
+      "solved": 2,
+      "tasks": {
+        "metrics-calibration-multicall": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  19063.0
+                ],
+                [
+                  1.0,
+                  19173.0
+                ],
+                [
+                  2.0,
+                  19255.0
+                ],
+                [
+                  3.0,
+                  19365.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 98.8
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "context growth works",
+              "expected": "context growth works",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 19016,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 19016
+            },
+            "status": "full",
+            "value": 19016
+          },
+          "success": true,
+          "token_cost": 77346,
+          "trace_quality": "structured"
+        },
+        "toy-write-file": {
+          "adapter_exit_code": 0,
+          "context_growth_rate": {
+            "details": {
+              "points": [
+                [
+                  0.0,
+                  19035.0
+                ],
+                [
+                  1.0,
+                  19150.0
+                ],
+                [
+                  2.0,
+                  19296.0
+                ]
+              ]
+            },
+            "status": "full",
+            "value": 130.5
+          },
+          "oracle_result": {
+            "details": {
+              "actual": "hello benchmark",
+              "expected": "hello benchmark",
+              "path": "answer.txt"
+            },
+            "message": "file matched",
+            "score": 1.0,
+            "success": true
+          },
+          "proxy_trace": "parsed",
+          "selected_trace_source": "proxy",
+          "startup_tax": {
+            "details": {
+              "provider_first_call_index": 0,
+              "provider_first_startup_tax": 19008,
+              "task_first_call_index": 0,
+              "task_first_startup_tax": 19008
+            },
+            "status": "full",
+            "value": 19008
+          },
+          "success": true,
+          "token_cost": 57786,
+          "trace_quality": "structured"
+        }
+      }
+    }
+  },
+  "run_roots": [
+    "runs/openrouter-docker-smoke-v2-20260608",
+    "runs/openrouter-docker-smoke-goose-patched2-20260608",
+    "runs/openrouter-docker-smoke-openclaw-patched2-20260608"
+  ],
+  "snapshot_type": "docker_openrouter_smoke_calibration",
+  "summary": {
+    "attempted": 22,
+    "by_harness": {
+      "aider-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": null,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 62.0,
+            "count": 1
+          },
+          "startup_tax": {
+            "avg": 660.5,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 0,
+        "solve_rate": 0.0,
+        "solved": 0,
+        "token_cost": 2535,
+        "token_cost_per_solved_task": null
+      },
+      "claude-code-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 116.7,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 4496.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 38123,
+        "token_cost_per_solved_task": 19061.5
+      },
+      "codex-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": null,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 93.1,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 8357.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 0,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 69123,
+        "token_cost_per_solved_task": 34561.5
+      },
+      "goose-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 76.04642857142858,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 4433.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 0.5,
+        "solved": 1,
+        "token_cost": 52382,
+        "token_cost_per_solved_task": 52382.0
+      },
+      "hermes-agent-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 109.94999999999999,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 2539.5,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 29083,
+        "token_cost_per_solved_task": 14541.5
+      },
+      "kilo-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 106.45,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 13470.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 82278,
+        "token_cost_per_solved_task": 41139.0
+      },
+      "kimi-code-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 112.45,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 16491.5,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 100693,
+        "token_cost_per_solved_task": 50346.5
+      },
+      "nanobot-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 100.9,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 11113.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 79875,
+        "token_cost_per_solved_task": 39937.5
+      },
+      "openclaw-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 61.7,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 29032.5,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 204802,
+        "token_cost_per_solved_task": 102401.0
+      },
+      "opencode-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 111.7,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 7948.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 74356,
+        "token_cost_per_solved_task": 37178.0
+      },
+      "qwen-code-docker-openrouter": {
+        "attempted": 2,
+        "cost_usd": 0.0,
+        "dollar_cost_per_solved_task": 0.0,
+        "metrics": {
+          "context_growth_rate": {
+            "avg": 114.65,
+            "count": 2
+          },
+          "startup_tax": {
+            "avg": 19012.0,
+            "count": 2
+          }
+        },
+        "runs_with_dollar_cost": 2,
+        "solve_rate": 1.0,
+        "solved": 2,
+        "token_cost": 135132,
+        "token_cost_per_solved_task": 67566.0
+      }
+    },
+    "by_perturbation": {
+      "base": {
+        "attempted": 22,
+        "solve_rate": 0.8636363636363636,
+        "solved": 19
+      }
+    },
+    "cost_usd": 0.0,
+    "dollar_cost_per_solved_task": null,
+    "research_metric_coverage": {
+      "context_growth_rate": {
+        "requirement": "full requires at least two non-aggregate non-preflight model_call events with input_tokens per run",
+        "runs_full": 21,
+        "runs_partial": 0,
+        "runs_unsupported": 1,
+        "status": "partial"
+      },
+      "solve_efficiency": {
+        "requirement": "full requires token usage for every run",
+        "runs_total": 22,
+        "runs_with_token_cost": 22,
+        "status": "full"
+      },
+      "startup_tax": {
+        "requirement": "full requires structured non-aggregate model_call events with provider-first and task-first input_tokens",
+        "runs_full": 22,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full"
+      }
+    },
+    "solve_rate": 0.8636363636363636,
+    "solved": 19,
+    "token_cost": 868382,
+    "token_cost_per_solved_task": 45704.31578947369
+  }
+}

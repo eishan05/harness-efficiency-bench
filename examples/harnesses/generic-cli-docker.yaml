@@ -7,6 +7,7 @@ config:
   backend: docker
   docker_image: alpine:3.20
   docker_network: none
+  docker_user: host
   docker_memory: 512m
   docker_cpus: "1"
   docker_read_only: true

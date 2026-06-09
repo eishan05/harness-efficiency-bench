@@ -7,7 +7,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN GROK_BIN_DIR=/usr/local/bin GROK_BUILD_VERSION="${GROK_BUILD_VERSION}" \
-    bash -c 'curl -fsSL https://x.ai/cli/install.sh | bash -s "${GROK_BUILD_VERSION}"'
+    bash -c 'curl -fsSL https://x.ai/cli/install.sh | bash -s "${GROK_BUILD_VERSION}"' \
+    && cp "$(readlink -f /usr/local/bin/grok)" /usr/local/bin/grok-build \
+    && chmod 755 /usr/local/bin/grok-build \
+    && ln -sf /usr/local/bin/grok-build /usr/local/bin/grok
 
 COPY run-agent /opt/harness/run-agent
 RUN chmod +x /opt/harness/run-agent

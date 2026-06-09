@@ -2,7 +2,6 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
-prompt="$(cat "$prompt_file")"
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
   : "${QWEN_MODEL_NAME:=$OPENROUTER_MODEL}"
@@ -38,4 +37,8 @@ cat > "$HOME/.qwen/settings.json" <<EOF
 }
 EOF
 
-qwen --yolo -p "$prompt"
+qwen \
+  --yolo \
+  --input-format text \
+  --output-format stream-json \
+  < "$prompt_file"

@@ -82,6 +82,26 @@ class CommandAdapterTest(unittest.TestCase):
             self.assertNotIn("OPENROUTER_API_KEY=sk-test-secret", command)
             self.assertNotIn("OPENAI_API_KEY=sk-host-secret", command)
 
+    def test_claude_docker_command_does_not_embed_prompt_argv(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task = TaskManifest.load(ROOT / "examples/tasks/toy-write-file/task.yaml")
+            harness = HarnessManifest.load(ROOT / "examples/harnesses/claude-code-docker-openrouter.yaml")
+            context = AdapterRunContext(
+                run_id="run",
+                task=task,
+                harness=harness,
+                workspace=Path(tmp),
+                prompt="large prompt sentinel",
+                prompt_file=Path(tmp) / ".benchmark_prompt.txt",
+                timeout_sec=10,
+            )
+
+            command = build_docker_command(harness.command or "", context)
+
+            self.assertNotIn("large prompt sentinel", command)
+            self.assertIn("--input-format text", command[-1])
+            self.assertNotIn("$(cat", command[-1])
+
     def test_run_docker_command_merges_harness_env_into_subprocess_env(self):
         with tempfile.TemporaryDirectory() as tmp:
             task = TaskManifest.load(ROOT / "examples/tasks/toy-write-file/task.yaml")

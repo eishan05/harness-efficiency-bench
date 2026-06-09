@@ -61,6 +61,16 @@ class ManifestTest(unittest.TestCase):
                 self.assertTrue(harness.config.get("cli_version"))
                 self.assertTrue(harness.config.get("version_command"))
 
+    def test_docker_examples_run_as_host_user(self):
+        paths = sorted((ROOT / "examples/harnesses").glob("*docker*.yaml"))
+        self.assertTrue(paths)
+        for path in paths:
+            harness = HarnessManifest.load(path)
+            if harness.config.get("backend") != "docker":
+                continue
+            with self.subTest(path=path.name):
+                self.assertEqual(harness.config.get("docker_user"), "host")
+
     def test_openrouter_docker_examples_require_key_and_model(self):
         paths = sorted((ROOT / "examples/harnesses").glob("*-docker-openrouter.yaml"))
         self.assertTrue(paths)

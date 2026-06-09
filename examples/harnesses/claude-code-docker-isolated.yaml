@@ -3,22 +3,10 @@ adapter: claude_code
 model: sonnet
 timeout_sec: 900
 trace_mode: structured
-command:
-  - claude
-  - -p
-  - "{prompt}"
-  - --output-format
-  - stream-json
-  - --verbose
-  - --model
-  - "{model}"
-  - --max-budget-usd
-  - "0.10"
-  - --no-session-persistence
-  - --permission-mode
-  - bypassPermissions
-  - --allowedTools
-  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
+command: >
+  claude -p --input-format text --output-format stream-json --verbose
+  --model {model} --max-budget-usd 0.10 --no-session-persistence
+  --permission-mode bypassPermissions --allowedTools Read,Write,Edit,MultiEdit,Glob,Grep,Bash
 pricing: {}
 permissions:
   sandbox: docker-container
@@ -26,9 +14,11 @@ capabilities:
   - docker_isolation
 config:
   backend: docker
+  stdin_prompt: true
   docker_image: harness-bench/claude-code:2.1.114
   docker_network: bridge
   docker_workspace: /workspace
+  docker_user: host
   docker_memory: 4g
   docker_cpus: "2"
   docker_read_only: true

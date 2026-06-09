@@ -84,6 +84,8 @@ class BenchmarkRunner:
         trace_path = self.store.write_trace(run_id, events)
         artifacts = dict(adapter_result.artifacts)
         artifacts.setdefault("git_diff", self._collect_git_diff(workspace))
+        metadata = dict(adapter_result.metadata)
+        metadata["user_prompt_tokens"] = user_prompt_tokens
 
         result: dict[str, Any] = {
             "run_id": run_id,
@@ -99,7 +101,7 @@ class BenchmarkRunner:
             "stdout": adapter_result.stdout,
             "stderr": adapter_result.stderr,
             "artifacts": artifacts,
-            "metadata": adapter_result.metadata,
+            "metadata": metadata,
             "oracle_result": oracle_result.to_dict(),
             "metrics": metrics,
             "isolation": describe_isolation(harness),

@@ -291,10 +291,11 @@ class ClaudeCodeAdapterTest(unittest.TestCase):
                 timeout_sec=1,
             )
 
-            def fake_run_command(command, active_context):
+            def fake_run_command(command, active_context, stdin=None):
                 self.assertTrue(active_context.harness.config["docker_add_host_gateway"])
                 self.assertEqual(active_context.harness.env["ANTHROPIC_BASE_URL"], fake_proxy.docker_base_url)
                 self.assertEqual(active_context.harness.env["ANTHROPIC_AUTH_TOKEN"], "sk-test-openrouter")
+                self.assertIsNone(stdin)
                 trace_path.write_text(
                     "\n".join(
                         [
@@ -368,6 +369,38 @@ class ClaudeCodeAdapterTest(unittest.TestCase):
         self.assertNotIn("aggregate", model_calls[1].data["metadata"])
         self.assertEqual(result.metadata["proxy_trace"], "parsed")
         self.assertEqual(result.metadata["selected_trace_source"], "proxy")
+
+    def test_stdin_prompt_config_passes_prompt_to_command_stdin(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            harness = HarnessManifest(
+                id="claude-code-docker-openrouter",
+                adapter="claude_code",
+                path=root / "harness.yaml",
+                command=["claude", "-p"],
+                model="test-model",
+                config={"stdin_prompt": True},
+            )
+            task = TaskManifest(id="task", prompt="prompt from task", path=root / "task.yaml")
+            context = AdapterRunContext(
+                run_id="run",
+                task=task,
+                harness=harness,
+                workspace=root,
+                prompt="prompt from task",
+                prompt_file=root / ".benchmark_prompt.txt",
+                timeout_sec=1,
+            )
+
+            def fake_run_command(command, active_context, stdin=None):
+                self.assertEqual(command, ["claude", "-p"])
+                self.assertEqual(stdin, "prompt from task")
+                return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+            with patch("harness_efficiency_bench.adapters.claude_code.run_command", side_effect=fake_run_command):
+                result = ClaudeCodeAdapter(harness).run(context)
+
+        self.assertEqual(result.exit_code, 0)
 
 
 if __name__ == "__main__":

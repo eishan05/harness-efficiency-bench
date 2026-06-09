@@ -2,7 +2,6 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
-prompt="$(cat "$prompt_file")"
 mkdir -p "$HOME/.config/kilo"
 
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
@@ -58,4 +57,7 @@ else
 EOF
 fi
 
-kilo run --format json "$prompt"
+kilo run \
+  --format json \
+  "Execute the complete benchmark instructions in the attached prompt file." \
+  --file "$prompt_file"

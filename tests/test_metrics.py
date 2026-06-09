@@ -46,6 +46,19 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(metrics["context_growth_rate"]["status"], "unsupported")
         self.assertIn("non-aggregate", metrics["context_growth_rate"]["details"]["reason"])
 
+    def test_startup_tax_unsupported_when_reported_input_is_below_prompt_estimate(self):
+        prompt = "fix the bug " * 100
+        events = [
+            model_call_event(call_index=0, input_tokens=5, output_tokens=1),
+            model_call_event(call_index=1, input_tokens=8, output_tokens=1),
+        ]
+
+        metrics = compute_run_metrics(events, count_tokens(prompt))
+
+        self.assertEqual(metrics["startup_tax"]["status"], "unsupported")
+        self.assertIsNone(metrics["startup_tax"]["value"])
+        self.assertIn("below the benchmark prompt token estimate", metrics["startup_tax"]["details"]["reason"])
+
     def test_context_growth_ignores_aggregate_usage_points(self):
         events = [
             model_call_event(call_index=0, input_tokens=10, output_tokens=1),

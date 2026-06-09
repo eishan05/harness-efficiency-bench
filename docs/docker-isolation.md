@@ -151,6 +151,8 @@ export OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b:free"
 
 These manifests keep provider-specific baselines unchanged while letting the same CLI run through OpenRouter. Claude Code uses OpenRouter's Anthropic-compatible `https://openrouter.ai/api` gateway; Codex and the other OpenRouter manifests use OpenAI-compatible routing when the CLI supports it. Trace quality depends on each CLI's output; many OpenRouter runs are black-box or partial even when the task oracle passes. Grok Build is not an OpenRouter variant; use `XAI_API_KEY` or `GROK_CODE_XAI_API_KEY` with `grok-build-docker-isolated.yaml`.
 
+The OpenRouter smoke calibration in `examples/results/openrouter-docker-smoke-calibration-2026-06-08.json` confirms A/B/C token coverage for the measurable Docker harnesses when the task produces enough model calls. Antigravity CLI and Grok Build are intentionally excluded from that calibration until their CLIs expose routeable provider traffic or native usage events.
+
 Some agents initialize their own workspace metadata in the mounted task workspace. Task oracles should grade the required files or repository diff and ignore unrelated harness metadata unless the task explicitly forbids extra files.
 
 ## Harness Config Keys

@@ -2,7 +2,6 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
-prompt="$(cat "$prompt_file")"
 export KIMI_CODE_HOME="${KIMI_CODE_HOME:-$HOME/.kimi-code}"
 export KIMI_DISABLE_TELEMETRY="${KIMI_DISABLE_TELEMETRY:-1}"
 
@@ -12,6 +11,11 @@ if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${KIMI_MODEL_NAME:=$OPENROUTER_MODEL}"
   : "${KIMI_BASE_URL:=https://openrouter.ai/api/v1}"
   : "${KIMI_MAX_CONTEXT_SIZE:=131072}"
+  export KIMI_MODEL_NAME
+  export KIMI_MODEL_API_KEY="$OPENROUTER_API_KEY"
+  export KIMI_MODEL_PROVIDER_TYPE=openai
+  export KIMI_MODEL_BASE_URL="$KIMI_BASE_URL"
+  export KIMI_MODEL_MAX_CONTEXT_SIZE="$KIMI_MAX_CONTEXT_SIZE"
   cat > "$KIMI_CODE_HOME/config.toml" <<EOF
 [providers.openrouter]
 type = "openai"
@@ -27,6 +31,11 @@ elif [ -n "${KIMI_API_KEY:-}" ]; then
   : "${KIMI_MODEL_NAME:=kimi-for-coding}"
   : "${KIMI_BASE_URL:=https://api.moonshot.ai/v1}"
   : "${KIMI_MAX_CONTEXT_SIZE:=131072}"
+  export KIMI_MODEL_NAME
+  export KIMI_MODEL_API_KEY="$KIMI_API_KEY"
+  export KIMI_MODEL_PROVIDER_TYPE=kimi
+  export KIMI_MODEL_BASE_URL="$KIMI_BASE_URL"
+  export KIMI_MODEL_MAX_CONTEXT_SIZE="$KIMI_MAX_CONTEXT_SIZE"
   cat > "$KIMI_CODE_HOME/config.toml" <<EOF
 [providers.kimi]
 type = "kimi"
@@ -40,6 +49,31 @@ max_context_size = ${KIMI_MAX_CONTEXT_SIZE}
 EOF
 else
   : "${KIMI_MODEL_NAME:=kimi-for-coding}"
+  export KIMI_MODEL_NAME
 fi
 
-kimi --output-format stream-json --model "$KIMI_MODEL_NAME" -p "$prompt"
+KIMI_CODE_SKIP_AUTO_MAIN=1 node --input-type=module - "$prompt_file" <<'NODE'
+import { readFileSync } from "node:fs";
+import { handleMainCommand } from "/usr/local/lib/node_modules/@moonshot-ai/kimi-code/dist/main.mjs";
+
+const promptFile = process.argv[2];
+const prompt = readFileSync(promptFile, "utf8");
+const version = JSON.parse(
+  readFileSync("/usr/local/lib/node_modules/@moonshot-ai/kimi-code/package.json", "utf8"),
+).version;
+
+await handleMainCommand(
+  {
+    session: undefined,
+    continue: false,
+    yolo: false,
+    auto: false,
+    plan: false,
+    model: process.env.KIMI_MODEL_NAME,
+    outputFormat: "stream-json",
+    prompt,
+    skillsDirs: [],
+  },
+  version,
+);
+NODE

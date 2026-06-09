@@ -2,7 +2,6 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
-prompt="$(cat "$prompt_file")"
 mkdir -p "$HOME/.config/opencode"
 
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
@@ -57,4 +56,7 @@ else
 EOF
 fi
 
-opencode run --format json "$prompt"
+opencode run \
+  --format json \
+  "Execute the complete benchmark instructions in the attached prompt file." \
+  --file "$prompt_file"

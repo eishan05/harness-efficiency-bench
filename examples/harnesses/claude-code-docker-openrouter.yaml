@@ -3,23 +3,10 @@ adapter: claude_code
 model: ${OPENROUTER_MODEL}
 timeout_sec: 900
 trace_mode: structured
-command:
-  - claude
-  - --bare
-  - -p
-  - "{prompt}"
-  - --output-format
-  - stream-json
-  - --verbose
-  - --model
-  - "{model}"
-  - --max-budget-usd
-  - "0.10"
-  - --no-session-persistence
-  - --permission-mode
-  - bypassPermissions
-  - --allowedTools
-  - Read,Write,Edit,MultiEdit,Glob,Grep,Bash
+command: >
+  claude --bare -p --input-format text --output-format stream-json --verbose
+  --model {model} --max-budget-usd 1.00 --no-session-persistence
+  --permission-mode bypassPermissions --allowedTools Read,Write,Edit,MultiEdit,Glob,Grep,Bash
 pricing: {}
 permissions:
   sandbox: docker-container
@@ -29,9 +16,11 @@ config:
   auth_mode: openrouter
   openrouter_base_url: https://openrouter.ai/api
   backend: docker
+  stdin_prompt: true
   docker_image: harness-bench/claude-code:2.1.114
   docker_network: bridge
   docker_workspace: /workspace
+  docker_user: host
   docker_memory: 4g
   docker_cpus: "2"
   docker_read_only: true

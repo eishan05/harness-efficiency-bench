@@ -21,10 +21,40 @@ else
   fi
 fi
 
+set --
+tracked_files="$(mktemp)"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git ls-files > "$tracked_files"
+else
+  find . -maxdepth 3 -type f | sed 's#^\./##' > "$tracked_files"
+fi
+while IFS= read -r file; do
+  case "$file" in
+    ""|.benchmark_prompt.txt|.aider*|.git/*)
+      continue
+      ;;
+  esac
+  if [ -f "$file" ]; then
+    set -- "$@" "$file"
+  fi
+done < "$tracked_files"
+rm -f "$tracked_files"
+
 aider \
   --model "$AIDER_MODEL" \
   --message-file "$prompt_file" \
-  --yes \
+  --yes-always \
+  --no-check-update \
+  --no-show-release-notes \
+  --no-gitignore \
+  --no-pretty \
+  --no-show-model-warnings \
+  --map-tokens 0 \
+  --map-refresh manual \
+  --no-auto-lint \
+  --no-auto-test \
+  --no-analytics \
   --no-auto-commits \
   --no-dirty-commits \
-  --no-stream
+  --no-stream \
+  "$@"

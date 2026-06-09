@@ -12,9 +12,13 @@ Black-box CLIs can still produce full A/B/C coverage when they expose per-call u
 
 Startup tax has two components when a harness emits billable provider requests that are not visible task/model turns: `provider_first_startup_tax` is the literal first billable provider request minus task prompt tokens, and `task_first_startup_tax` is the first non-preflight task/model request minus task prompt tokens. If both components refer to the same call, the call is counted once. If they refer to distinct calls, the reported startup tax is their sum.
 
+Startup tax is unsupported for a run when the reported first-call `input_tokens` is smaller than the benchmark's rendered prompt token estimate. That usually means the harness/provider trace did not account for the full injected prompt in that request, so subtracting the prompt estimate would produce a misleading negative overhead.
+
 Context growth needs at least two non-aggregate, non-preflight model calls in the run. Claude Code Docker OpenRouter routes Anthropic-compatible OpenRouter traffic through the usage proxy; when OpenRouter returns per-request usage, that trace is sufficient for full A/B/C. Proxy requests that do not correspond to visible Claude assistant messages are retained for solve-efficiency token totals and provider-first startup tax, but ignored for context-growth calculations. Aggregate run-level usage, such as Claude Code OpenRouter `modelUsage`, is enough for solve efficiency but not enough for full startup-tax or context-growth measurement. Use `examples/tasks/metrics-calibration-multicall` when checking whether a harness can produce the B metric.
 
 Known exceptions:
 
 - Antigravity CLI Docker does not currently expose token usage or a documented routeable provider base URL. Use `antigravity-sdk` for usage metrics until the CLI or vendor support changes.
 - Grok Build Docker is measurable only if the CLI exposes a routeable xAI/OpenAI-compatible base URL or native usage events. Otherwise it can be graded for success but not A/B/C.
+
+The Docker OpenRouter calibration snapshot in `examples/results/openrouter-docker-smoke-calibration-2026-06-08.json` shows full startup-tax and solve-efficiency token coverage for the measurable OpenRouter harnesses. Context growth is full whenever the task produces at least two model calls; a one-call task can still report context growth as unsupported because there is no growth slope to fit.

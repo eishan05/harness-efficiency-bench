@@ -2,11 +2,9 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
-prompt="$(cat "$prompt_file")"
 
 if [ -n "${NANOBOT_RUN_COMMAND:-}" ]; then
   export HARNESS_PROMPT_FILE="$prompt_file"
-  export HARNESS_PROMPT="$prompt"
   exec /bin/sh -lc "$NANOBOT_RUN_COMMAND"
 fi
 
@@ -57,7 +55,50 @@ config = {
 }
 print(json.dumps(config))
 PY
-  exec nanobot agent -m "$prompt" --workspace /workspace --config "$NANOBOT_CONFIG_PATH" --no-markdown --no-logs
+  python3 - "$prompt_file" "$NANOBOT_CONFIG_PATH" <<'PY'
+import asyncio
+import sys
+from pathlib import Path
+
+from nanobot import Nanobot
+
+
+async def main() -> None:
+    prompt = Path(sys.argv[1]).read_text(encoding="utf-8")
+    bot = Nanobot.from_config(sys.argv[2], workspace="/workspace")
+    try:
+        result = await bot.run(prompt, session_key="cli:direct")
+        print(result.content)
+    finally:
+        close_mcp = getattr(getattr(bot, "_loop", None), "close_mcp", None)
+        if close_mcp is not None:
+            await close_mcp()
+
+
+asyncio.run(main())
+PY
+  exit $?
 fi
 
-nanobot agent -m "$prompt" --workspace /workspace
+python3 - "$prompt_file" <<'PY'
+import asyncio
+import sys
+from pathlib import Path
+
+from nanobot import Nanobot
+
+
+async def main() -> None:
+    prompt = Path(sys.argv[1]).read_text(encoding="utf-8")
+    bot = Nanobot.from_config(workspace="/workspace")
+    try:
+        result = await bot.run(prompt, session_key="cli:direct")
+        print(result.content)
+    finally:
+        close_mcp = getattr(getattr(bot, "_loop", None), "close_mcp", None)
+        if close_mcp is not None:
+            await close_mcp()
+
+
+asyncio.run(main())
+PY

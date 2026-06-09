@@ -73,7 +73,11 @@ class DockerAgentCliAdapter(BaseAdapter):
             if proxy is not None:
                 proxy.stop()
         result = result_from_completed(completed)
-        native_events = parse_docker_agent_events(completed.stdout, active_context.harness.config)
+        native_events = parse_docker_agent_events(
+            completed.stdout,
+            active_context.harness.config,
+            stderr=completed.stderr,
+        )
         proxy_events = parse_proxy_trace_events(context.workspace, active_context.harness.config)
         parsed_events, selected_trace_source = _select_trace_events(native_events, proxy_events)
         if parsed_events:
@@ -93,13 +97,15 @@ class DockerAgentCliAdapter(BaseAdapter):
         return result
 
 
-def parse_docker_agent_events(stdout: str, config: dict[str, Any]) -> list[TraceEvent]:
+def parse_docker_agent_events(stdout: str, config: dict[str, Any], stderr: str = "") -> list[TraceEvent]:
     trace_config = _trace_config(config)
     parser = str(trace_config.get("parser", config.get("trace_parser", "generic_json")) or "none")
     if parser == "none":
         return []
     if parser == "aider_text":
         return _parse_aider_text_events(stdout)
+    if parser == "nanobot_text":
+        return _parse_nanobot_text_events(f"{stdout}\n{stderr}")
     raw_events = _parse_json_or_jsonl(stdout)
     normalized: list[TraceEvent] = []
     call_index = 0
@@ -404,17 +410,49 @@ def _usage_from_token_block(tokens: dict[str, Any]) -> dict[str, Any]:
 def _parse_aider_text_events(stdout: str) -> list[TraceEvent]:
     events: list[TraceEvent] = []
     pattern = re.compile(
-        r"Tokens:\s*(?P<input>[0-9][0-9,]*)\s+sent,\s*(?P<output>[0-9][0-9,]*)\s+received(?:\.\s*Cost:\s*\$?(?P<cost>[0-9.]+))?",
+        r"Tokens:\s*(?P<input>[0-9][0-9,]*(?:\.[0-9]+)?[km]?)\s+sent,\s*"
+        r"(?P<output>[0-9][0-9,]*(?:\.[0-9]+)?[km]?)\s+received(?:\.\s*Cost:\s*\$?(?P<cost>[0-9.]+))?",
         re.IGNORECASE,
     )
     for call_index, match in enumerate(pattern.finditer(stdout)):
         events.append(
             model_call_event(
                 call_index=call_index,
-                input_tokens=_int_value(match.group("input").replace(",", "")),
-                output_tokens=_int_value(match.group("output").replace(",", "")),
+                input_tokens=_token_count_text(match.group("input")),
+                output_tokens=_token_count_text(match.group("output")),
                 cost_usd=_float_or_none(match.group("cost")),
                 metadata={"source": "aider_text"},
+            )
+        )
+    return events
+
+
+def _token_count_text(value: str) -> int:
+    normalized = value.strip().lower().replace(",", "")
+    multiplier = 1
+    if normalized.endswith("k"):
+        multiplier = 1_000
+        normalized = normalized[:-1]
+    elif normalized.endswith("m"):
+        multiplier = 1_000_000
+        normalized = normalized[:-1]
+    return int(float(normalized) * multiplier)
+
+
+def _parse_nanobot_text_events(text: str) -> list[TraceEvent]:
+    events: list[TraceEvent] = []
+    pattern = re.compile(
+        r"LLM usage:\s*prompt=(?P<input>[0-9][0-9,]*)\s+completion=(?P<output>[0-9][0-9,]*)\s+cached=(?P<cached>[0-9][0-9,]*)",
+        re.IGNORECASE,
+    )
+    for call_index, match in enumerate(pattern.finditer(text)):
+        events.append(
+            model_call_event(
+                call_index=call_index,
+                input_tokens=_int_value(match.group("input").replace(",", "")),
+                cached_input_tokens=_int_value(match.group("cached").replace(",", "")),
+                output_tokens=_int_value(match.group("output").replace(",", "")),
+                metadata={"source": "nanobot_text"},
             )
         )
     return events

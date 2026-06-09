@@ -37,6 +37,12 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
         first_input = all_calls[0].get("input_tokens")
         if first_input is None:
             return MetricValue(None, "unsupported", {"reason": "first model call missing input_tokens"})
+        if int(first_input) < user_prompt_tokens:
+            return MetricValue(
+                None,
+                "unsupported",
+                {"reason": _input_below_prompt_reason(first_input, user_prompt_tokens)},
+            )
         return MetricValue(
             int(first_input) - user_prompt_tokens,
             "partial",
@@ -46,7 +52,11 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
     task_calls = [call for call in calls if not _is_preflight_model_call(call)]
     provider_tax = _call_startup_tax(provider_first, user_prompt_tokens)
     if provider_tax is None:
-        return MetricValue(None, "unsupported", {"reason": "provider-first model call missing input_tokens"})
+        return MetricValue(
+            None,
+            "unsupported",
+            {"reason": _startup_tax_unsupported_reason(provider_first, user_prompt_tokens, "provider-first")},
+        )
     details: dict[str, Any] = {
         "provider_first_startup_tax": provider_tax,
         "provider_first_call_index": provider_first.get("call_index"),
@@ -60,7 +70,11 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
     task_first = task_calls[0]
     task_tax = _call_startup_tax(task_first, user_prompt_tokens)
     if task_tax is None:
-        return MetricValue(None, "unsupported", {"reason": "task-first model call missing input_tokens"})
+        return MetricValue(
+            None,
+            "unsupported",
+            {"reason": _startup_tax_unsupported_reason(task_first, user_prompt_tokens, "task-first")},
+        )
     details.update(
         {
             "task_first_startup_tax": task_tax,
@@ -143,7 +157,26 @@ def _call_startup_tax(call: dict[str, Any], user_prompt_tokens: int) -> int | No
     input_tokens = call.get("input_tokens")
     if input_tokens is None:
         return None
-    return int(input_tokens) - user_prompt_tokens
+    input_token_count = int(input_tokens)
+    if input_token_count < user_prompt_tokens:
+        return None
+    return input_token_count - user_prompt_tokens
+
+
+def _startup_tax_unsupported_reason(call: dict[str, Any], user_prompt_tokens: int, label: str) -> str:
+    input_tokens = call.get("input_tokens")
+    if input_tokens is None:
+        return f"{label} model call missing input_tokens"
+    if int(input_tokens) < user_prompt_tokens:
+        return _input_below_prompt_reason(input_tokens, user_prompt_tokens)
+    return f"{label} model call startup tax unavailable"
+
+
+def _input_below_prompt_reason(input_tokens: Any, user_prompt_tokens: int) -> str:
+    return (
+        "model_call input_tokens is below the benchmark prompt token estimate "
+        f"({int(input_tokens)} < {user_prompt_tokens}); startup tax is not comparable"
+    )
 
 
 def tool_output_retention_ratio(events: list[TraceEvent]) -> MetricValue:

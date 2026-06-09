@@ -1,0 +1,763 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 14,
+    "oracle_mode": "task manifests",
+    "perturbation_mode": "all-perturbations",
+    "run_finished_at": "2026-06-08T23:56:33.084363+00:00",
+    "run_started_at": "2026-06-08T23:42:22.234980+00:00",
+    "suite": "examples-non-swe-full",
+    "tasks_dir": "examples/tasks"
+  },
+  "captured_at": "2026-06-09T02:26:52.955193Z",
+  "commands": [
+    "OPENROUTER_MODEL='nvidia/nemotron-3-ultra-550b-a55b:free' PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/qwen-code-openrouter-nvidia-examples-full-20260608 run-suite --tasks-dir examples/tasks --harness examples/harnesses/qwen-code-docker-openrouter.yaml --all-perturbations --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/qwen-code-docker-openrouter.yaml",
+    "docker_image": "harness-bench/qwen-code:0.17.1",
+    "execution": "Docker OpenRouter run with all non-SWE example perturbations; Docker isolation required and workspaces deleted.",
+    "id": "qwen-code-docker-openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": "F.F\n======================================================================\nFAIL: test_combined_seconds (test_parser.ParserTest.test_combined_seconds)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/qwen-code-openrouter-nvidia-examples-full-20260608/work/harness-stress-log-triage__qwen-code-docker-openrouter__f173f9fc89/workspace/tests/test_parser.py\", line 14, in test_combined_seconds\n    self.assertEqual(parse_duration(\"1h 90s\"), 61)\nAssertionError: 150 != 61\n\n======================================================================\nFAIL: test_seconds_are_rounded_down_to_minutes (test_parser.ParserTest.test_seconds_are_rounded_down_to_minutes)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/qwen-code-openrouter-nvidia-examples-full-20260608/work/harness-stress-log-triage__qwen-code-docker-openrouter__f173f9fc89/workspace/tests/test_parser.py\", line 11, in test_seconds_are_rounded_down_to_minutes\n    self.assertEqual(parse_duration(\"90s\"), 1)\nAssertionError: 90 != 1\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "100k",
+      "reason": "command failed",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 1746
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": ".FF.\n======================================================================\nFAIL: test_average_preserves_fractional_result (test_calculator.CalculatorTest.test_average_preserves_fractional_result)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/qwen-code-openrouter-nvidia-examples-full-20260608/work/python-fix-calculator__qwen-code-docker-openrouter__ca5b4853e9/workspace/tests/test_calculator.py\", line 17, in test_average_preserves_fractional_result\n    self.assertEqual(average([1, 2]), 1.5)\nAssertionError: 1 != 1.5\n\n======================================================================\nFAIL: test_multiply_handles_negative_left_operand (test_calculator.CalculatorTest.test_multiply_handles_negative_left_operand)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/qwen-code-openrouter-nvidia-examples-full-20260608/work/python-fix-calculator__qwen-code-docker-openrouter__ca5b4853e9/workspace/tests/test_calculator.py\", line 11, in test_multiply_handles_negative_left_operand\n    self.assertEqual(multiply(-3, 4), -12)\nAssertionError: 0 != -12\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "100k",
+      "reason": "command failed",
+      "task_id": "python-fix-calculator",
+      "token_cost": 1846
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {},
+      "oracle_message": "expected file missing: answer.txt",
+      "perturbation_id": "100k",
+      "reason": "expected file missing: answer.txt",
+      "task_id": "toy-write-file",
+      "token_cost": 1609
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {},
+      "oracle_message": "expected file missing: answer.txt",
+      "perturbation_id": "200k",
+      "reason": "expected file missing: answer.txt",
+      "task_id": "toy-write-file",
+      "token_cost": 1679
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "100k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1116 < 100028); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 1746,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              39088.0
+            ],
+            [
+              1.0,
+              39625.0
+            ],
+            [
+              2.0,
+              40260.0
+            ],
+            [
+              3.0,
+              40414.0
+            ],
+            [
+              4.0,
+              40557.0
+            ],
+            [
+              5.0,
+              40789.0
+            ],
+            [
+              6.0,
+              240733.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 21698.571428571428
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19060,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19060
+        },
+        "status": "full",
+        "value": 19060
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 483306,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              69086.0
+            ],
+            [
+              1.0,
+              69653.0
+            ],
+            [
+              2.0,
+              70217.0
+            ],
+            [
+              3.0,
+              70359.0
+            ],
+            [
+              4.0,
+              70497.0
+            ],
+            [
+              5.0,
+              70661.0
+            ],
+            [
+              6.0,
+              70810.0
+            ],
+            [
+              7.0,
+              491283.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 35269.45238095238
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19058,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19058
+        },
+        "status": "full",
+        "value": 19058
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 984414,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              19082.0
+            ],
+            [
+              1.0,
+              19628.0
+            ],
+            [
+              2.0,
+              20028.0
+            ],
+            [
+              3.0,
+              20169.0
+            ],
+            [
+              4.0,
+              20303.0
+            ],
+            [
+              5.0,
+              20527.0
+            ],
+            [
+              6.0,
+              119737.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 10858.5
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19058,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19058
+        },
+        "status": "full",
+        "value": 19058
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 240828,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              19064.0
+            ],
+            [
+              1.0,
+              19172.0
+            ],
+            [
+              2.0,
+              19244.0
+            ],
+            [
+              3.0,
+              19352.0
+            ],
+            [
+              4.0,
+              76832.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 11571.6
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19017,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19017
+        },
+        "status": "full",
+        "value": 19017
+      },
+      "success": true,
+      "task_id": "metrics-calibration-multicall",
+      "token_cost": 154234,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "100k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1116 < 100022); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-fix-calculator",
+      "token_cost": 1846,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              39081.0
+            ],
+            [
+              1.0,
+              39429.0
+            ],
+            [
+              2.0,
+              39864.0
+            ],
+            [
+              3.0,
+              40018.0
+            ],
+            [
+              4.0,
+              40160.0
+            ],
+            [
+              5.0,
+              40440.0
+            ],
+            [
+              6.0,
+              238992.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 21501.821428571428
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19059,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19059
+        },
+        "status": "full",
+        "value": 19059
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 479478,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              69083.0
+            ],
+            [
+              1.0,
+              69412.0
+            ],
+            [
+              2.0,
+              69900.0
+            ],
+            [
+              3.0,
+              70055.0
+            ],
+            [
+              4.0,
+              70194.0
+            ],
+            [
+              5.0,
+              70469.0
+            ],
+            [
+              6.0,
+              420229.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 37708.78571428572
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19061,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19061
+        },
+        "status": "full",
+        "value": 19061
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 841580,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              19075.0
+            ],
+            [
+              1.0,
+              19405.0
+            ],
+            [
+              2.0,
+              19870.0
+            ],
+            [
+              3.0,
+              20018.0
+            ],
+            [
+              4.0,
+              20158.0
+            ],
+            [
+              5.0,
+              20436.0
+            ],
+            [
+              6.0,
+              118962.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 10786.107142857143
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19057,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19057
+        },
+        "status": "full",
+        "value": 19057
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 239434,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "expected file missing: answer.txt",
+      "oracle_success": false,
+      "perturbation_id": "100k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1066 < 100031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "toy-write-file",
+      "token_cost": 1609,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "expected file missing: answer.txt",
+      "oracle_success": false,
+      "perturbation_id": "200k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1066 < 200031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "toy-write-file",
+      "token_cost": 1679,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              39043.0
+            ],
+            [
+              1.0,
+              39150.0
+            ],
+            [
+              2.0,
+              78193.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 19575.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19012,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19012
+        },
+        "status": "full",
+        "value": 19012
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 156640,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              69042.0
+            ],
+            [
+              1.0,
+              69159.0
+            ],
+            [
+              2.0,
+              138201.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 34579.5
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19011,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19011
+        },
+        "status": "full",
+        "value": 19011
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 276674,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              19035.0
+            ],
+            [
+              1.0,
+              19145.0
+            ],
+            [
+              2.0,
+              38180.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 9572.5
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 19008,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 19008
+        },
+        "status": "full",
+        "value": 19008
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 76614,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 14,
+    "by_perturbation": {
+      "100k": {
+        "attempted": 3,
+        "solve_rate": 0.0,
+        "solved": 0
+      },
+      "200k": {
+        "attempted": 1,
+        "solve_rate": 0.0,
+        "solved": 0
+      },
+      "20k": {
+        "attempted": 3,
+        "solve_rate": 1.0,
+        "solved": 3
+      },
+      "50k": {
+        "attempted": 3,
+        "solve_rate": 1.0,
+        "solved": 3
+      },
+      "base": {
+        "attempted": 4,
+        "solve_rate": 1.0,
+        "solved": 4
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 21312.18380952381,
+        "research_metric": "B",
+        "runs_full": 10,
+        "runs_unsupported": 4,
+        "status": "partial",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 19040.1,
+        "research_metric": "A",
+        "runs_full": 10,
+        "runs_partial": 0,
+        "runs_unsupported": 4,
+        "status": "partial",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 14,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": 394008.2,
+        "total_token_cost": 3940082,
+        "unit": "tokens per solved task"
+      }
+    },
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 0,
+      "source": "No manifest pricing configured; dollars remain zero unless the provider/proxy reports cost_usd."
+    },
+    "solve_rate": 0.7142857142857143,
+    "solved": 10
+  }
+}

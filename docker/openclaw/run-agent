@@ -2,28 +2,65 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
-prompt="$(cat "$prompt_file")"
 
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
+  agent_dir="${OPENCLAW_AGENT_DIR:-$HOME/.openclaw-dev/agents/benchmark/agent}"
+  export OPENCLAW_AGENT_DIR="$agent_dir"
+  mkdir -p "$agent_dir"
   if [ -n "${OPENROUTER_BASE_URL:-}" ]; then
-    export OPENAI_API_KEY="$OPENROUTER_API_KEY"
-    export OPENAI_BASE_URL="$OPENROUTER_BASE_URL"
-    model_id="openai/$OPENROUTER_MODEL"
+    export OPENCLAW_MODEL_PROVIDER="${OPENCLAW_MODEL_PROVIDER:-harness_openrouter}"
+    python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+
+agent_dir = Path(os.environ["OPENCLAW_AGENT_DIR"])
+provider = os.environ["OPENCLAW_MODEL_PROVIDER"]
+model = os.environ["OPENROUTER_MODEL"]
+payload = {
+    "providers": {
+        provider: {
+            "api": "openai-completions",
+            "baseUrl": os.environ["OPENROUTER_BASE_URL"],
+            "apiKey": "OPENROUTER_API_KEY",
+            "models": [
+                {
+                    "id": model,
+                    "name": model,
+                    "contextWindow": int(os.environ.get("OPENCLAW_CONTEXT_WINDOW", "200000")),
+                    "maxTokens": int(os.environ.get("OPENCLAW_MAX_TOKENS", "32000")),
+                    "input": ["text"],
+                }
+            ],
+        }
+    }
+}
+agent_dir.mkdir(parents=True, exist_ok=True)
+(agent_dir / "models.json").write_text(json.dumps(payload), encoding="utf-8")
+PY
+    model_id="$OPENCLAW_MODEL_PROVIDER/$OPENROUTER_MODEL"
   else
     model_id="openrouter/$OPENROUTER_MODEL"
   fi
   openclaw --dev agents add benchmark \
+    --agent-dir "$agent_dir" \
     --workspace /workspace \
     --model "$model_id" \
     --non-interactive \
     --json >/tmp/openclaw-agent-add.json
+  if [ -n "${OPENCLAW_MODEL_PROVIDER:-}" ]; then
+    printf '%s\n' "$OPENROUTER_API_KEY" | openclaw --dev models auth --agent benchmark paste-api-key \
+      --provider "$OPENCLAW_MODEL_PROVIDER" \
+      --profile-id "$OPENCLAW_MODEL_PROVIDER:benchmark" \
+      >/tmp/openclaw-auth.json
+  fi
   exec openclaw --dev agent \
     --local \
     --agent benchmark \
     --session-key agent:benchmark:benchmark \
     --model "$model_id" \
-    --message "$prompt" \
+    --message-file "$prompt_file" \
     --json
 fi
 
@@ -33,5 +70,4 @@ if [ -z "${OPENCLAW_RUN_COMMAND:-}" ]; then
 fi
 
 export HARNESS_PROMPT_FILE="$prompt_file"
-export HARNESS_PROMPT="$prompt"
 exec /bin/sh -lc "$OPENCLAW_RUN_COMMAND"
