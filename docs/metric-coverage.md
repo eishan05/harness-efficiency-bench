@@ -16,9 +16,9 @@ Startup tax is unsupported for a run when the reported first-call `input_tokens`
 
 Context growth needs at least two non-aggregate, non-preflight model calls in the run. Claude Code Docker OpenRouter routes Anthropic-compatible OpenRouter traffic through the usage proxy; when OpenRouter returns per-request usage, that trace is sufficient for full A/B/C. Proxy requests that do not correspond to visible Claude assistant messages are retained for solve-efficiency token totals and provider-first startup tax, but ignored for context-growth calculations. Aggregate run-level usage, such as Claude Code OpenRouter `modelUsage`, is enough for solve efficiency but not enough for full startup-tax or context-growth measurement. Use `examples/tasks/metrics-calibration-multicall` when checking whether a harness can produce the B metric.
 
-Known exceptions:
+Excluded from the A/B/C comparison set:
 
-- Antigravity CLI Docker does not currently expose token usage or a documented routeable provider base URL. Use `antigravity-sdk` for usage metrics until the CLI or vendor support changes.
-- Grok Build Docker is measurable only if the CLI exposes a routeable xAI/OpenAI-compatible base URL or native usage events. Otherwise it can be graded for success but not A/B/C.
+- Antigravity CLI Docker does not currently expose token usage or a documented routeable provider base URL. It can be graded for task success, but it is not an A/B/C candidate.
+- Grok Build Docker does not currently expose enough routeable or native usage telemetry for correct A/B/C measurement. It can be graded for task success, but it is not an A/B/C candidate.
 
 The Docker OpenRouter calibration snapshot in `examples/results/openrouter-docker-smoke-calibration-2026-06-08.json` shows full startup-tax and solve-efficiency token coverage for the measurable OpenRouter harnesses. Context growth is full whenever the task produces at least two model calls; a one-call task can still report context growth as unsupported because there is no growth slope to fit.

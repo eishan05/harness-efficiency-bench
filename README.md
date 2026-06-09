@@ -164,6 +164,8 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-task \
 
 Grok Build uses xAI directly. Set `XAI_API_KEY` for `examples/harnesses/grok-build-docker-isolated.yaml`; the wrapper also accepts `GROK_CODE_XAI_API_KEY` for compatibility.
 
+Antigravity CLI and Grok Build can be run as success-oracle harnesses, but they are excluded from A/B/C comparisons until their CLIs expose correct token telemetry through native usage events or routeable provider traffic.
+
 ## Adding Harnesses
 
 Start with `examples/harnesses/generic-cli.yaml` if the harness can run one command and exit. Use a first-class adapter when the harness emits structured events or has an SDK. See `docs/adding-harnesses.md`.
