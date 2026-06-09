@@ -153,6 +153,8 @@ These manifests keep provider-specific baselines unchanged while letting the sam
 
 The OpenRouter smoke calibration in `examples/results/openrouter-docker-smoke-calibration-2026-06-08.json` confirms A/B/C token coverage for the measurable Docker harnesses when the task produces enough model calls. Antigravity CLI and Grok Build are intentionally excluded from that calibration until their CLIs expose routeable provider traffic or native usage events.
 
+For Aider, use `AIDER_ARCHITECT=1` when measuring B context growth. Normal Aider mode is often a single model call, so B is unsupported even when A and C are available. The wrapper defaults to `AIDER_FILE_MODE=auto`: small repositories get tracked files added to the chat, while large repositories use repo-map mode instead of passing every tracked file. On the OpenRouter free `nvidia/nemotron-3-ultra-550b-a55b:free` model, SWE-scale Aider runs with repo-map context have stalled before usage is returned; `AIDER_MAP_TOKENS=0` is bounded and measurable but usually produces empty SWE patches.
+
 Some agents initialize their own workspace metadata in the mounted task workspace. Task oracles should grade the required files or repository diff and ignore unrelated harness metadata unless the task explicitly forbids extra files.
 
 ## Harness Config Keys

@@ -21,13 +21,23 @@ else
   fi
 fi
 
-set --
 tracked_files="$(mktemp)"
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   git ls-files > "$tracked_files"
 else
   find . -maxdepth 3 -type f | sed 's#^\./##' > "$tracked_files"
 fi
+
+: "${AIDER_FILE_MODE:=auto}"
+: "${AIDER_MAX_FILES:=80}"
+: "${AIDER_MAX_FILE_BYTES:=250000}"
+: "${AIDER_MAP_TOKENS:=8192}"
+: "${AIDER_MAP_REFRESH:=auto}"
+: "${AIDER_EDIT_FORMAT:=diff}"
+: "${AIDER_ARCHITECT:=false}"
+
+file_count=0
+file_bytes=0
 while IFS= read -r file; do
   case "$file" in
     ""|.benchmark_prompt.txt|.aider*|.git/*)
@@ -35,26 +45,85 @@ while IFS= read -r file; do
       ;;
   esac
   if [ -f "$file" ]; then
-    set -- "$@" "$file"
+    file_count=$((file_count + 1))
+    bytes="$(wc -c < "$file" 2>/dev/null || printf '0')"
+    file_bytes=$((file_bytes + bytes))
   fi
 done < "$tracked_files"
+
+add_files=false
+case "$AIDER_FILE_MODE" in
+  all)
+    add_files=true
+    ;;
+  none|repo-map)
+    add_files=false
+    ;;
+  auto)
+    if [ "$file_count" -le "$AIDER_MAX_FILES" ] && [ "$file_bytes" -le "$AIDER_MAX_FILE_BYTES" ]; then
+      add_files=true
+    fi
+    ;;
+  *)
+    echo "Unsupported AIDER_FILE_MODE=$AIDER_FILE_MODE; expected auto, all, none, or repo-map" >&2
+    rm -f "$tracked_files"
+    exit 2
+    ;;
+esac
+
+set --
+if [ "$add_files" = true ]; then
+  while IFS= read -r file; do
+    case "$file" in
+      ""|.benchmark_prompt.txt|.aider*|.git/*)
+        continue
+        ;;
+    esac
+    if [ -f "$file" ]; then
+      set -- "$@" "$file"
+    fi
+  done < "$tracked_files"
+else
+  echo "Aider repo has $file_count tracked files and $file_bytes bytes; using repo-map mode without positional files." >&2
+fi
 rm -f "$tracked_files"
 
+case "$AIDER_ARCHITECT" in
+  1|true|yes|on)
+    set -- --architect --auto-accept-architect "$@"
+    ;;
+  0|false|no|off)
+    ;;
+  *)
+    echo "Unsupported AIDER_ARCHITECT=$AIDER_ARCHITECT; expected true or false" >&2
+    exit 2
+    ;;
+esac
+
+status=0
 aider \
   --model "$AIDER_MODEL" \
+  --edit-format "$AIDER_EDIT_FORMAT" \
   --message-file "$prompt_file" \
+  --input-history-file /tmp/aider.input.history \
+  --chat-history-file /tmp/aider.chat.history.md \
   --yes-always \
   --no-check-update \
   --no-show-release-notes \
   --no-gitignore \
+  --no-add-gitignore-files \
   --no-pretty \
   --no-show-model-warnings \
-  --map-tokens 0 \
-  --map-refresh manual \
+  --map-tokens "$AIDER_MAP_TOKENS" \
+  --map-refresh "$AIDER_MAP_REFRESH" \
+  --subtree-only \
   --no-auto-lint \
   --no-auto-test \
   --no-analytics \
   --no-auto-commits \
   --no-dirty-commits \
   --no-stream \
-  "$@"
+  "$@" || status=$?
+
+rm -rf .aider.chat.history.md .aider.input.history .aider.llm.history .aider.tags.cache.v4
+exit "$status"

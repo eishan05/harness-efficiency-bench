@@ -29,6 +29,13 @@ config:
     - OPENAI_BASE_URL
     - ANTHROPIC_API_KEY
     - AIDER_MODEL
+    - AIDER_FILE_MODE
+    - AIDER_MAX_FILES
+    - AIDER_MAX_FILE_BYTES
+    - AIDER_MAP_TOKENS
+    - AIDER_MAP_REFRESH
+    - AIDER_EDIT_FORMAT
+    - AIDER_ARCHITECT
   required_env:
     - OPENAI_API_KEY
   cli_version: "0.86.2"
