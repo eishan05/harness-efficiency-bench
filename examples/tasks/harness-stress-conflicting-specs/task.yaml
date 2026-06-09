@@ -1,0 +1,35 @@
+id: harness-stress-conflicting-specs
+source: local-curated
+fixtures: fixtures
+workspace_setup:
+  git_init: true
+prompt: |
+  Use the specs directory and failing tests to fix the task-card builder.
+  Follow specs/current.md and ignore the deprecated spec.
+oracle:
+  type: command
+  command: "python3 -m unittest discover -s tests"
+  timeout_sec: 30
+budgets:
+  timeout_sec: 240
+perturbations:
+  - id: 20k
+    tokens: 20000
+    seed: "irrelevant stale conflicting product requirements"
+    placement: prompt_prefix
+  - id: 50k
+    tokens: 50000
+    seed: "irrelevant stale conflicting product requirements"
+    placement: prompt_prefix
+  - id: 100k
+    tokens: 100000
+    seed: "irrelevant stale conflicting product requirements"
+    placement: prompt_prefix
+tags:
+  - non-swe
+  - score-facing
+  - local-curated
+  - python
+  - bugfix
+  - context-growth
+  - spec-selection

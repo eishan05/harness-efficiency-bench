@@ -112,13 +112,26 @@ PYTHONPATH=src python3 -m unittest discover -s tests
 
 Full A/B/C observability requires structured per-call usage from the harness, or routing OpenAI-compatible calls through the local usage-only proxy. Black-box CLI runs can still be scored for success and runtime, but startup tax, context growth, and solve efficiency are unsupported when neither native usage nor proxy routing is available.
 
-The starter task set includes:
+The local non-SWE score suite is tagged `score-facing` and currently contains 12 tasks:
 
 - `toy-write-file`: deterministic smoke/context-rot task.
-- `metrics-calibration-multicall`: small task for checking whether a harness emits at least two model calls for context-growth measurement.
-- `python-fix-calculator`: small Python bug-fix task.
-- `harness-stress-log-triage`: log-heavy bug-fix task intended to stress tool-output-heavy context growth.
-- `swe-bench-lite-curated-10`: a Docker-evaluated SWE-bench Lite subset. Build `docker/swebench-oracle`, then run tasks from `examples/tasks/swe-bench-lite-curated-10` with Docker-isolated harnesses.
+- `python-fix-calculator`, `python-json-config-migration`, `python-csv-ledger-reconcile`, `python-markdown-link-normalizer`, `python-path-safety`, `python-datetime-windowing`, `python-cache-ttl-lru`, `python-cli-subcommands`, and `python-plugin-registry`: small Python tasks covering bug fixing, data processing, CLI behavior, security checks, stateful logic, and multi-file discovery.
+- `harness-stress-log-triage` and `harness-stress-conflicting-specs`: context-heavy tasks that require selecting the relevant evidence from logs or competing specs.
+
+`metrics-calibration-multicall` is separate: use it to check whether a harness emits enough per-call usage data for context-growth measurement, not as a solve-rate task.
+
+Run only the local score-facing tasks with:
+
+```bash
+PYTHONPATH=src python3 -m harness_efficiency_bench.cli run-suite \
+  --tasks-dir examples/tasks \
+  --include-tag score-facing \
+  --harness examples/harnesses/codex-docker-openrouter.yaml \
+  --require-docker-isolation \
+  --delete-workspace
+```
+
+`swe-bench-lite-curated-10` is a Docker-evaluated SWE-bench Lite subset. Build `docker/swebench-oracle`, then run tasks from `examples/tasks/swe-bench-lite-curated-10` with Docker-isolated harnesses.
 
 Regenerate the SWE-bench Lite subset manifests:
 

@@ -26,6 +26,9 @@ perturbations:
     seed: "irrelevant stale CI output from another repository"
     placement: prompt_prefix
 tags:
+  - non-swe
+  - score-facing
+  - local-curated
   - python
   - bugfix
   - context-growth

@@ -1,0 +1,35 @@
+id: python-cli-subcommands
+source: local-curated
+fixtures: fixtures
+workspace_setup:
+  git_init: true
+prompt: |
+  Fix the command-line tool so the included subprocess-based unit tests pass.
+  The tool should require a subcommand, support echo --upper, and sum integers
+  numerically rather than concatenating strings.
+oracle:
+  type: command
+  command: "python3 -m unittest discover -s tests"
+  timeout_sec: 30
+budgets:
+  timeout_sec: 240
+perturbations:
+  - id: 20k
+    tokens: 20000
+    seed: "irrelevant stale CLI help transcript"
+    placement: prompt_prefix
+  - id: 50k
+    tokens: 50000
+    seed: "irrelevant stale CLI help transcript"
+    placement: prompt_prefix
+  - id: 100k
+    tokens: 100000
+    seed: "irrelevant stale CLI help transcript"
+    placement: prompt_prefix
+tags:
+  - non-swe
+  - score-facing
+  - local-curated
+  - python
+  - bugfix
+  - cli

@@ -1,0 +1,35 @@
+id: python-plugin-registry
+source: local-curated
+fixtures: fixtures
+workspace_setup:
+  git_init: true
+prompt: |
+  Fix plugin discovery so the included unit tests pass.
+  Discover importable modules in the package, call modules with a register()
+  function, and return a fresh registry each time.
+oracle:
+  type: command
+  command: "python3 -m unittest discover -s tests"
+  timeout_sec: 30
+budgets:
+  timeout_sec: 240
+perturbations:
+  - id: 20k
+    tokens: 20000
+    seed: "irrelevant stale plugin loading design doc"
+    placement: prompt_prefix
+  - id: 50k
+    tokens: 50000
+    seed: "irrelevant stale plugin loading design doc"
+    placement: prompt_prefix
+  - id: 100k
+    tokens: 100000
+    seed: "irrelevant stale plugin loading design doc"
+    placement: prompt_prefix
+tags:
+  - non-swe
+  - score-facing
+  - local-curated
+  - python
+  - bugfix
+  - multi-file

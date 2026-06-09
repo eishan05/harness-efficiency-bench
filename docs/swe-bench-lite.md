@@ -61,13 +61,19 @@ PYTHONPATH=src python3 -m harness_efficiency_bench.cli export-predictions \
   --out predictions.jsonl
 ```
 
-The current starter suite is intentionally local and cheap:
+The local non-SWE starter suite is intentionally cheap and tagged `score-facing`.
+It includes deterministic smoke coverage, ordinary Python bug fixes, data
+processing, CLI behavior, path-safety, stateful cache logic, multi-file plugin
+discovery, log triage, and conflicting-spec selection. Use these tasks to
+validate harness adapters, isolation, cleanup, and metric coverage before
+spending on SWE-bench Lite runs.
 
-- `python-fix-calculator` exercises ordinary unit-test-driven bug fixing.
-- `harness-stress-log-triage` exercises log reading and tool-output-heavy context pressure.
-- `toy-write-file` exercises deterministic smoke runs and context-bloat perturbations.
+Keep `metrics-calibration-multicall` separate from solve-rate comparisons; it is
+for checking whether a harness emits at least two measured model calls for
+context-growth calculations.
 
-Use these tasks to validate harness adapters, isolation, cleanup, and metric coverage before spending on SWE-bench Lite runs.
+Run the local score suite with `run-suite --tasks-dir examples/tasks
+--include-tag score-facing`.
 
 ## Saved Smoke Results
 

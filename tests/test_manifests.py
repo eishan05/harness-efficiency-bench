@@ -6,6 +6,21 @@ from harness_efficiency_bench.manifests import HarnessManifest, TaskManifest
 
 ROOT = Path(__file__).resolve().parents[1]
 
+NON_SWE_SCORE_TASK_IDS = {
+    "toy-write-file",
+    "python-fix-calculator",
+    "harness-stress-log-triage",
+    "python-json-config-migration",
+    "python-csv-ledger-reconcile",
+    "python-markdown-link-normalizer",
+    "python-path-safety",
+    "python-datetime-windowing",
+    "python-cache-ttl-lru",
+    "python-cli-subcommands",
+    "python-plugin-registry",
+    "harness-stress-conflicting-specs",
+}
+
 
 class ManifestTest(unittest.TestCase):
     def test_load_task_manifest(self):
@@ -34,6 +49,25 @@ class ManifestTest(unittest.TestCase):
             with self.subTest(path=path.name):
                 self.assertEqual(task.oracle.type, "swe_bench")
                 self.assertEqual(task.oracle.data.get("backend"), "docker")
+
+    def test_non_swe_score_tasks_are_tagged_and_perturbable(self):
+        paths = sorted((ROOT / "examples/tasks").glob("*/task.yaml"))
+        tasks = {}
+        for path in paths:
+            task = TaskManifest.load(path)
+            tasks[task.id] = task
+        score_tasks = {task_id for task_id, task in tasks.items() if "score-facing" in task.tags}
+
+        self.assertEqual(score_tasks, NON_SWE_SCORE_TASK_IDS)
+        for task_id in NON_SWE_SCORE_TASK_IDS:
+            task = tasks[task_id]
+            with self.subTest(task_id=task_id):
+                self.assertIn("non-swe", task.tags)
+                self.assertTrue(task.workspace_setup["git_init"])
+                self.assertIn(task.oracle.type, {"command", "file_equals"})
+                self.assertEqual(task.perturbation("20k").tokens, 20000)
+                self.assertEqual(task.perturbation("50k").tokens, 50000)
+                self.assertEqual(task.perturbation("100k").tokens, 100000)
 
     def test_load_harness_manifest(self):
         harness = HarnessManifest.load(ROOT / "examples/harnesses/demo.yaml")

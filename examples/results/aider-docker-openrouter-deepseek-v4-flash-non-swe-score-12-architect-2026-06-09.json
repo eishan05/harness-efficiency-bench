@@ -1,0 +1,536 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 12,
+    "oracle_mode": "task manifests filtered by score-facing tag",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-09T23:04:44.086658+00:00",
+    "run_started_at": "2026-06-09T22:59:00.583133+00:00",
+    "suite": "non-swe-score-12-architect",
+    "tasks_dir": "examples/tasks"
+  },
+  "captured_at": "2026-06-09T23:04:56.962795Z",
+  "commands": [
+    "OPENROUTER_MODEL=deepseek/deepseek-v4-flash AIDER_ARCHITECT=1 PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-deepseek-v4-flash-non-swe-score-12-aider-architect-20260609/aider-docker-openrouter run-suite --tasks-dir examples/tasks --include-tag score-facing --harness examples/harnesses/aider-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/aider-docker-openrouter.yaml",
+    "docker_image": "harness-bench/aider:0.86.2",
+    "execution": "Docker-isolated aider-docker-openrouter via OpenRouter using deepseek/deepseek-v4-flash over the 12 score-facing non-SWE tasks with AIDER_ARCHITECT=1.",
+    "id": "aider-docker-openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": ".F.\n======================================================================\nFAIL: test_migrates_legacy_fields_and_preserves_unknown_keys (test_config_migrator.ConfigMigratorTest.test_migrates_legacy_fields_and_preserves_unknown_keys)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-non-swe-score-12-aider-architect-20260609/aider-docker-openrouter/work/python-json-config-migration__aider-docker-openrouter__2f7d63fbce/workspace/tests/test_config_migrator.py\", line 19, in test_migrates_legacy_fields_and_preserves_unknown_keys\n    self.assertEqual(migrated[\"timeout_seconds\"], 3)\nAssertionError: 2 != 3\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=1)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "base",
+      "reason": "command failed",
+      "task_id": "python-json-config-migration",
+      "token_cost": 3728
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              862.0
+            ],
+            [
+              1.0,
+              1300.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 438.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 835,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 835
+        },
+        "status": "full",
+        "value": 835
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 3841,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              730.0
+            ],
+            [
+              1.0,
+              1100.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 370.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 706,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 706
+        },
+        "status": "full",
+        "value": 706
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 2739,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              962.0
+            ],
+            [
+              1.0,
+              1400.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 438.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 931,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 931
+        },
+        "status": "full",
+        "value": 931
+      },
+      "success": true,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 3406,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              847.0
+            ],
+            [
+              1.0,
+              1300.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 453.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 809,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 809
+        },
+        "status": "full",
+        "value": 809
+      },
+      "success": true,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 3659,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              750.0
+            ],
+            [
+              1.0,
+              1200.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 450.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 717,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 717
+        },
+        "status": "full",
+        "value": 717
+      },
+      "success": true,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 2617,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              695.0
+            ],
+            [
+              1.0,
+              1500.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 805.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 663,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 663
+        },
+        "status": "full",
+        "value": 663
+      },
+      "success": true,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 5295,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              587.0
+            ],
+            [
+              1.0,
+              1000.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 413.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 569,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 569
+        },
+        "status": "full",
+        "value": 569
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 2631,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              875.0
+            ],
+            [
+              1.0,
+              1300.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 425.0
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 839,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 839
+        },
+        "status": "full",
+        "value": 839
+      },
+      "success": false,
+      "task_id": "python-json-config-migration",
+      "token_cost": 3728,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              1000.0
+            ],
+            [
+              1.0,
+              1500.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 500.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 963,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 963
+        },
+        "status": "full",
+        "value": 963
+      },
+      "success": true,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 8277,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              730.0
+            ],
+            [
+              1.0,
+              1400.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 670.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 698,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 698
+        },
+        "status": "full",
+        "value": 698
+      },
+      "success": true,
+      "task_id": "python-path-safety",
+      "token_cost": 4429,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              685.0
+            ],
+            [
+              1.0,
+              1300.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 615.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 651,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 651
+        },
+        "status": "full",
+        "value": 651
+      },
+      "success": true,
+      "task_id": "python-plugin-registry",
+      "token_cost": 3803,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              146.0
+            ],
+            [
+              1.0,
+              546.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 400.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 119,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 119
+        },
+        "status": "full",
+        "value": 119
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 951,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 12,
+    "by_perturbation": {
+      "base": {
+        "attempted": 12,
+        "solve_rate": 0.9166666666666666,
+        "solved": 11
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 498.0833333333333,
+        "research_metric": "B",
+        "runs_full": 12,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 708.3333333333334,
+        "research_metric": "A",
+        "runs_full": 12,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 12,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": 4125.090909090909,
+        "total_token_cost": 45376,
+        "unit": "tokens per solved task"
+      }
+    },
+    "oracle_solve_rate": 0.9166666666666666,
+    "oracle_solved": 11,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 0,
+      "source": "No manifest pricing configured; dollars remain zero unless the provider/proxy reports cost_usd."
+    },
+    "solve_rate": 0.9166666666666666,
+    "solved": 11
+  }
+}

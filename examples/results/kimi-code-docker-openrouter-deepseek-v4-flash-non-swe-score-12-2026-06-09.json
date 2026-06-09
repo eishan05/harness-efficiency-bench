@@ -1,0 +1,704 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 12,
+    "oracle_mode": "task manifests filtered by score-facing tag",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-09T21:26:50.069598+00:00",
+    "run_started_at": "2026-06-09T21:15:49.804806+00:00",
+    "suite": "non-swe-score-12",
+    "tasks_dir": "examples/tasks"
+  },
+  "captured_at": "2026-06-09T22:19:47.857377Z",
+  "commands": [
+    "OPENROUTER_MODEL=deepseek/deepseek-v4-flash PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-deepseek-v4-flash-non-swe-score-12-20260609/kimi-code-docker-openrouter run-suite --tasks-dir examples/tasks --include-tag score-facing --harness examples/harnesses/kimi-code-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/kimi-code-docker-openrouter.yaml",
+    "docker_image": "harness-bench/kimi-code:0.11.0",
+    "execution": "Docker-isolated kimi-code-docker-openrouter via OpenRouter using deepseek/deepseek-v4-flash over the 12 score-facing non-SWE tasks.",
+    "id": "kimi-code-docker-openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "timeout_sec": 900
+  },
+  "known_failures": [],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16063.0
+            ],
+            [
+              1.0,
+              16782.0
+            ],
+            [
+              2.0,
+              16788.0
+            ],
+            [
+              3.0,
+              17792.0
+            ],
+            [
+              4.0,
+              17923.0
+            ],
+            [
+              5.0,
+              18055.0
+            ],
+            [
+              6.0,
+              17808.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 318.42857142857144
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16036,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16036
+        },
+        "status": "full",
+        "value": 16036
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 123053,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16044.0
+            ],
+            [
+              1.0,
+              16765.0
+            ],
+            [
+              2.0,
+              17222.0
+            ],
+            [
+              3.0,
+              17356.0
+            ],
+            [
+              4.0,
+              16989.0
+            ],
+            [
+              5.0,
+              17559.0
+            ],
+            [
+              6.0,
+              17758.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 232.03571428571428
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16020,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16020
+        },
+        "status": "full",
+        "value": 16020
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 121032,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16074.0
+            ],
+            [
+              1.0,
+              16355.0
+            ],
+            [
+              2.0,
+              17410.0
+            ],
+            [
+              3.0,
+              17100.0
+            ],
+            [
+              4.0,
+              17641.0
+            ],
+            [
+              5.0,
+              17881.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 359.51428571428573
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16043,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16043
+        },
+        "status": "full",
+        "value": 16043
+      },
+      "success": true,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 103908,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16073.0
+            ],
+            [
+              1.0,
+              16795.0
+            ],
+            [
+              2.0,
+              17427.0
+            ],
+            [
+              3.0,
+              17564.0
+            ],
+            [
+              4.0,
+              17694.0
+            ],
+            [
+              5.0,
+              17873.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 338.1142857142857
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16035,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16035
+        },
+        "status": "full",
+        "value": 16035
+      },
+      "success": true,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 104847,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16069.0
+            ],
+            [
+              1.0,
+              16639.0
+            ],
+            [
+              2.0,
+              17943.0
+            ],
+            [
+              3.0,
+              18073.0
+            ],
+            [
+              4.0,
+              18286.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 586.8
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16036,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16036
+        },
+        "status": "full",
+        "value": 16036
+      },
+      "success": true,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 89572,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16073.0
+            ],
+            [
+              1.0,
+              16604.0
+            ],
+            [
+              2.0,
+              17833.0
+            ],
+            [
+              3.0,
+              18510.0
+            ],
+            [
+              4.0,
+              19362.0
+            ],
+            [
+              5.0,
+              19577.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 756.3142857142857
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16041,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16041
+        },
+        "status": "full",
+        "value": 16041
+      },
+      "success": true,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 112092,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16052.0
+            ],
+            [
+              1.0,
+              16050.0
+            ],
+            [
+              2.0,
+              17042.0
+            ],
+            [
+              3.0,
+              16731.0
+            ],
+            [
+              4.0,
+              17254.0
+            ],
+            [
+              5.0,
+              17494.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 300.3142857142857
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16034,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16034
+        },
+        "status": "full",
+        "value": 16034
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 101819,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16076.0
+            ],
+            [
+              1.0,
+              16341.0
+            ],
+            [
+              2.0,
+              17932.0
+            ],
+            [
+              3.0,
+              18076.0
+            ],
+            [
+              4.0,
+              18206.0
+            ],
+            [
+              5.0,
+              18442.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 501.9714285714286
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16040,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16040
+        },
+        "status": "full",
+        "value": 16040
+      },
+      "success": true,
+      "task_id": "python-json-config-migration",
+      "token_cost": 107555,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16080.0
+            ],
+            [
+              1.0,
+              16815.0
+            ],
+            [
+              2.0,
+              19947.0
+            ],
+            [
+              3.0,
+              19627.0
+            ],
+            [
+              4.0,
+              20270.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 1119.2
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16043,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16043
+        },
+        "status": "full",
+        "value": 16043
+      },
+      "success": true,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 99086,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16128.0
+            ],
+            [
+              1.0,
+              16194.0
+            ],
+            [
+              2.0,
+              19327.0
+            ],
+            [
+              3.0,
+              19852.0
+            ],
+            [
+              4.0,
+              20730.0
+            ],
+            [
+              5.0,
+              20524.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 1031.8
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16096,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16096
+        },
+        "status": "full",
+        "value": 16096
+      },
+      "success": true,
+      "task_id": "python-path-safety",
+      "token_cost": 119972,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16085.0
+            ],
+            [
+              1.0,
+              16333.0
+            ],
+            [
+              2.0,
+              17116.0
+            ],
+            [
+              3.0,
+              18179.0
+            ],
+            [
+              4.0,
+              18294.0
+            ],
+            [
+              5.0,
+              19079.0
+            ],
+            [
+              6.0,
+              18772.0
+            ],
+            [
+              7.0,
+              19458.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 497.73809523809524
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16051,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16051
+        },
+        "status": "full",
+        "value": 16051
+      },
+      "success": true,
+      "task_id": "python-plugin-registry",
+      "token_cost": 146897,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "points": [
+            [
+              0.0,
+              16042.0
+            ],
+            [
+              1.0,
+              16162.0
+            ]
+          ]
+        },
+        "status": "full",
+        "value": 120.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 16015,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 16015
+        },
+        "status": "full",
+        "value": 16015
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 32384,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 12,
+    "by_perturbation": {
+      "base": {
+        "attempted": 12,
+        "solve_rate": 1.0,
+        "solved": 12
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 513.5192460317461,
+        "research_metric": "B",
+        "runs_full": 12,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 16040.833333333334,
+        "research_metric": "A",
+        "runs_full": 12,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 12,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_per_solved_task": 105184.75,
+        "total_token_cost": 1262217,
+        "unit": "tokens per solved task"
+      }
+    },
+    "oracle_solve_rate": 1.0,
+    "oracle_solved": 12,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.08102209,
+      "runs_with_dollar_cost": 12,
+      "source": "Provider/proxy-reported cost_usd from trace events; manifest pricing is empty."
+    },
+    "solve_rate": 1.0,
+    "solved": 12
+  }
+}

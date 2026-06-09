@@ -26,6 +26,9 @@ perturbations:
     seed: "irrelevant stale dependency resolver log"
     placement: prompt_prefix
 tags:
+  - non-swe
+  - score-facing
+  - local-curated
   - smoke
   - python
   - bugfix

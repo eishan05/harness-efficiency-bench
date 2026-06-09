@@ -27,6 +27,7 @@ def main(argv: list[str] | None = None) -> int:
 
     tasks_parser = subparsers.add_parser("tasks", help="List task manifests.")
     tasks_parser.add_argument("--tasks-dir", default="examples/tasks")
+    _add_task_filter_args(tasks_parser)
 
     harnesses_parser = subparsers.add_parser("harnesses", help="List harness manifests.")
     harnesses_parser.add_argument("--harnesses-dir", default="examples/harnesses")
@@ -50,6 +51,7 @@ def main(argv: list[str] | None = None) -> int:
     run_suite_parser.add_argument("--require-docker-isolation", action="store_true")
     run_suite_parser.add_argument("--repo-cache", help=f"Git mirror cache path. Defaults to {DEFAULT_REPO_CACHE}.")
     run_suite_parser.add_argument("--no-repo-cache", action="store_true", help="Disable Git mirror caching.")
+    _add_task_filter_args(run_suite_parser)
 
     analyze_parser = subparsers.add_parser("analyze", help="Print raw aggregate JSON.")
     analyze_parser.add_argument("--results-dir")
@@ -93,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
     if args.command == "tasks":
-        return _list_manifests(Path(args.tasks_dir), TaskManifest.load)
+        return _list_task_manifests(Path(args.tasks_dir), args)
     if args.command == "harnesses":
         return _list_manifests(Path(args.harnesses_dir), HarnessManifest.load)
     if args.command == "run-task":
@@ -122,6 +124,8 @@ def main(argv: list[str] | None = None) -> int:
         try:
             for task_path in _manifest_paths(Path(args.tasks_dir)):
                 task = TaskManifest.load(task_path)
+                if not _task_matches_tag_filters(task, args):
+                    continue
                 results.extend(_run_task_with_perturbations(runner, task, harness, args))
         except RuntimeError as exc:
             parser.error(str(exc))
@@ -183,6 +187,33 @@ def _manifest_paths(root: Path) -> list[Path]:
     if root.is_file():
         return [root]
     return sorted([*root.glob("*/task.yaml"), *root.glob("*.yaml"), *root.glob("*.json")])
+
+
+def _add_task_filter_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--include-tag", action="append", default=[], help="Only include tasks with this tag.")
+    parser.add_argument("--exclude-tag", action="append", default=[], help="Exclude tasks with this tag.")
+
+
+def _task_matches_tag_filters(task: TaskManifest, args: argparse.Namespace) -> bool:
+    include_tags = set(getattr(args, "include_tag", []) or [])
+    exclude_tags = set(getattr(args, "exclude_tag", []) or [])
+    tags = set(task.tags)
+    return include_tags.issubset(tags) and not tags.intersection(exclude_tags)
+
+
+def _list_task_manifests(root: Path, args: argparse.Namespace) -> int:
+    items = []
+    for path in _manifest_paths(root):
+        try:
+            manifest = TaskManifest.load(path)
+        except Exception as exc:
+            items.append({"path": str(path), "error": str(exc)})
+            continue
+        if not _task_matches_tag_filters(manifest, args):
+            continue
+        items.append({"id": manifest.id, "path": str(path)})
+    print(json.dumps(items, indent=2, sort_keys=True))
+    return 0
 
 
 def _list_manifests(root: Path, loader: Any) -> int:
