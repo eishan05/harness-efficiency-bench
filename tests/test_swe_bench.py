@@ -15,7 +15,11 @@ from harness_efficiency_bench.swe_bench import (
     DEFAULT_DOCKER_SOCKET,
     DEFAULT_SWE_BENCH_ORACLE_IMAGE,
     build_swe_bench_docker_command,
+    build_swe_bench_eval_command,
     fetch_swe_bench_rows,
+    resolve_swe_bench_arch,
+    resolve_swe_bench_namespace,
+    write_swe_bench_arch_wrapper,
     write_swe_bench_task_manifests,
 )
 
@@ -122,9 +126,10 @@ class SweBenchTest(unittest.TestCase):
             )
 
             def fake_run(command, **kwargs):
-                self.assertIn("swebench.harness.run_evaluation", command)
+                self.assertTrue(any(str(item).endswith("swebench_arch_wrapper.py") for item in command))
                 self.assertIn("--instance_ids", command)
                 self.assertIn("django__django-11905", command)
+                self.assertEqual(kwargs["env"]["SWEBENCH_ARCH"], resolve_swe_bench_arch("auto"))
                 eval_root = Path(kwargs["cwd"])
                 report_path = eval_root / "test__model.run-1.json"
                 report_path.write_text(
@@ -169,10 +174,11 @@ class SweBenchTest(unittest.TestCase):
                 self.assertIn("--user", command)
                 self.assertIn("--group-add", command)
                 self.assertIn(f"{docker_socket}:{docker_socket}", command)
+                self.assertTrue(any(str(item).endswith("swebench_arch_wrapper.py") for item in command))
+                self.assertIn("SWEBENCH_ARCH=" + resolve_swe_bench_arch("auto"), command)
                 eval_root = Path(kwargs["cwd"])
                 self.assertIn(f"{eval_root}:{eval_root}", command)
                 self.assertIn("python", command)
-                self.assertIn("swebench.harness.run_evaluation", command)
                 self.assertIn("django__django-11905", command)
                 report_path = eval_root / "test__model.run-1.json"
                 report_path.write_text(
@@ -209,6 +215,53 @@ class SweBenchTest(unittest.TestCase):
         self.assertIn(f"HF_HOME={eval_root / '.cache' / 'huggingface'}", command)
         self.assertIn(f"HF_DATASETS_CACHE={eval_root / '.cache' / 'huggingface' / 'datasets'}", command)
         self.assertIn(f"HUGGINGFACE_HUB_CACHE={eval_root / '.cache' / 'huggingface' / 'hub'}", command)
+
+    def test_swe_bench_arch_and_namespace_resolution(self):
+        with patch("platform.machine", return_value="aarch64"):
+            self.assertEqual(resolve_swe_bench_arch("auto"), "arm64")
+        with patch("platform.machine", return_value="x86_64"):
+            self.assertEqual(resolve_swe_bench_arch("host"), "x86_64")
+        self.assertEqual(resolve_swe_bench_arch("amd64"), "x86_64")
+        self.assertEqual(resolve_swe_bench_arch("aarch64"), "arm64")
+        self.assertIsNone(resolve_swe_bench_namespace("auto", arch="arm64"))
+        self.assertEqual(resolve_swe_bench_namespace("auto", arch="x86_64"), "swebench")
+        self.assertIsNone(resolve_swe_bench_namespace("none", arch="x86_64"))
+        self.assertEqual(resolve_swe_bench_namespace("custom", arch="arm64"), "custom")
+
+    def test_swe_bench_eval_command_can_use_arch_wrapper_and_no_namespace(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            eval_root = Path(tmp)
+            wrapper = write_swe_bench_arch_wrapper(eval_root)
+            command = build_swe_bench_eval_command(
+                dataset_name="SWE-bench/SWE-bench_Lite",
+                split="test",
+                instance_id="django__django-11905",
+                predictions_path=eval_root / "predictions.jsonl",
+                run_id="run-1",
+                max_workers=1,
+                cache_level="env",
+                timeout_sec=1800,
+                namespace=None,
+                python_executable="python",
+                wrapper_path=wrapper,
+            )
+            wrapper_text = wrapper.read_text(encoding="utf-8")
+
+        self.assertEqual(command[:2], ["python", str(wrapper)])
+        self.assertIn("--namespace", command)
+        self.assertIn("none", command)
+        self.assertIn("make_test_spec_for_arch", wrapper_text)
+
+    def test_swe_bench_docker_command_can_pass_arch_env(self):
+        eval_root = Path("/tmp/harness-run/swebench_eval")
+
+        command = build_swe_bench_docker_command(
+            eval_command=["python", "swebench_arch_wrapper.py"],
+            eval_root=eval_root,
+            swe_bench_arch="arm64",
+        )
+
+        self.assertIn("SWEBENCH_ARCH=arm64", command)
 
 
 if __name__ == "__main__":

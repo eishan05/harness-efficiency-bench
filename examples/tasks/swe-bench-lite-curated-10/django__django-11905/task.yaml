@@ -11,6 +11,8 @@ oracle:
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: django__django-11905
+  arch: auto
+  namespace: auto
   max_workers: 1
   cache_level: env
   timeout_sec: 1800

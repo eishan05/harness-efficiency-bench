@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import subprocess
 import uuid
 from dataclasses import dataclass
@@ -19,7 +20,10 @@ from .swe_bench import (
     build_swe_bench_docker_command,
     build_swe_bench_eval_command,
     parse_swe_bench_report,
+    resolve_swe_bench_arch,
+    resolve_swe_bench_namespace,
     swe_bench_report_path,
+    write_swe_bench_arch_wrapper,
     write_prediction_jsonl,
 )
 
@@ -124,6 +128,7 @@ def _grade_swe_bench_host(spec: OracleSpec, workspace: Path) -> OracleResult:
     prepared = _prepare_swe_bench_eval(spec, workspace)
     if isinstance(prepared, OracleResult):
         return prepared
+    wrapper_path = write_swe_bench_arch_wrapper(prepared["eval_root"])
     command = build_swe_bench_eval_command(
         dataset_name=prepared["dataset_name"],
         split=prepared["split"],
@@ -134,8 +139,9 @@ def _grade_swe_bench_host(spec: OracleSpec, workspace: Path) -> OracleResult:
         cache_level=prepared["cache_level"],
         timeout_sec=prepared["timeout_sec"],
         namespace=prepared["namespace"],
+        wrapper_path=wrapper_path,
     )
-    return _run_swe_bench_eval(command, prepared, backend="host")
+    return _run_swe_bench_eval(command, prepared, backend="host", extra_env={"SWEBENCH_ARCH": prepared["arch"]})
 
 
 def _grade_swe_bench_docker(spec: OracleSpec, workspace: Path) -> OracleResult:
@@ -152,6 +158,7 @@ def _grade_swe_bench_docker(spec: OracleSpec, workspace: Path) -> OracleResult:
             {"backend": "docker", "docker_socket": docker_socket},
         )
     evaluator_image = str(data.get("evaluator_image", DEFAULT_SWE_BENCH_ORACLE_IMAGE))
+    wrapper_path = write_swe_bench_arch_wrapper(prepared["eval_root"])
     eval_command = build_swe_bench_eval_command(
         dataset_name=prepared["dataset_name"],
         split=prepared["split"],
@@ -163,18 +170,25 @@ def _grade_swe_bench_docker(spec: OracleSpec, workspace: Path) -> OracleResult:
         timeout_sec=prepared["timeout_sec"],
         namespace=prepared["namespace"],
         python_executable="python",
+        wrapper_path=wrapper_path,
     )
     command = build_swe_bench_docker_command(
         eval_command=eval_command,
         eval_root=prepared["eval_root"],
         evaluator_image=evaluator_image,
         docker_socket=docker_socket,
+        swe_bench_arch=prepared["arch"],
     )
     return _run_swe_bench_eval(
         command,
         prepared,
         backend="docker",
-        extra_details={"evaluator_image": evaluator_image, "docker_socket": docker_socket},
+        extra_details={
+            "arch": prepared["arch"],
+            "namespace": prepared["namespace"],
+            "evaluator_image": evaluator_image,
+            "docker_socket": docker_socket,
+        },
     )
 
 
@@ -191,8 +205,8 @@ def _prepare_swe_bench_eval(spec: OracleSpec, workspace: Path) -> dict[str, Any]
     max_workers = int(data.get("max_workers", 1))
     cache_level = str(data.get("cache_level", "env"))
     timeout_sec = int(data.get("timeout_sec", spec.timeout_sec))
-    namespace_raw = data.get("namespace", "swebench")
-    namespace = None if namespace_raw is None else str(namespace_raw)
+    arch = resolve_swe_bench_arch(data.get("arch", "auto"))
+    namespace = resolve_swe_bench_namespace(data.get("namespace", "auto"), arch=arch)
 
     eval_root = (workspace.parent / "swebench_eval").resolve()
     eval_root.mkdir(parents=True, exist_ok=True)
@@ -213,6 +227,7 @@ def _prepare_swe_bench_eval(spec: OracleSpec, workspace: Path) -> dict[str, Any]
         "max_workers": max_workers,
         "cache_level": cache_level,
         "timeout_sec": timeout_sec,
+        "arch": arch,
         "namespace": namespace,
         "eval_root": eval_root,
         "predictions_path": predictions_path,
@@ -226,12 +241,17 @@ def _run_swe_bench_eval(
     *,
     backend: str,
     extra_details: dict[str, Any] | None = None,
+    extra_env: dict[str, str] | None = None,
 ) -> OracleResult:
     eval_root = prepared["eval_root"]
     timeout_sec = int(prepared["timeout_sec"])
+    env = os.environ.copy()
+    if extra_env:
+        env.update(extra_env)
     completed = subprocess.run(
         command,
         cwd=eval_root,
+        env=env,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -252,6 +272,8 @@ def _run_swe_bench_eval(
         "predictions_path": str(prepared["predictions_path"]),
         "report_path": str(report_path),
         "patch_bytes": len(str(prepared["patch"]).encode("utf-8")),
+        "arch": prepared.get("arch"),
+        "namespace": prepared.get("namespace"),
     }
     if extra_details:
         details.update(extra_details)

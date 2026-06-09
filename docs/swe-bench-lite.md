@@ -44,6 +44,8 @@ docker run --rm \
   python -m swebench.harness.run_evaluation ...
 ```
 
+The oracle supports `arch: auto|x86_64|arm64` and `namespace: auto|swebench|none`. On `x86_64`, `auto` uses the official remote `swebench/*` eval images. On `arm64`, `auto` builds local `sweb.*arm64*` images because the official remote eval images are amd64-only and otherwise fail with an `exec format error`. Some upstream SWE-bench environments still may not solve on ARM; for example, xarray environments that require `cdms2` do not currently build on `linux-aarch64`.
+
 Host-mode evaluation is still available by setting `oracle.backend: host` and installing `python3 -m pip install -e '.[swebench]'`, but Docker mode is the default for curated SWE-bench Lite manifests.
 
 The official evaluator creates Docker images with `sweb.*` repositories. Ordinary cleanup keeps those caches because rebuilding them is expensive. Remove them explicitly with:

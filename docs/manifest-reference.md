@@ -53,9 +53,13 @@ oracle:
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: django__django-11905
+  arch: auto
+  namespace: auto
   max_workers: 1
   cache_level: env
 ```
+
+`arch: auto` resolves to the Docker host architecture (`x86_64` or `arm64`). `namespace: auto` uses official `swebench/*` remote images on `x86_64` and local `sweb.*` image builds on `arm64`, because the official remote eval images are amd64-only. Set `namespace: none` to force local image builds.
 
 The runner uses `.cache/harness-bench/repos` as a Git mirror cache by default. Pass `--repo-cache <path>` or `--no-repo-cache` on `run-task`/`run-suite` to change that behavior.
 

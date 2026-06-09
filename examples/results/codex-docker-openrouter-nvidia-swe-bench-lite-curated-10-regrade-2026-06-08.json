@@ -2,22 +2,22 @@
   "artifact_type": "benchmark_result_snapshot",
   "benchmark": {
     "attempted_runs": 10,
-    "oracle_mode": "external fixed Docker SWE-bench regrade report",
+    "oracle_mode": "external fixed Docker SWE-bench arm64 regrade report",
     "perturbation_mode": "base-only",
     "run_finished_at": "2026-06-08T20:56:28.972533+00:00",
     "run_started_at": "2026-06-08T18:40:36.151403+00:00",
     "suite": "swe-bench-lite-curated-10",
     "tasks_dir": "examples/tasks/swe-bench-lite-curated-10"
   },
-  "captured_at": "2026-06-09T03:14:22.823577Z",
+  "captured_at": "2026-06-09T03:46:52.170951Z",
   "commands": [
-    "uv run scripts/save_result_snapshot.py --run-root runs/codex-openrouter-nvidia-full-20260608 --out examples/results/codex-docker-openrouter-nvidia-swe-bench-lite-curated-10-regrade-2026-06-08.json --harness examples/harnesses/codex-docker-openrouter.yaml --model nvidia/nemotron-3-ultra-550b-a55b:free --suite swe-bench-lite-curated-10 --tasks-dir examples/tasks/swe-bench-lite-curated-10 --filter-to-tasks-dir --perturbation-mode base-only --oracle-mode \"external fixed Docker SWE-bench regrade report\" --swe-report runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json --swe-predictions runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/predictions.jsonl"
+    "uv run scripts/save_result_snapshot.py --run-root runs/codex-openrouter-nvidia-full-20260608 --out examples/results/codex-docker-openrouter-nvidia-swe-bench-lite-curated-10-regrade-2026-06-08.json --harness examples/harnesses/codex-docker-openrouter.yaml --model nvidia/nemotron-3-ultra-550b-a55b:free --suite swe-bench-lite-curated-10 --tasks-dir examples/tasks/swe-bench-lite-curated-10 --filter-to-tasks-dir --perturbation-mode base-only --oracle-mode \"external fixed Docker SWE-bench arm64 regrade report\" --swe-report runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json --swe-predictions runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/predictions.jsonl"
   ],
   "harness": {
     "adapter": "codex",
     "base_manifest": "examples/harnesses/codex-docker-openrouter.yaml",
     "docker_image": "harness-bench/codex-cli:0.137.0",
-    "execution": "Docker-isolated Codex via OpenRouter, saved trace metrics plus fixed SWE-bench Docker oracle regrade",
+    "execution": "Docker-isolated Codex via OpenRouter, saved trace metrics plus ARM-local SWE-bench Docker oracle regrade",
     "id": "codex-docker-openrouter",
     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
     "timeout_sec": 900
@@ -80,13 +80,13 @@
         "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 18:55:37,311 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 18:55:37,312 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-08 18:55:37,327 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
         "stdout": "",
         "swe_bench_regrade": {
-          "outcome": "error",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "outcome": "unresolved",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance unresolved",
       "perturbation_id": "base",
-      "reason": "swe-bench evaluation error",
+      "reason": "swe-bench instance unresolved",
       "task_id": "django__django-11905",
       "token_cost": 991110
     },
@@ -148,7 +148,7 @@
         "stdout": "",
         "swe_bench_regrade": {
           "outcome": "empty_patch",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
       "oracle_message": "swe-bench instance unresolved (empty patch)",
@@ -214,13 +214,13 @@
         "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 19:25:42,312 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 19:25:42,332 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
         "stdout": "",
         "swe_bench_regrade": {
-          "outcome": "error",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "outcome": "unresolved",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance unresolved",
       "perturbation_id": "base",
-      "reason": "swe-bench evaluation error",
+      "reason": "swe-bench instance unresolved",
       "task_id": "matplotlib__matplotlib-23913",
       "token_cost": 1522186
     },
@@ -282,7 +282,7 @@
         "stdout": "",
         "swe_bench_regrade": {
           "outcome": "empty_patch",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
       "oracle_message": "swe-bench instance unresolved (empty patch)",
@@ -349,7 +349,7 @@
         "stdout": "",
         "swe_bench_regrade": {
           "outcome": "error",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
       "oracle_message": "swe-bench evaluation error",
@@ -416,7 +416,7 @@
         "stdout": "",
         "swe_bench_regrade": {
           "outcome": "error",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
       "oracle_message": "swe-bench evaluation error",
@@ -483,7 +483,7 @@
         "stdout": "",
         "swe_bench_regrade": {
           "outcome": "empty_patch",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
       "oracle_message": "swe-bench instance unresolved (empty patch)",
@@ -549,13 +549,13 @@
         "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:40:50,786 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 20:40:50,805 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
         "stdout": "",
         "swe_bench_regrade": {
-          "outcome": "error",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "outcome": "resolved",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance resolved",
       "perturbation_id": "base",
-      "reason": "swe-bench evaluation error",
+      "reason": "oracle passed but adapter returned nonzero",
       "task_id": "pytest-dev__pytest-5227",
       "token_cost": 1136497
     },
@@ -617,7 +617,7 @@
         "stdout": "",
         "swe_bench_regrade": {
           "outcome": "empty_patch",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
       "oracle_message": "swe-bench instance unresolved (empty patch)",
@@ -683,13 +683,13 @@
         "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-08 20:56:29,911 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-08 20:56:29,928 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 677, in <module>\n    main(**vars(args))\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 518, in main\n    dataset = get_dataset_from_preds(\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/run_evaluation.py\", line 389, in get_dataset_from_preds\n    dataset = load_swebench_dataset(dataset_name, split)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 162, in load_swebench_dataset\n    dataset = cast(Dataset, load_dataset(name, split=split))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1698, in load_dataset\n    builder_instance = load_dataset_builder(\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1325, in load_dataset_builder\n    dataset_module = dataset_module_factory(\n                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1217, in dataset_module_factory\n    raise e1 from None\n  File \"/usr/local/lib/python3.12/site-packages/datasets/load.py\", line 1124, in dataset_module_factory\n    dataset_readme_path = api.hf_hub_download(\n                          ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/hf_api.py\", line 6381, in hf_hub_download\n    return hf_hub_download(\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1019, in hf_hub_download\n    return _hf_hub_download_to_cache_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/huggingface_hub/file_download.py\", line 1191, in _hf_hub_download_to_cache_dir\n    os.makedirs(os.path.dirname(blob_path), exist_ok=True)\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  File \"<frozen os>\", line 215, in makedirs\n  [Previous line repeated 1 more time]\n  File \"<frozen os>\", line 225, in makedirs\nPermissionError: [Errno 13] Permission denied: '/.cache'\n",
         "stdout": "",
         "swe_bench_regrade": {
-          "outcome": "error",
-          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-fixed-oracle-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-regrade-20260608.json"
+          "outcome": "unresolved",
+          "report_path": "runs/codex-openrouter-nvidia-swe-regrade-arm64-20260608/codex-docker-openrouter-nvidia-regrade.codex-openrouter-nvidia-arm64-regrade-20260608.json"
         }
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance unresolved",
       "perturbation_id": "base",
-      "reason": "swe-bench evaluation error",
+      "reason": "swe-bench instance unresolved",
       "task_id": "sympy__sympy-14308",
       "token_cost": 1485272
     }
@@ -893,7 +893,7 @@
         "status": "full",
         "value": 411.84840425531917
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance unresolved",
       "oracle_success": false,
       "perturbation_id": "base",
       "selected_trace_source": null,
@@ -1371,7 +1371,7 @@
         "status": "full",
         "value": 488.19134743663045
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance unresolved",
       "oracle_success": false,
       "perturbation_id": "base",
       "selected_trace_source": null,
@@ -2484,8 +2484,8 @@
         "status": "full",
         "value": 426.03441558441557
       },
-      "oracle_message": "swe-bench evaluation error",
-      "oracle_success": false,
+      "oracle_message": "swe-bench instance resolved",
+      "oracle_success": true,
       "perturbation_id": "base",
       "selected_trace_source": null,
       "startup_tax": {
@@ -2777,7 +2777,7 @@
         "status": "full",
         "value": 481.74932787843375
       },
-      "oracle_message": "swe-bench evaluation error",
+      "oracle_message": "swe-bench instance unresolved",
       "oracle_success": false,
       "perturbation_id": "base",
       "selected_trace_source": null,
@@ -2835,6 +2835,8 @@
         "unit": "tokens per solved task"
       }
     },
+    "oracle_solve_rate": 0.1,
+    "oracle_solved": 1,
     "pricing_estimate": {
       "cost_usd_total_for_usage_runs": 0.0,
       "runs_with_dollar_cost": 0,

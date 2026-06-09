@@ -7,7 +7,7 @@ These compact snapshots preserve benchmark metrics without keeping the large raw
 - `codex-local-swe-bench-lite-curated-10-smoke-2026-06-08.json`: local subscription Codex no-oracle smoke over the 10 curated SWE-bench Lite tasks.
 - `codex-local-examples-full-2026-06-08.json`: local subscription Codex full run over the non-SWE example tasks, including configured perturbations.
 - `codex-docker-openrouter-nvidia-full-2026-06-08.json`: Docker-isolated Codex via OpenRouter `nvidia/nemotron-3-ultra-550b-a55b:free`, covering the non-SWE example tasks plus the 10 curated SWE-bench Lite tasks. Its SWE oracle labels came from the first Docker oracle run before the fixed writable Hugging Face cache environment.
-- `codex-docker-openrouter-nvidia-swe-bench-lite-curated-10-regrade-2026-06-08.json`: the Codex Docker OpenRouter SWE-bench Lite subset regraded from saved patches with the fixed Docker SWE-bench oracle environment. The saved A/B/C token metrics come from the original Codex traces; correctness comes from the external regrade report.
+- `codex-docker-openrouter-nvidia-swe-bench-lite-curated-10-regrade-2026-06-08.json`: the Codex Docker OpenRouter SWE-bench Lite subset regraded from saved patches with the fixed Docker SWE-bench oracle environment. On this ARM host, the regrade uses local ARM SWE-bench images instead of the official amd64 remote images. The saved A/B/C token metrics come from the original Codex traces; correctness comes from the external regrade report. One patch is oracle-resolved, but the strict benchmark solved count remains 0 because that original Codex adapter run timed out.
 
 ## Docker OpenRouter Calibration
 

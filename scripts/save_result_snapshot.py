@@ -100,7 +100,7 @@ def main() -> int:
             "timeout_sec": harness.timeout_sec,
         },
         "commands": args.command or None,
-        "summary": _snapshot_summary(summary, harness_bucket),
+        "summary": _snapshot_summary(summary, harness_bucket, results),
         "known_failures": _known_failures(results),
         "per_run": [_per_run(item) for item in results],
     }
@@ -300,12 +300,19 @@ def _render_prompt(task: TaskManifest, perturbation_id: Any) -> str:
     return f"[Injected context]\n{payload}\n\n{prompt}"
 
 
-def _snapshot_summary(summary: dict[str, Any], harness_bucket: dict[str, Any]) -> dict[str, Any]:
+def _snapshot_summary(
+    summary: dict[str, Any],
+    harness_bucket: dict[str, Any],
+    results: list[dict[str, Any]],
+) -> dict[str, Any]:
     coverage = summary["research_metric_coverage"]
+    oracle_solved = sum(1 for item in results if item.get("oracle_result", {}).get("success"))
     return {
         "attempted": summary["attempted"],
         "solved": summary["solved"],
         "solve_rate": summary["solve_rate"],
+        "oracle_solved": oracle_solved,
+        "oracle_solve_rate": oracle_solved / len(results) if results else 0.0,
         "metrics": {
             "startup_tax": {
                 "research_metric": "A",

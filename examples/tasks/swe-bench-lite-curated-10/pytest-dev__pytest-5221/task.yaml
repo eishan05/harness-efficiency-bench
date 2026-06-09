@@ -11,6 +11,8 @@ oracle:
   dataset_name: SWE-bench/SWE-bench_Lite
   split: test
   instance_id: pytest-dev__pytest-5221
+  arch: auto
+  namespace: auto
   max_workers: 1
   cache_level: env
   timeout_sec: 1800

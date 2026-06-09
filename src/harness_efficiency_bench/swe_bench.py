@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import os
+import platform
 import sys
+import textwrap
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -17,6 +19,50 @@ DEFAULT_SWE_BENCH_LITE_DATASET = "SWE-bench/SWE-bench_Lite"
 DEFAULT_SWE_BENCH_SPLIT = "test"
 DEFAULT_SWE_BENCH_ORACLE_IMAGE = "harness-bench/swebench-oracle:4.1.0"
 DEFAULT_DOCKER_SOCKET = "/var/run/docker.sock"
+DEFAULT_SWE_BENCH_ARCH = "auto"
+
+SWEBENCH_ARCH_WRAPPER = """\
+from __future__ import annotations
+
+import os
+import runpy
+import sys
+
+
+arch = os.environ.get("SWEBENCH_ARCH", "").strip()
+if arch not in {"x86_64", "arm64"}:
+    raise SystemExit(f"SWEBENCH_ARCH must be x86_64 or arm64, got {arch!r}")
+
+import swebench.harness.docker_build as docker_build
+import swebench.harness.test_spec.test_spec as test_spec
+
+
+original_make_test_spec = test_spec.make_test_spec
+
+
+def make_test_spec_for_arch(
+    instance,
+    namespace=None,
+    base_image_tag="latest",
+    env_image_tag="latest",
+    instance_image_tag="latest",
+    arch=arch,
+):
+    return original_make_test_spec(
+        instance,
+        namespace=namespace,
+        base_image_tag=base_image_tag,
+        env_image_tag=env_image_tag,
+        instance_image_tag=instance_image_tag,
+        arch=arch,
+    )
+
+
+test_spec.make_test_spec = make_test_spec_for_arch
+docker_build.make_test_spec = make_test_spec_for_arch
+sys.argv[0] = "swebench-arch-wrapper"
+runpy.run_module("swebench.harness.run_evaluation", run_name="__main__")
+"""
 
 CURATED_10_INSTANCE_IDS = (
     "django__django-11905",
@@ -108,6 +154,8 @@ def write_swe_bench_task_manifests(
                 "dataset_name": dataset_name,
                 "split": split,
                 "instance_id": instance_id,
+                "arch": "auto",
+                "namespace": "auto",
                 "max_workers": 1,
                 "cache_level": "env",
                 "timeout_sec": 1800,
@@ -143,6 +191,43 @@ def write_prediction_jsonl(
     path.write_text(json.dumps(payload, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def host_swe_bench_arch(machine: str | None = None) -> str:
+    machine = (machine or platform.machine()).lower()
+    if machine in {"x86_64", "amd64"}:
+        return "x86_64"
+    if machine in {"aarch64", "arm64"}:
+        return "arm64"
+    raise RuntimeError(f"unsupported SWE-bench Docker host architecture: {machine}")
+
+
+def resolve_swe_bench_arch(raw_arch: Any = DEFAULT_SWE_BENCH_ARCH) -> str:
+    raw = str(raw_arch or DEFAULT_SWE_BENCH_ARCH).strip().lower()
+    if raw in {"auto", "host"}:
+        return host_swe_bench_arch()
+    if raw in {"x86_64", "amd64"}:
+        return "x86_64"
+    if raw in {"arm64", "aarch64"}:
+        return "arm64"
+    raise RuntimeError(f"unsupported SWE-bench Docker architecture: {raw_arch}")
+
+
+def resolve_swe_bench_namespace(raw_namespace: Any = "auto", *, arch: str) -> str | None:
+    if raw_namespace is None:
+        return None
+    raw = str(raw_namespace).strip()
+    if raw.lower() in {"", "none", "null"}:
+        return None
+    if raw.lower() == "auto":
+        return "swebench" if arch == "x86_64" else None
+    return raw
+
+
+def write_swe_bench_arch_wrapper(eval_root: Path) -> Path:
+    wrapper_path = eval_root / "swebench_arch_wrapper.py"
+    wrapper_path.write_text(textwrap.dedent(SWEBENCH_ARCH_WRAPPER), encoding="utf-8")
+    return wrapper_path
+
+
 def build_swe_bench_eval_command(
     *,
     dataset_name: str,
@@ -155,30 +240,35 @@ def build_swe_bench_eval_command(
     timeout_sec: int,
     namespace: str | None,
     python_executable: str | None = None,
+    wrapper_path: Path | None = None,
 ) -> list[str]:
-    command = [
-        python_executable or sys.executable,
-        "-m",
-        "swebench.harness.run_evaluation",
-        "--dataset_name",
-        dataset_name,
-        "--split",
-        split,
-        "--predictions_path",
-        str(predictions_path),
-        "--instance_ids",
-        instance_id,
-        "--max_workers",
-        str(max_workers),
-        "--run_id",
-        run_id,
-        "--cache_level",
-        cache_level,
-        "--timeout",
-        str(timeout_sec),
-    ]
-    if namespace is not None:
-        command.extend(["--namespace", namespace])
+    command = [python_executable or sys.executable]
+    if wrapper_path is None:
+        command.extend(["-m", "swebench.harness.run_evaluation"])
+    else:
+        command.append(str(wrapper_path))
+    command.extend(
+        [
+            "--dataset_name",
+            dataset_name,
+            "--split",
+            split,
+            "--predictions_path",
+            str(predictions_path),
+            "--instance_ids",
+            instance_id,
+            "--max_workers",
+            str(max_workers),
+            "--run_id",
+            run_id,
+            "--cache_level",
+            cache_level,
+            "--timeout",
+            str(timeout_sec),
+            "--namespace",
+            namespace or "none",
+        ]
+    )
     return command
 
 
@@ -188,6 +278,7 @@ def build_swe_bench_docker_command(
     eval_root: Path,
     evaluator_image: str = DEFAULT_SWE_BENCH_ORACLE_IMAGE,
     docker_socket: str = DEFAULT_DOCKER_SOCKET,
+    swe_bench_arch: str | None = None,
 ) -> list[str]:
     eval_root = eval_root.resolve()
     docker_socket_gid = Path(docker_socket).stat().st_gid if Path(docker_socket).exists() else os.getgid()
@@ -216,6 +307,14 @@ def build_swe_bench_docker_command(
         f"HF_DATASETS_CACHE={hf_home / 'datasets'}",
         "-e",
         f"HUGGINGFACE_HUB_CACHE={hf_home / 'hub'}",
+        *(
+            [
+                "-e",
+                f"SWEBENCH_ARCH={swe_bench_arch}",
+            ]
+            if swe_bench_arch
+            else []
+        ),
         "-v",
         f"{eval_root}:{eval_root}",
         "-w",
