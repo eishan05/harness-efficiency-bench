@@ -57,7 +57,12 @@ else
 EOF
 fi
 
-kilo run \
+set -- kilo run \
   --format json \
   "Execute the complete benchmark instructions in the attached prompt file." \
   --file "$prompt_file"
+
+if [ -n "${KILO_MAX_WALL_TIME:-}" ]; then
+  exec timeout --kill-after=10s "$KILO_MAX_WALL_TIME" "$@"
+fi
+exec "$@"

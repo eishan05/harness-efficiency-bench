@@ -28,6 +28,7 @@ config:
     - OPENAI_API_KEY
     - OPENAI_BASE_URL
     - OPENCODE_MODEL
+    - OPENCODE_MAX_WALL_TIME
   required_env:
     - OPENAI_API_KEY
   cli_version: "1.16.2"

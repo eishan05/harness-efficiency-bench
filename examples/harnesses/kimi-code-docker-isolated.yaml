@@ -29,6 +29,7 @@ config:
     - KIMI_BASE_URL
     - KIMI_MODEL_NAME
     - KIMI_MAX_CONTEXT_SIZE
+    - KIMI_MAX_WALL_TIME
   required_env:
     - KIMI_API_KEY
   cli_version: "0.11.0"

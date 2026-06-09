@@ -28,6 +28,7 @@ config:
     - OPENAI_API_KEY
     - OPENAI_BASE_URL
     - KILO_MODEL
+    - KILO_MAX_WALL_TIME
   required_env:
     - OPENAI_API_KEY
   cli_version: "7.3.40"

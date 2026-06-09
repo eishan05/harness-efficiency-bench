@@ -157,6 +157,8 @@ For Aider, use `AIDER_ARCHITECT=1` when measuring B context growth. Normal Aider
 
 For Qwen Code, use `QWEN_MAX_TOOL_CALLS`, `QWEN_MAX_SESSION_TURNS`, and `QWEN_MAX_WALL_TIME` to bound unattended SWE-scale runs. Qwen exits nonzero when a cap is exceeded, but the benchmark still grades any produced patch with the task oracle and preserves both strict benchmark success and `oracle_solved` counts in result snapshots.
 
+For Aider, Hermes Agent, Kilo, Kimi Code, OpenClaw, and Opencode, use the wrapper wall-clock caps `AIDER_MAX_WALL_TIME`, `HERMES_MAX_WALL_TIME`, `KILO_MAX_WALL_TIME`, `KIMI_MAX_WALL_TIME`, `OPENCLAW_MAX_WALL_TIME`, and `OPENCODE_MAX_WALL_TIME` for unattended SWE-scale diagnostics. The values are passed to GNU `timeout`, so forms like `2m` or `120s` are accepted. OpenClaw also supports `OPENCLAW_TIMEOUT_SEC`, which is passed to the CLI's native `--timeout` option. Timeout exits are nonzero; snapshots should treat strict benchmark success and SWE oracle patch correctness separately.
+
 Some agents initialize their own workspace metadata in the mounted task workspace. Task oracles should grade the required files or repository diff and ignore unrelated harness metadata unless the task explicitly forbids extra files.
 
 ## Harness Config Keys

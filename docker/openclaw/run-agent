@@ -55,13 +55,20 @@ PY
       --profile-id "$OPENCLAW_MODEL_PROVIDER:benchmark" \
       >/tmp/openclaw-auth.json
   fi
-  exec openclaw --dev agent \
+  set -- openclaw --dev agent \
     --local \
     --agent benchmark \
     --session-key agent:benchmark:benchmark \
     --model "$model_id" \
     --message-file "$prompt_file" \
     --json
+  if [ -n "${OPENCLAW_TIMEOUT_SEC:-}" ]; then
+    set -- "$@" --timeout "$OPENCLAW_TIMEOUT_SEC"
+  fi
+  if [ -n "${OPENCLAW_MAX_WALL_TIME:-}" ]; then
+    exec timeout --kill-after=10s "$OPENCLAW_MAX_WALL_TIME" "$@"
+  fi
+  exec "$@"
 fi
 
 if [ -z "${OPENCLAW_RUN_COMMAND:-}" ]; then
@@ -70,4 +77,7 @@ if [ -z "${OPENCLAW_RUN_COMMAND:-}" ]; then
 fi
 
 export HARNESS_PROMPT_FILE="$prompt_file"
+if [ -n "${OPENCLAW_MAX_WALL_TIME:-}" ]; then
+  exec timeout --kill-after=10s "$OPENCLAW_MAX_WALL_TIME" /bin/sh -lc "$OPENCLAW_RUN_COMMAND"
+fi
 exec /bin/sh -lc "$OPENCLAW_RUN_COMMAND"

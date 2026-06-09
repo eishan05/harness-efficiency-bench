@@ -52,7 +52,8 @@ else
   export KIMI_MODEL_NAME
 fi
 
-KIMI_CODE_SKIP_AUTO_MAIN=1 node --input-type=module - "$prompt_file" <<'NODE'
+runner_script="$(mktemp --suffix=.mjs)"
+cat > "$runner_script" <<'NODE'
 import { readFileSync } from "node:fs";
 import { handleMainCommand } from "/usr/local/lib/node_modules/@moonshot-ai/kimi-code/dist/main.mjs";
 
@@ -77,3 +78,12 @@ await handleMainCommand(
   version,
 );
 NODE
+
+status=0
+if [ -n "${KIMI_MAX_WALL_TIME:-}" ]; then
+  KIMI_CODE_SKIP_AUTO_MAIN=1 timeout --kill-after=10s "$KIMI_MAX_WALL_TIME" node "$runner_script" "$prompt_file" || status=$?
+else
+  KIMI_CODE_SKIP_AUTO_MAIN=1 node "$runner_script" "$prompt_file" || status=$?
+fi
+rm -f "$runner_script"
+exit "$status"

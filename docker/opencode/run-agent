@@ -56,7 +56,12 @@ else
 EOF
 fi
 
-opencode run \
+set -- opencode run \
   --format json \
   "Execute the complete benchmark instructions in the attached prompt file." \
   --file "$prompt_file"
+
+if [ -n "${OPENCODE_MAX_WALL_TIME:-}" ]; then
+  exec timeout --kill-after=10s "$OPENCODE_MAX_WALL_TIME" "$@"
+fi
+exec "$@"

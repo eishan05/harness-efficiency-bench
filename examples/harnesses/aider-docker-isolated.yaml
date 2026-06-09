@@ -36,6 +36,7 @@ config:
     - AIDER_MAP_REFRESH
     - AIDER_EDIT_FORMAT
     - AIDER_ARCHITECT
+    - AIDER_MAX_WALL_TIME
   required_env:
     - OPENAI_API_KEY
   cli_version: "0.86.2"

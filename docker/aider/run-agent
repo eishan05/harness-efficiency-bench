@@ -101,29 +101,56 @@ case "$AIDER_ARCHITECT" in
 esac
 
 status=0
-aider \
-  --model "$AIDER_MODEL" \
-  --edit-format "$AIDER_EDIT_FORMAT" \
-  --message-file "$prompt_file" \
-  --input-history-file /tmp/aider.input.history \
-  --chat-history-file /tmp/aider.chat.history.md \
-  --yes-always \
-  --no-check-update \
-  --no-show-release-notes \
-  --no-gitignore \
-  --no-add-gitignore-files \
-  --no-pretty \
-  --no-show-model-warnings \
-  --map-tokens "$AIDER_MAP_TOKENS" \
-  --map-refresh "$AIDER_MAP_REFRESH" \
-  --subtree-only \
-  --no-auto-lint \
-  --no-auto-test \
-  --no-analytics \
-  --no-auto-commits \
-  --no-dirty-commits \
-  --no-stream \
-  "$@" || status=$?
+if [ -n "${AIDER_MAX_WALL_TIME:-}" ]; then
+  timeout --kill-after=10s "$AIDER_MAX_WALL_TIME" \
+    aider \
+      --model "$AIDER_MODEL" \
+      --edit-format "$AIDER_EDIT_FORMAT" \
+      --message-file "$prompt_file" \
+      --input-history-file /tmp/aider.input.history \
+      --chat-history-file /tmp/aider.chat.history.md \
+      --yes-always \
+      --no-check-update \
+      --no-show-release-notes \
+      --no-gitignore \
+      --no-add-gitignore-files \
+      --no-pretty \
+      --no-show-model-warnings \
+      --map-tokens "$AIDER_MAP_TOKENS" \
+      --map-refresh "$AIDER_MAP_REFRESH" \
+      --subtree-only \
+      --no-auto-lint \
+      --no-auto-test \
+      --no-analytics \
+      --no-auto-commits \
+      --no-dirty-commits \
+      --no-stream \
+      "$@" || status=$?
+else
+  aider \
+    --model "$AIDER_MODEL" \
+    --edit-format "$AIDER_EDIT_FORMAT" \
+    --message-file "$prompt_file" \
+    --input-history-file /tmp/aider.input.history \
+    --chat-history-file /tmp/aider.chat.history.md \
+    --yes-always \
+    --no-check-update \
+    --no-show-release-notes \
+    --no-gitignore \
+    --no-add-gitignore-files \
+    --no-pretty \
+    --no-show-model-warnings \
+    --map-tokens "$AIDER_MAP_TOKENS" \
+    --map-refresh "$AIDER_MAP_REFRESH" \
+    --subtree-only \
+    --no-auto-lint \
+    --no-auto-test \
+    --no-analytics \
+    --no-auto-commits \
+    --no-dirty-commits \
+    --no-stream \
+    "$@" || status=$?
+fi
 
 rm -rf .aider.chat.history.md .aider.input.history .aider.llm.history .aider.tags.cache.v4
 exit "$status"

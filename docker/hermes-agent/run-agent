@@ -11,7 +11,8 @@ if [ -n "${OPENROUTER_API_KEY:-}" ]; then
     export HERMES_BASE_URL="$OPENROUTER_BASE_URL"
   fi
   export HERMES_PROVIDER=openrouter
-  python3 - "$prompt_file" <<'PY'
+  runner_script="$(mktemp)"
+  cat > "$runner_script" <<'PY'
 import os
 import sys
 from pathlib import Path
@@ -29,7 +30,14 @@ main(
     quiet=True,
 )
 PY
-  exit $?
+  status=0
+  if [ -n "${HERMES_MAX_WALL_TIME:-}" ]; then
+    timeout --kill-after=10s "$HERMES_MAX_WALL_TIME" python3 "$runner_script" "$prompt_file" || status=$?
+  else
+    python3 "$runner_script" "$prompt_file" || status=$?
+  fi
+  rm -f "$runner_script"
+  exit "$status"
 fi
 
 if [ -z "${HERMES_RUN_COMMAND:-}" ]; then
@@ -38,4 +46,7 @@ if [ -z "${HERMES_RUN_COMMAND:-}" ]; then
 fi
 
 export HARNESS_PROMPT_FILE="$prompt_file"
+if [ -n "${HERMES_MAX_WALL_TIME:-}" ]; then
+  exec timeout --kill-after=10s "$HERMES_MAX_WALL_TIME" /bin/sh -lc "$HERMES_RUN_COMMAND"
+fi
 exec /bin/sh -lc "$HERMES_RUN_COMMAND"

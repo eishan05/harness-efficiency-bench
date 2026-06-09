@@ -28,6 +28,7 @@ config:
     - OPENAI_API_KEY
     - ANTHROPIC_API_KEY
     - HERMES_RUN_COMMAND
+    - HERMES_MAX_WALL_TIME
   cli_version: "0.16.0"
   version_command:
     - hermes

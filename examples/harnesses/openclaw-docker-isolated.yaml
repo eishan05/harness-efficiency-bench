@@ -28,6 +28,8 @@ config:
     - OPENAI_API_KEY
     - ANTHROPIC_API_KEY
     - OPENCLAW_RUN_COMMAND
+    - OPENCLAW_TIMEOUT_SEC
+    - OPENCLAW_MAX_WALL_TIME
   cli_version: "2026.6.1"
   version_command:
     - openclaw

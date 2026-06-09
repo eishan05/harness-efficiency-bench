@@ -30,6 +30,7 @@ config:
     - KIMI_MODEL_NAME
     - KIMI_BASE_URL
     - KIMI_MAX_CONTEXT_SIZE
+    - KIMI_MAX_WALL_TIME
   required_env:
     - OPENROUTER_API_KEY
     - OPENROUTER_MODEL

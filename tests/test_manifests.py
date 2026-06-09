@@ -134,6 +134,27 @@ class ManifestTest(unittest.TestCase):
                 self.assertIn("QWEN_MAX_TOOL_CALLS", env_passthrough)
                 self.assertIn("QWEN_MAX_WALL_TIME", env_passthrough)
 
+    def test_docker_agent_examples_expose_wall_time_limits(self):
+        expected = {
+            "aider": ["AIDER_MAX_WALL_TIME"],
+            "hermes-agent": ["HERMES_MAX_WALL_TIME"],
+            "kilo": ["KILO_MAX_WALL_TIME"],
+            "kimi-code": ["KIMI_MAX_WALL_TIME"],
+            "openclaw": ["OPENCLAW_TIMEOUT_SEC", "OPENCLAW_MAX_WALL_TIME"],
+            "opencode": ["OPENCODE_MAX_WALL_TIME"],
+        }
+        for harness_name, env_names in expected.items():
+            paths = [
+                ROOT / f"examples/harnesses/{harness_name}-docker-isolated.yaml",
+                ROOT / f"examples/harnesses/{harness_name}-docker-openrouter.yaml",
+            ]
+            for path in paths:
+                harness = HarnessManifest.load(path)
+                env_passthrough = harness.config.get("docker_env_passthrough", [])
+                with self.subTest(path=path.name):
+                    for env_name in env_names:
+                        self.assertIn(env_name, env_passthrough)
+
 
 if __name__ == "__main__":
     unittest.main()
