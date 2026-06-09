@@ -106,6 +106,21 @@ class ManifestTest(unittest.TestCase):
                 self.assertIn("OPENROUTER_API_KEY", harness.config.get("required_env", []))
                 self.assertIn("OPENROUTER_MODEL", harness.config.get("required_env", []))
 
+    def test_codex_and_claude_docker_examples_pin_cli_versions(self):
+        paths = [
+            ROOT / "examples/harnesses/claude-code-docker-isolated.yaml",
+            ROOT / "examples/harnesses/claude-code-docker-openrouter.yaml",
+            ROOT / "examples/harnesses/codex-docker-cheap.yaml",
+            ROOT / "examples/harnesses/codex-docker-isolated.yaml",
+            ROOT / "examples/harnesses/codex-docker-openrouter.yaml",
+        ]
+        for path in paths:
+            harness = HarnessManifest.load(path)
+            with self.subTest(path=path.name):
+                self.assertEqual(harness.config.get("backend"), "docker")
+                self.assertTrue(harness.config.get("cli_version"))
+                self.assertTrue(harness.config.get("version_command"))
+
 
 if __name__ == "__main__":
     unittest.main()

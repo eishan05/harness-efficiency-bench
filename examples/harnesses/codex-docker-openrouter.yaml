@@ -38,6 +38,10 @@ config:
   docker_cpus: "2"
   docker_read_only: true
   docker_home: /codex-home
+  cli_version: "0.137.0"
+  version_command:
+    - codex
+    - --version
   docker_tmpfs:
     - /tmp:exec,size=2g
     - /codex-home:exec,size=512m,uid={uid},gid={gid},mode=700

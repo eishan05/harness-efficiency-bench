@@ -7,6 +7,7 @@ RUN apt-get update \
         bash \
         ca-certificates \
         git \
+        python3 \
         ripgrep \
         xxd \
     && npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
