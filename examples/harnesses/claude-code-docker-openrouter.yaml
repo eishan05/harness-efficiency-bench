@@ -5,7 +5,7 @@ timeout_sec: 900
 trace_mode: structured
 command: >
   claude --bare -p --input-format text --output-format stream-json --verbose
-  --model {model} --max-budget-usd 1.00 --no-session-persistence
+  --model {model} --max-budget-usd "${{CLAUDE_MAX_BUDGET_USD:-1.00}}" --no-session-persistence
   --permission-mode bypassPermissions --allowedTools Read,Write,Edit,MultiEdit,Glob,Grep,Bash
 pricing: {}
 permissions:
@@ -31,6 +31,7 @@ config:
   docker_env_passthrough:
     - OPENROUTER_API_KEY
     - OPENROUTER_MODEL
+    - CLAUDE_MAX_BUDGET_USD
   required_env:
     - OPENROUTER_API_KEY
     - OPENROUTER_MODEL

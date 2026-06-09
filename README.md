@@ -140,6 +140,8 @@ Claude Code harnesses are split by auth and isolation:
 - `claude-code-openrouter`: host/OpenRouter debug harness. Requires `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`.
 - `claude-code-docker-openrouter`: Docker-isolated OpenRouter harness. Requires `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, and the Claude Code image build above.
 
+Set `CLAUDE_MAX_BUDGET_USD` to override Claude Code's CLI budget guard for Docker runs. The OpenRouter Docker manifest defaults to `1.00`; SWE-scale diagnostics may need a higher value even when OpenRouter reports zero provider cost for a free model.
+
 Antigravity CLI is split into host debug and Docker-isolated OAuth modes:
 
 - `antigravity-cli`: host/local CLI debug harness.

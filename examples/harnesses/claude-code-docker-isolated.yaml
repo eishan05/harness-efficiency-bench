@@ -5,7 +5,7 @@ timeout_sec: 900
 trace_mode: structured
 command: >
   claude -p --input-format text --output-format stream-json --verbose
-  --model {model} --max-budget-usd 0.10 --no-session-persistence
+  --model {model} --max-budget-usd "${{CLAUDE_MAX_BUDGET_USD:-0.10}}" --no-session-persistence
   --permission-mode bypassPermissions --allowedTools Read,Write,Edit,MultiEdit,Glob,Grep,Bash
 pricing: {}
 permissions:
@@ -28,6 +28,7 @@ config:
     - /claude-home:exec,size=512m,uid=1000,gid=1000
   docker_env_passthrough:
     - ANTHROPIC_API_KEY
+    - CLAUDE_MAX_BUDGET_USD
   auth_mode: anthropic_api_key
   required_env:
     - ANTHROPIC_API_KEY
