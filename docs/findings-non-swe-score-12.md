@@ -1,85 +1,74 @@
-# What 12 coding agents cost to run the same job, and why
+# Same model, same tasks — one coding agent cost 70x more than another
 
-We took 12 coding-agent CLIs — Aider, Claude Code, Codex, Goose, Hermes, Kilo, Kimi Code, Nanobot, OpenClaw, Opencode, and Qwen Code (plus Aider's architect mode) — and gave every one of them the **same model** and the **same 12 small Python tasks** (fix a calculator, write a CSV reconciler, that kind of thing). A local proxy counted every token of every request. Then we ran the whole thing again on a second, completely different model to see which results were real and which were noise.
+I gave 12 coding-agent CLIs — Aider, Claude Code, Codex, Goose, Hermes, Kilo, Kimi Code, Nanobot, OpenClaw, Opencode, and Qwen Code — the exact same model and the exact same 12 small Python tasks, and counted every token each one spent. Then I ran the whole thing again on a second, completely different model to check which results were real and which were noise.
 
-Nearly every agent solved nearly every task. That's the point: when the tasks are easy enough that everyone succeeds, the only thing left to measure is **what each agent charged you to get there**.
+Almost every agent solved almost every task. That's what makes the comparison interesting: when everyone succeeds, the only question left is what each agent charged you to get there. The answers were not close.
 
-Here is what we saw, and the mechanics behind it.
+## Results at a glance
 
----
+| Agent | Tokens per solved task | Startup overhead (tokens) |
+|---|---:|---:|
+| Aider (architect mode) | ~3,500–4,100 | ~700 |
+| Aider | ~4,100–5,000 | ~3,000 |
+| Hermes | ~30,000–34,000 | ~2,500 |
+| Claude Code | ~52,000–55,000 | ~4,500 |
+| Goose | ~56,000–62,000 | ~4,000–4,400 |
+| Opencode | ~72,000–80,000 | ~8,400–8,700 |
+| Nanobot | ~74,000–84,000 | ~8,500–9,700 |
+| Codex | ~85,000–90,000 | ~8,000–8,400 |
+| Kimi Code | ~105,000–116,000 | ~16,000–16,500 |
+| Kilo | ~119,000–120,000 | ~14,500–14,900 |
+| Qwen Code | ~141,000–182,000 | ~19,000–21,400 |
+| OpenClaw | ~191,000–292,000 | ~24,000–29,000 |
 
-## 1. Your agent choice can be a 40–70x difference in tokens — on the same model, same task
+Each row shows the range across the two models. The ordering barely moved between them — the startup-overhead ranking didn't change at all, and the cost-per-task ranking changed by one adjacent swap.
 
-Tokens per solved task ranged from **~4,000 (Aider)** to **~190,000–290,000 (OpenClaw)**. Claude Code and Goose landed in the middle around 52–62k; Codex, Opencode and Nanobot around 72–90k; Kimi and Kilo around 105–120k; Qwen Code at 141–182k.
+## The agent is most of your bill
 
-And this ordering barely changed when we swapped the model (rank correlation 0.993 between the two runs). The expensive agents were expensive on both models; the cheap ones were cheap on both.
+The same model, doing the same work, cost 40–70x more tokens depending on which CLI was driving it. That gap is bigger than any model-vs-model price difference you're likely to be weighing.
 
-**Why:** an agent's cost profile is a property of its *loop*, not of the model inside it. How big is its system prompt? How many tool calls does it make before it's satisfied? Does it re-read files it already saw? The model just fills in the blanks the harness hands it. People compare models obsessively and treat the harness as a neutral pipe. It is not a neutral pipe. It is most of the bill.
+We argue endlessly about which model to use and treat the agent wrapped around it as a neutral pipe. It isn't a neutral pipe. How much scaffolding it ships, how many round-trips it takes before it's satisfied, whether it re-reads things it already saw — that loop, not the model, decided almost all of the cost in this data.
 
-## 2. Every agent pays a "boot tax" before it reads your request — and it's wildly different
+## Every agent pays a boot tax before it reads your prompt
 
-Before your prompt does anything, the agent ships its own baggage: system prompt, tool definitions, environment briefing, project conventions. We measured this directly — first request's input tokens minus your actual prompt:
+Before your request does anything, the agent sends its own baggage: system prompt, tool descriptions, environment briefing. I measured that overhead directly, and it ranges from ~700 tokens (Aider in architect mode) to ~29,000 (OpenClaw) — a 40x spread.
 
-| Agent | Boot tax (tokens) |
-|---|---:|
-| Aider (architect) | ~700 |
-| Hermes | ~2,500 |
-| Aider | ~3,000 |
-| Goose | ~4,000–4,400 |
-| Claude Code | ~4,500 |
-| Codex / Opencode / Nanobot | ~8,000–10,000 |
-| Kilo / Kimi | ~15,000–16,500 |
-| Qwen Code | ~19,000–21,400 |
-| OpenClaw | ~24,000–29,000 |
+This was the most stable number in the entire benchmark. The ranking was identical on both models, and most values matched within about 5%. It behaves like a constant of the software, the way a binary has a size.
 
-This was the most stable number in the whole benchmark: the ranking was **identical** on both models (rank correlation 1.000), and most values matched within ~5%. It's a constant of the software, like a binary's size.
+Here's why it matters more than it looks: that overhead isn't paid once. Models don't remember anything between calls, so the whole conversation — scaffolding included — gets resent on every single round-trip. An agent with a 24k floor that takes 15 turns has spent 360k input tokens on scaffolding alone, before you count any actual work. Roughly: cost = turns × floor + the work itself. For the heavy agents, the floor term is most of the bill.
 
-**Why it matters more than it looks:** the boot tax isn't paid once. LLM APIs are stateless — the whole conversation, scaffolding included, is resent on *every* call. An agent with a 24k floor that makes 15 calls has spent 360k input tokens on scaffolding alone before you count any actual work. Total cost is roughly `calls × floor + history`, and the floor term dominates for heavy harnesses.
+## The expensive agents are not "hoarding context" — they're just taking more turns
 
-## 3. The expensive agents are NOT expensive because they "hoard context"
+I expected the costly agents to be the ones whose conversations balloon fastest. Wrong. Every single agent grew its context at a few hundred tokens per turn — and the per-turn growth ranking didn't even replicate between the two models, which is a polite way of saying it's noise.
 
-We expected the costly agents to be the ones whose conversations balloon fastest. Wrong. Once we measured growth properly, **every single agent grows its context at a few hundred tokens per turn** (roughly 160–560/turn), and the per-turn growth ranking didn't even replicate between the two models — it's noise.
+What actually separated the agents was how many turns they took and how big a floor each turn re-carried. Twenty turns with a 16k floor costs vastly more than six turns with a 4k floor, even if both conversations grow at the identical rate. If you're building or tuning an agent, attack the turn count and the prompt size before you touch anything fancier.
 
-**Why:** per-turn growth is just "tool output + model reply" appended to history, and on small tasks that's similar for everyone. What actually separated the agents was the *number of calls* they make and the *size of the floor* each call re-carries (finding #2). An agent that takes 20 turns with a 16k floor costs vastly more than one that takes 6 turns with a 4k floor, even at identical growth per turn. If you're optimizing an agent, attack the call count and the system-prompt size before you touch context management.
+## Raw token counts will lie to you about cost
 
-## 4. Raw token counts will lie to you about cost — caching is the reason
+On the paid model, Codex burned over a million tokens for the suite — on paper, one of the worst. But about 70% of its input tokens were cache reads, which providers bill at roughly a tenth of the price. Priced the way you'd actually pay, Codex drops to ~315k effective tokens, which makes it cheaper per solved task than Claude Code — an agent that "used" half as many tokens.
 
-On the paid model, Codex consumed over 1M tokens for the suite — looks terrible. But ~70% of its input tokens were **cache reads**, which providers bill at roughly a tenth of the price. Weighted by what you'd actually pay, Codex drops to ~315k effective tokens — making it *cheaper per solved task than Claude Code*, despite "using" twice the tokens.
+The mechanism is the boot tax again, viewed from the other side: resending the same prefix every turn is exactly the pattern prompt caching exists for, and an agent that keeps its prefix stable gets all that repetition nearly free. Two implications. Never compare agents on raw tokens without checking the cached share — it flips rankings. And cache-friendliness is a real engineering virtue in an agent, worth as much as a smaller prompt. (One caveat: the free-tier model reported no caching at all. The discount only exists where the provider supports it.)
 
-**Why:** resending the same conversation prefix every call (finding #2's stateless loop) is exactly the pattern prompt caching exists for. A harness that keeps its prefix byte-stable gets cheap cache hits on all that repetition; one that perturbs its prompt ordering breaks the cache and pays full price for the same tokens. Two consequences: (a) never compare agents on raw tokens without checking the cached share; (b) cache-friendliness is a real engineering property of a harness, worth as much as a smaller prompt. (Note: our free-tier model reported no caching at all — you only get this discount when the provider supports it.)
+## The cheapest "agent" won by not being an agent
 
-## 5. The cheapest "agent" wins by not being an agent
+Aider solved 11 of 12 tasks at ~4–5k tokens each — roughly 10x cheaper than the mid-pack — because for tasks like these it doesn't run a loop at all. One call: here's the file, here's the request, give me the diff.
 
-Aider solved 11/12 tasks at ~4–5k tokens each — roughly **10x cheaper than the mid-pack agentic CLIs** — because for tasks like these it makes *one* model call: here's the file, here's the request, give me the diff. No exploration loop, no tool calls, no re-reading.
+This isn't an Aider ad; it's a sizing lesson. The agentic loop — look around, act, check, repeat — is a cost multiplier that earns its keep on hard problems: unfamiliar code, failing tests, multi-file changes. On a well-specified small edit, the loop mostly re-confirms things a single call could have assumed. Matching the tool to the task size is the single biggest cost lever I found.
 
-**Why this is a general lesson and not an Aider ad:** the agentic loop (look around → act → check → repeat) is a *cost multiplier* you should pay only when the task actually needs iteration — unknown codebase, failing tests, multi-file changes. For a well-specified small edit, the loop mostly re-confirms things a single call could have assumed. Matching the harness to the task size is the single biggest cost lever in this data.
+## Your "single-model" agent might not be
 
-## 6. Your "single-model" agent might be quietly calling a second model
+Two of the CLIs quietly sent a small request per task to a completely different model (Claude Haiku) — for generating conversation titles — regardless of what model I had configured. It's about 1% of their usage, so the cost is trivia. But it's a second vendor and a second place your code snippets travel, and I only knew because I was counting at the network level. If you have rules about where your code goes, "I configured model X" is not quite the same statement as "my agent only talks to model X."
 
-Two CLIs (Opencode and Kilo) send every task's title-generation request to **Claude Haiku**, regardless of what model you configured — we found this because the proxy logs the billed model per request, and it reproduced to the exact token across both batches. It's small (~1% of their usage) but it's a separate vendor, a separate bill, and a separate data-flow than the one you chose.
+## What I'd do with this
 
-**Why it happens:** harnesses hardcode small helper calls (titles, summaries) to a cheap fast model. Reasonable engineering — but worth knowing if you have compliance constraints on where your code snippets go, or if you're benchmarking "one model" and assuming that's literally true.
-
-## 7. If you measure agents yourself, the raw data will try to fool you
-
-Three traps we fell into so you don't have to:
-
-- **Summary events double-count.** One CLI ends its stream with a usage event equal to the *sum of the entire session*. Naively adding usage events doubled its measured cost and made its context growth look 25x worse than reality. Check whether the last event equals the sum of the others.
-- **Exit codes lie about success.** One agent solved all 12 tasks but exited nonzero on 5 of them (it hit a wall-clock cap *after* finishing the work). Grading by exit code alone would have nearly doubled its cost-per-solved-task. Grade the artifact, not the process.
-- **One run can't rank close competitors.** Our adjacent mid-table pairs swapped places between the two models. The big gaps (10x, 40x) are real; the 10% gaps are noise at n=1. We added a `--repeats` flag for exactly this.
-
----
-
-## The short version
-
-1. The harness is most of your bill. Same model, same tasks: 40–70x spread.
-2. Every call resends the agent's whole scaffolding. Boot tax × call count is the dominant cost term, and boot tax ranges from ~700 to ~29,000 tokens.
-3. Nobody's context grows meaningfully faster than anyone else's per turn. Call count and prompt floor are what differ.
-4. Check cached-token share before trusting any token number. It flips rankings.
-5. Use a one-shot tool for one-shot tasks; pay for the agentic loop only when iteration earns its keep.
-6. Verify which models your agent actually calls.
-7. If you benchmark: dedupe summary usage events, grade outcomes instead of exit codes, and repeat runs before ranking close pairs.
+1. Pick the agent with at least as much care as the model. Same model, same tasks: 40–70x.
+2. For small, well-specified edits, use a one-shot tool. Pay for the agentic loop only when iteration earns its keep.
+3. Judge cost by what you're billed, not by raw token counts — check the cached share first.
+4. If you're building an agent: cut turns and cut the prompt floor. Context growth per turn is not where the money is.
+5. Know which models your agent actually calls.
 
 ## Honest limits
 
-Twelve small, well-specified Python tasks; two mid-size models served via one router; one run per cell (two counting the second model). This data says a lot about *cost structure* and nothing about *capability* — every agent here could do these tasks. Heavy scaffolding may well earn its cost back on hard, long-horizon work in big repositories; that's a different benchmark (our SWE-bench runs are telemetry-only so far). Snapshots, raw protocol, and metric definitions: `examples/results/`, `RESEARCH.md`, `docs/metric-coverage.md`.
+Twelve small Python tasks, two mid-size models, one run per pairing. This says a lot about cost structure and nothing about capability — every agent here could do these tasks. The heavy scaffolding that looks wasteful on a ten-minute fix may earn its cost back on hard, long-horizon work in a big repository; that's a different experiment. And the mid-table gaps (10–20%) are within noise — only the big gaps are worth repeating out loud.
+
+I started by asking what a coding agent costs beyond the model it runs. The answer is: usually more than the model, paid mostly in scaffolding resent on every turn — and you can change it by changing the agent, without touching the model at all.
