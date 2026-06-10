@@ -149,6 +149,35 @@ class RunnerTest(unittest.TestCase):
         self.assertTrue(result["success"])
         self.assertEqual(seen_timeout, 1800)
 
+    def test_task_timeout_override_beats_task_budget(self):
+        seen_timeout = None
+
+        class StubAdapter:
+            def run(self, context):
+                nonlocal seen_timeout
+                seen_timeout = context.timeout_sec
+                return AdapterResult(exit_code=0)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            runner = BenchmarkRunner(tmp, task_timeout_override_sec=900)
+            task = TaskManifest(
+                id="task",
+                prompt="prompt",
+                path=Path(tmp) / "task.yaml",
+                budgets={"timeout_sec": 180},
+            )
+            harness = HarnessManifest(
+                id="harness",
+                adapter="stub",
+                path=Path(tmp) / "harness.yaml",
+                timeout_sec=600,
+            )
+            with patch("harness_efficiency_bench.runner.create_adapter", return_value=StubAdapter()):
+                result = runner.run_task(task, harness, keep_workspace=False)
+
+        self.assertTrue(result["success"])
+        self.assertEqual(seen_timeout, 900)
+
     def test_summary(self):
         summary = summarize_results(
             [

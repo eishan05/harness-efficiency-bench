@@ -19,6 +19,23 @@ Each batch runs the 12 score-facing non-SWE tasks (`--include-tag score-facing`)
 
 `*-nemotron-non-swe-score-12-2026-06-10.json`, model `nvidia/nemotron-3-ultra-550b-a55b:free`, same protocol (driver: `scripts/run_nemotron_score12_batch.sh`). Oracle solve rates are 11-12/12 for every configuration. The free endpoint reports zero cached input tokens, so cache-discounted C equals raw C in this batch; cache effects are only measurable on the DeepSeek batch. The Opencode/Kilo Haiku helper leakage reproduces to the token (8,170 and 16,366 input tokens), and plain Aider again makes one model call per task, leaving its B unsupported.
 
+### SWE-bench contrast run (2026-06-10)
+
+`{aider,claude-code,codex,kilo}-docker-openrouter-deepseek-v4-flash-swe-contrast-curated-10-2026-06-10.json`: four harnesses spanning the cost spectrum over the 10 curated SWE-bench Lite tasks on `deepseek/deepseek-v4-flash` with generous bounds (aider: architect + repo-map 2048 + 900s wall; claude-code: `CLAUDE_MAX_BUDGET_USD=5`; codex: 1800s task cap; kilo: 900s wall), graded inline by the ARM-local Docker SWE-bench oracle. All four resolved exactly the same single instance (`pytest-dev__pytest-5227`) — 1/10 each — while spending 0.82M (aider), 5.27M (claude-code), 12.33M (kilo), and 14.96M (codex) tokens. An 18x token spread bought identical outcomes; with this model the capability ceiling is the model, not the scaffolding. Raising claude-code's budget from $1 to $5 (3.3x more tokens than its earlier budget-capped run, 9/10 non-empty diffs vs 1/10) added zero resolved instances.
+
+### Context-bloat harm curve (D metric, 2026-06-10)
+
+`{aider,claude-code,codex,kilo}-docker-openrouter-deepseek-v4-flash-dcurve-score-12-2026-06-10.json`: the same four harnesses over the 12 score-facing tasks at base/20k/50k/100k injected-context levels (`--all-perturbations`, task timeout overridden to 900s via `--task-timeout-sec`). Oracle solves and average tokens per run:
+
+| Harness | base | 20k | 50k | 100k | 100k payload transmitted? |
+|---|---|---|---|---|---|
+| aider | 12/12, 5k | 11/12, 25k | 12/12, 55k | 12/12, 106k | yes (~103k, one call) |
+| claude-code | 12/12, 47k | 12/12, 222k | 12/12, 473k | **2/12**, 287k | yes (~100k every call) |
+| codex | 12/12, 82k | 12/12, 237k | 12/12, 480k | 12/12, 909k | yes (~108k every call) |
+| kilo | 12/12, 119k | 12/12, 123k | 12/12, 125k | 12/12, 126k | **no (~13.5k; payload silently dropped)** |
+
+The model itself does not degrade at these context sizes (aider passes the full payload in one shot and stays perfect). Claude Code transmits faithfully and collapses at 100k: runs end after 2-3 calls with no edits — its final call sees ~33k input by its own accounting, consistent with compaction/truncation losing the task instruction buried after the payload. Codex transmits faithfully and stays robust but pays payload × turns (11x its base cost at 100k). Kilo's flat curve and flat cost are explained by it truncating the rendered prompt before sending — robustness by silently discarding user-provided context. Kilo's strict counts (5-8/12 per level) reflect 900s wall-cap exits, evenly spread across levels; its oracle solve is 49/49. The single 200k probe (`toy-write-file`) fails for the faithful harnesses at the model's 200k window, as expected.
+
 ### Cross-model rank agreement
 
 Spearman rank correlation between the two batches across the 12 configurations:

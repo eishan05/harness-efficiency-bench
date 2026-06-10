@@ -65,6 +65,30 @@ The agentic loop — look around, act, check, repeat — is a cost multiplier. I
 
 Two of the CLIs quietly sent a small request per task to Claude Haiku, for generating conversation titles, no matter what model I had configured. It's around 1% of their usage, so the cost is trivia. But it's a second vendor and a second place your code travels, and I only noticed because I was counting tokens at the network level. "I configured model X" and "my agent only talks to model X" turn out to be different statements.
 
+## So I ran the hard tasks too
+
+The obvious objection to all of this: maybe the heavy scaffolding earns its cost back on hard problems. Fair. So I took four agents spanning the cost spectrum — Aider, Claude Code, Codex, and Kilo — and ran them on 10 real SWE-bench Lite tasks with generous limits. No tight budgets, no 90-second timeouts. Let them work.
+
+All four resolved exactly one task out of ten. The same task.
+
+Aider got there on 0.8M tokens. Claude Code spent 5.3M. Kilo spent 12.3M. Codex spent 15M. An 18x spread in spending, identical results. I even reran Claude Code with five times its earlier budget to make sure I wasn't strangling it — it produced real patches on nine of ten tasks instead of one, and not a single extra one resolved.
+
+The lesson isn't that agents are useless on hard tasks. It's that when the model can't solve the problem, no amount of scaffolding rescues it. DeepSeek V4 Flash is a capable small model, but these tasks were past its ceiling, and the expensive loops just circled that ceiling at 15M tokens instead of finding a way over it. Capability comes from the model. The agent decides how expensive it is to find that out.
+
+## Then I stuffed the context with garbage
+
+The other thing I wanted to test was context rot directly. Same 12 small tasks, but with 20k, 50k, or 100k tokens of irrelevant log noise injected in front of the actual request. Same four agents.
+
+The first surprise: the model doesn't rot. Aider passes the whole 100k mess to the model in one call, and it solved 12/12 anyway. Whatever folklore says about long context making models dumb, at 100k tokens on these tasks, it didn't.
+
+The second surprise: Claude Code fell off a cliff. Perfect through 50k, then 2 out of 12 at 100k. It faithfully sends the full context, then after two or three calls it loses the plot — the runs end with no edits, as if the actual task drowned in the noise. Same model that Aider used to go 12/12. The failure is the harness's context handling, not the model.
+
+The third surprise was Kilo's curve: perfectly flat, and suspiciously cheap. It solved everything at every level while its token count barely moved. The reason: it silently throws away most of the prompt. The 100k payload arrived at the model as 13k. It looks robust on a chart, but an agent that quietly drops your input when it gets large is not something I'd call robust — next time, the thing it drops might be the part you needed.
+
+Codex was the only loop agent that was both honest and sturdy: full payload, every call, 12/12 at every level. The price of that honesty is the boot-tax math again — it re-sends the garbage on every turn, so 100k of junk turned an 82k task into a 909k one. Eleven times the cost, paid entirely for noise it was too polite to drop.
+
+So: keep your prompts clean. The model can handle the junk; your agent's bill and your agent's attention often can't. And know which of the four behaviors your agent has, because "it still worked" can mean it coped, or it can mean it never read what you sent.
+
 ## What I'd actually do with this
 
 If you're working through small, well-specified tasks, use a one-shot tool like Aider and pocket the 10x. Bring in the heavy agents when the problem genuinely needs exploration and iteration.
@@ -75,6 +99,6 @@ If you're looking at token dashboards, check the cached share before believing a
 
 ## It's not a takedown of the heavy agents
 
-These were twelve small Python tasks. Two models, both served through OpenRouter, one run per pairing. Every agent here could do the work, so this measures cost, not capability. The scaffolding that looks wasteful on a ten-minute fix might pay for itself on a gnarly refactor in a big repository. That's a different benchmark, and I haven't run it yet.
+The core numbers come from twelve small Python tasks, two models served through OpenRouter, one run per pairing. The SWE-bench and garbage-context follow-ups used four agents and one model, so treat those as strong single-model results, not universal law. A frontier model might give the heavy scaffolding more to work with on hard tasks; that experiment costs real money and I haven't run it.
 
-But the original question has an answer. Most of what you pay for an AI coding session is not the model thinking about your problem. It's the agent re-sending its own packaging, turn after turn. And you can change that without changing models at all.
+But the original question has an answer. Most of what you pay for an AI coding session is not the model thinking about your problem. It's the agent re-sending its own packaging, turn after turn. Capability comes from the model; cost comes from the agent. And you can change the agent without changing models at all.

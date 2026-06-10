@@ -37,10 +37,16 @@ class BenchmarkRunner:
         *,
         require_docker: bool = False,
         repo_cache: str | Path | None = DEFAULT_REPO_CACHE,
+        task_timeout_override_sec: int | None = None,
     ):
         self.store = ResultStore(run_root)
         self.require_docker = require_docker
         self.repo_cache = Path(repo_cache).resolve() if repo_cache is not None else None
+        # Overrides task-manifest timeout budgets. Large injected-context
+        # (harm-curve) runs need more wall time than the tight budgets small
+        # tasks ship with, or every run dies to the timeout instead of
+        # showing context effects.
+        self.task_timeout_override_sec = task_timeout_override_sec
 
     def run_task(
         self,
@@ -248,8 +254,9 @@ class BenchmarkRunner:
             return f"{prompt}\n\n[Injected context]\n{payload}\n"
         return f"[Injected context]\n{payload}\n\n{prompt}"
 
-    @staticmethod
-    def _effective_timeout_sec(task: TaskManifest, harness: HarnessManifest) -> int:
+    def _effective_timeout_sec(self, task: TaskManifest, harness: HarnessManifest) -> int:
+        if self.task_timeout_override_sec is not None:
+            return int(self.task_timeout_override_sec)
         raw_timeout = task.budgets.get("timeout_sec")
         if raw_timeout is None:
             return harness.timeout_sec

@@ -1,0 +1,4299 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 49,
+    "oracle_mode": "task manifests filtered by score-facing tag",
+    "perturbation_mode": "all-perturbations",
+    "run_finished_at": "2026-06-10T21:39:23.223907+00:00",
+    "run_started_at": "2026-06-10T15:40:59.430767+00:00",
+    "suite": "non-swe-dcurve-score-12",
+    "tasks_dir": "examples/tasks"
+  },
+  "captured_at": "2026-06-10T21:53:35.891870Z",
+  "commands": null,
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/kilo-docker-openrouter.yaml",
+    "docker_image": "harness-bench/kilo:7.3.40",
+    "execution": "Docker-isolated kilo-docker-openrouter via OpenRouter deepseek/deepseek-v4-flash over the 12 score-facing tasks at base/20k/50k/100k injected context, task timeout overridden to 900s.",
+    "id": "kilo-docker-openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "100k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 104522
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "20k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 90337
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 129075
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "base",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 131192
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 131167
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.057s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "100k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-cli-subcommands",
+      "token_cost": 190406
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.067s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "20k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-cli-subcommands",
+      "token_cost": 153025
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.058s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-cli-subcommands",
+      "token_cost": 139684
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 139401
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "base",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 118614
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "20k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-datetime-windowing",
+      "token_cost": 136347
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-datetime-windowing",
+      "token_cost": 132789
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "100k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-json-config-migration",
+      "token_cost": 140384
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "base",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-json-config-migration",
+      "token_cost": 183065
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "20k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 190769
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 125327
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "100k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-path-safety",
+      "token_cost": 153009
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "100k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-plugin-registry",
+      "token_cost": 121940
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "20k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-plugin-registry",
+      "token_cost": 109915
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "50k",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-plugin-registry",
+      "token_cost": 139506
+    },
+    {
+      "adapter_exit_code": 124,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 0,
+        "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n",
+        "stdout": ""
+      },
+      "oracle_message": "command passed",
+      "perturbation_id": "base",
+      "reason": "oracle passed but adapter returned nonzero",
+      "task_id": "python-plugin-registry",
+      "token_cost": 118398
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "median_adjacent_delta": 238.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13509.0
+            ],
+            [
+              1.0,
+              13747.0
+            ],
+            [
+              2.0,
+              14374.0
+            ],
+            [
+              3.0,
+              14756.0
+            ],
+            [
+              4.0,
+              15236.0
+            ],
+            [
+              5.0,
+              15363.0
+            ],
+            [
+              6.0,
+              15484.0
+            ],
+            [
+              7.0,
+              15678.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.366296518607443
+        },
+        "status": "full",
+        "value": 325.17857142857144
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1743 < 100031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 121138,
+      "token_cost_cache_discounted": 17918.800000000003,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "median_adjacent_delta": 311.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13509.0
+            ],
+            [
+              1.0,
+              13739.0
+            ],
+            [
+              2.0,
+              14132.0
+            ],
+            [
+              3.0,
+              14560.0
+            ],
+            [
+              4.0,
+              15012.0
+            ],
+            [
+              5.0,
+              15630.0
+            ],
+            [
+              6.0,
+              15758.0
+            ],
+            [
+              7.0,
+              15882.0
+            ],
+            [
+              8.0,
+              16070.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1233279828785447
+        },
+        "status": "full",
+        "value": 349.9166666666667
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1743 < 20031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 137643,
+      "token_cost_cache_discounted": 32119.800000000003,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "median_adjacent_delta": 244.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13509.0
+            ],
+            [
+              1.0,
+              13810.0
+            ],
+            [
+              2.0,
+              14651.0
+            ],
+            [
+              3.0,
+              15281.0
+            ],
+            [
+              4.0,
+              15413.0
+            ],
+            [
+              5.0,
+              15546.0
+            ],
+            [
+              6.0,
+              15734.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.5934852468594798
+        },
+        "status": "full",
+        "value": 389.60714285714283
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1743 < 50031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 106997,
+      "token_cost_cache_discounted": 43061.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "median_adjacent_delta": 476.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13287.0
+            ],
+            [
+              1.0,
+              13622.0
+            ],
+            [
+              2.0,
+              14532.0
+            ],
+            [
+              3.0,
+              14906.0
+            ],
+            [
+              4.0,
+              15633.0
+            ],
+            [
+              5.0,
+              16211.0
+            ],
+            [
+              6.0,
+              16396.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1709183673469388
+        },
+        "status": "full",
+        "value": 557.3571428571429
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1328,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13260
+        },
+        "status": "full",
+        "value": 14588
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 107549,
+      "token_cost_cache_discounted": 78979.4,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "median_adjacent_delta": 336.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13195.0
+            ],
+            [
+              1.0,
+              13802.0
+            ],
+            [
+              2.0,
+              14394.0
+            ],
+            [
+              3.0,
+              14849.0
+            ],
+            [
+              4.0,
+              15066.0
+            ],
+            [
+              5.0,
+              15175.0
+            ],
+            [
+              6.0,
+              15265.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0233843537414966
+        },
+        "status": "full",
+        "value": 343.85714285714283
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1774 < 100028); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 104522,
+      "token_cost_cache_discounted": 47382.799999999996,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "median_adjacent_delta": 305.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13581.0
+            ],
+            [
+              1.0,
+              13886.0
+            ],
+            [
+              2.0,
+              14648.0
+            ],
+            [
+              3.0,
+              14972.0
+            ],
+            [
+              4.0,
+              15100.0
+            ],
+            [
+              5.0,
+              15333.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1921311475409837
+        },
+        "status": "full",
+        "value": 363.6
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1774 < 20028); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 90337,
+      "token_cost_cache_discounted": 39188.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 181.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13581.0
+            ],
+            [
+              1.0,
+              14488.0
+            ],
+            [
+              2.0,
+              15005.0
+            ],
+            [
+              3.0,
+              15186.0
+            ],
+            [
+              4.0,
+              15297.0
+            ],
+            [
+              5.0,
+              15387.0
+            ],
+            [
+              6.0,
+              15569.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.5848091302636758
+        },
+        "status": "full",
+        "value": 287.64285714285717
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1774 < 50028); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 129075,
+      "token_cost_cache_discounted": 52236.59999999999,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "median_adjacent_delta": 190.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13285.0
+            ],
+            [
+              1.0,
+              13485.0
+            ],
+            [
+              2.0,
+              14001.0
+            ],
+            [
+              3.0,
+              14082.0
+            ],
+            [
+              4.0,
+              14348.0
+            ],
+            [
+              5.0,
+              14685.0
+            ],
+            [
+              6.0,
+              14795.0
+            ],
+            [
+              7.0,
+              14898.0
+            ],
+            [
+              8.0,
+              15078.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.193157894736842
+        },
+        "status": "full",
+        "value": 226.7
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1329,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13261
+        },
+        "status": "full",
+        "value": 14590
+      },
+      "success": false,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 131192,
+      "token_cost_cache_discounted": 19563.199999999997,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8
+          ],
+          "context_thread_sizes": [
+            5,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 224.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13594.0
+            ],
+            [
+              1.0,
+              15057.0
+            ],
+            [
+              2.0,
+              15388.0
+            ],
+            [
+              3.0,
+              15496.0
+            ],
+            [
+              4.0,
+              15613.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.9986607142857142
+        },
+        "status": "full",
+        "value": 447.7
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1886 < 100035); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 101114,
+      "token_cost_cache_discounted": 75885.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            5,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_adjacent_delta": 291.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13594.0
+            ],
+            [
+              1.0,
+              14958.0
+            ],
+            [
+              2.0,
+              15342.0
+            ],
+            [
+              3.0,
+              15472.0
+            ],
+            [
+              4.0,
+              15671.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.6013722126929675
+        },
+        "status": "full",
+        "value": 466.8
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1886 < 20035); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 111084,
+      "token_cost_cache_discounted": 47839.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 346.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13594.0
+            ],
+            [
+              1.0,
+              14490.0
+            ],
+            [
+              2.0,
+              15269.0
+            ],
+            [
+              3.0,
+              15765.0
+            ],
+            [
+              4.0,
+              15898.0
+            ],
+            [
+              5.0,
+              16023.0
+            ],
+            [
+              6.0,
+              16219.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1942609413707679
+        },
+        "status": "full",
+        "value": 413.2142857142857
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1886 < 50035); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 131167,
+      "token_cost_cache_discounted": 27026.199999999997,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            5,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_adjacent_delta": 251.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13301.0
+            ],
+            [
+              1.0,
+              14797.0
+            ],
+            [
+              2.0,
+              15115.0
+            ],
+            [
+              3.0,
+              15226.0
+            ],
+            [
+              4.0,
+              15411.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.8485089463220674
+        },
+        "status": "full",
+        "value": 464.9
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1340,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13270
+        },
+        "status": "full",
+        "value": 14610
+      },
+      "success": true,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 103123,
+      "token_cost_cache_discounted": 48518.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "context_thread_sizes": [
+            9,
+            5
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "median_adjacent_delta": 405.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13596.0
+            ],
+            [
+              1.0,
+              15370.0
+            ],
+            [
+              2.0,
+              15864.0
+            ],
+            [
+              3.0,
+              16367.0
+            ],
+            [
+              4.0,
+              16496.0
+            ],
+            [
+              5.0,
+              16813.0
+            ],
+            [
+              6.0,
+              17500.0
+            ],
+            [
+              7.0,
+              17627.0
+            ],
+            [
+              8.0,
+              17822.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1258939580764489
+        },
+        "status": "full",
+        "value": 456.55
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1833 < 100042); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 190406,
+      "token_cost_cache_discounted": 49862.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "median_adjacent_delta": 184.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13596.0
+            ],
+            [
+              1.0,
+              13755.0
+            ],
+            [
+              2.0,
+              14209.0
+            ],
+            [
+              3.0,
+              14663.0
+            ],
+            [
+              4.0,
+              15110.0
+            ],
+            [
+              5.0,
+              15238.0
+            ],
+            [
+              6.0,
+              15545.0
+            ],
+            [
+              7.0,
+              15706.0
+            ],
+            [
+              8.0,
+              15830.0
+            ],
+            [
+              9.0,
+              16014.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.5331357048748355
+        },
+        "status": "full",
+        "value": 282.0969696969697
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1833 < 20042); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 153025,
+      "token_cost_cache_discounted": 27917.800000000003,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "median_adjacent_delta": 162.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13593.0
+            ],
+            [
+              1.0,
+              13776.0
+            ],
+            [
+              2.0,
+              14217.0
+            ],
+            [
+              3.0,
+              14689.0
+            ],
+            [
+              4.0,
+              15703.0
+            ],
+            [
+              5.0,
+              15826.0
+            ],
+            [
+              6.0,
+              15968.0
+            ],
+            [
+              7.0,
+              16095.0
+            ],
+            [
+              8.0,
+              15893.0
+            ]
+          ],
+          "slope_median_delta_ratio": 2.132923076923077,
+          "slope_median_divergence": true
+        },
+        "status": "full",
+        "value": 346.6
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1833 < 50042); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 139684,
+      "token_cost_cache_discounted": 50864.8,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "context_thread_sizes": [
+            8,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 229.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13303.0
+            ],
+            [
+              1.0,
+              14832.0
+            ],
+            [
+              2.0,
+              15316.0
+            ],
+            [
+              3.0,
+              15545.0
+            ],
+            [
+              4.0,
+              16039.0
+            ],
+            [
+              5.0,
+              16130.0
+            ],
+            [
+              6.0,
+              16247.0
+            ],
+            [
+              7.0,
+              16446.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.6641713453940528
+        },
+        "status": "full",
+        "value": 381.0952380952381
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1334,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13265
+        },
+        "status": "full",
+        "value": 14599
+      },
+      "success": true,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 147676,
+      "token_cost_cache_discounted": 89500.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 228.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13571.0
+            ],
+            [
+              1.0,
+              14934.0
+            ],
+            [
+              2.0,
+              16234.0
+            ],
+            [
+              3.0,
+              16493.0
+            ],
+            [
+              4.0,
+              16622.0
+            ],
+            [
+              5.0,
+              16745.0
+            ],
+            [
+              6.0,
+              16943.0
+            ]
+          ],
+          "slope_median_delta_ratio": 2.2078774617067833,
+          "slope_median_divergence": true
+        },
+        "status": "full",
+        "value": 504.5
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1836 < 100037); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 136403,
+      "token_cost_cache_discounted": 54841.399999999994,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "context_thread_sizes": [
+            8,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 189.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13571.0
+            ],
+            [
+              1.0,
+              15251.0
+            ],
+            [
+              2.0,
+              15568.0
+            ],
+            [
+              3.0,
+              15906.0
+            ],
+            [
+              4.0,
+              16033.0
+            ],
+            [
+              5.0,
+              16138.0
+            ],
+            [
+              6.0,
+              16253.0
+            ],
+            [
+              7.0,
+              16442.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.6971529352481733
+        },
+        "status": "full",
+        "value": 320.76190476190476
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1836 < 20037); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 150537,
+      "token_cost_cache_discounted": 54921.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 406.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13571.0
+            ],
+            [
+              1.0,
+              14828.0
+            ],
+            [
+              2.0,
+              15982.0
+            ],
+            [
+              3.0,
+              16606.0
+            ],
+            [
+              4.0,
+              16733.0
+            ],
+            [
+              5.0,
+              16842.0
+            ],
+            [
+              6.0,
+              17030.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.3332160450387052
+        },
+        "status": "full",
+        "value": 541.2857142857143
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1836 < 50037); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 139401,
+      "token_cost_cache_discounted": 53001.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 596.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13313.0
+            ],
+            [
+              1.0,
+              14385.0
+            ],
+            [
+              2.0,
+              14981.0
+            ],
+            [
+              3.0,
+              16422.0
+            ],
+            [
+              4.0,
+              16986.0
+            ],
+            [
+              5.0,
+              17191.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.372674976030681
+        },
+        "status": "full",
+        "value": 818.1142857142858
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1336,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13280
+        },
+        "status": "full",
+        "value": 14616
+      },
+      "success": false,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 118614,
+      "token_cost_cache_discounted": 56060.4,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "context_thread_sizes": [
+            6,
+            5
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "median_adjacent_delta": 468.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13222.0
+            ],
+            [
+              1.0,
+              15215.0
+            ],
+            [
+              2.0,
+              15713.0
+            ],
+            [
+              3.0,
+              16181.0
+            ],
+            [
+              4.0,
+              16288.0
+            ],
+            [
+              5.0,
+              16393.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.193040293040293
+        },
+        "status": "full",
+        "value": 558.3428571428572
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1871 < 100036); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 135799,
+      "token_cost_cache_discounted": 105616.6,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 226.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13608.0
+            ],
+            [
+              1.0,
+              14744.0
+            ],
+            [
+              2.0,
+              16221.0
+            ],
+            [
+              3.0,
+              16555.0
+            ],
+            [
+              4.0,
+              16667.0
+            ],
+            [
+              5.0,
+              16755.0
+            ],
+            [
+              6.0,
+              16874.0
+            ]
+          ],
+          "slope_median_delta_ratio": 2.249448123620309,
+          "slope_median_divergence": true
+        },
+        "status": "full",
+        "value": 509.5
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1871 < 20036); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 136347,
+      "token_cost_cache_discounted": 25985.399999999994,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 296.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13673.0
+            ],
+            [
+              1.0,
+              14588.0
+            ],
+            [
+              2.0,
+              15317.0
+            ],
+            [
+              3.0,
+              15766.0
+            ],
+            [
+              4.0,
+              15909.0
+            ],
+            [
+              5.0,
+              15963.0
+            ],
+            [
+              6.0,
+              15684.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1311534749034748
+        },
+        "status": "full",
+        "value": 334.82142857142856
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1871 < 50036); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 132789,
+      "token_cost_cache_discounted": 95694.6,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 276.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13301.0
+            ],
+            [
+              1.0,
+              15100.0
+            ],
+            [
+              2.0,
+              15463.0
+            ],
+            [
+              3.0,
+              15670.0
+            ],
+            [
+              4.0,
+              16016.0
+            ],
+            [
+              5.0,
+              16123.0
+            ],
+            [
+              6.0,
+              16227.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.4695169206923275
+        },
+        "status": "full",
+        "value": 406.32142857142856
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1335,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13269
+        },
+        "status": "full",
+        "value": 14604
+      },
+      "success": true,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 133501,
+      "token_cost_cache_discounted": 38921.8,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 254.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13547.0
+            ],
+            [
+              1.0,
+              14559.0
+            ],
+            [
+              2.0,
+              14828.0
+            ],
+            [
+              3.0,
+              15139.0
+            ],
+            [
+              4.0,
+              15249.0
+            ],
+            [
+              5.0,
+              15349.0
+            ],
+            [
+              6.0,
+              15589.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1404715127701375
+        },
+        "status": "full",
+        "value": 290.25
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1766 < 100022); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 128285,
+      "token_cost_cache_discounted": 28406.59999999999,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "context_thread_sizes": [
+            8,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_adjacent_delta": 121.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13544.0
+            ],
+            [
+              1.0,
+              14671.0
+            ],
+            [
+              2.0,
+              14629.0
+            ],
+            [
+              3.0,
+              14929.0
+            ],
+            [
+              4.0,
+              14750.0
+            ],
+            [
+              5.0,
+              15251.0
+            ],
+            [
+              6.0,
+              15372.0
+            ],
+            [
+              7.0,
+              15493.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.8531090121999214
+        },
+        "status": "full",
+        "value": 224.22619047619048
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1766 < 20022); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 149118,
+      "token_cost_cache_discounted": 81380.4,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "context_thread_sizes": [
+            8,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 241.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13544.0
+            ],
+            [
+              1.0,
+              14469.0
+            ],
+            [
+              2.0,
+              14710.0
+            ],
+            [
+              3.0,
+              15059.0
+            ],
+            [
+              4.0,
+              15169.0
+            ],
+            [
+              5.0,
+              15272.0
+            ],
+            [
+              6.0,
+              15442.0
+            ],
+            [
+              7.0,
+              15827.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.118454850819996
+        },
+        "status": "full",
+        "value": 269.54761904761904
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1766 < 50022); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 142056,
+      "token_cost_cache_discounted": 60379.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8
+          ],
+          "context_thread_sizes": [
+            5,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 295.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13329.0
+            ],
+            [
+              1.0,
+              14044.0
+            ],
+            [
+              2.0,
+              14387.0
+            ],
+            [
+              3.0,
+              14503.0
+            ],
+            [
+              4.0,
+              14750.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1189830508474576
+        },
+        "status": "full",
+        "value": 330.1
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1328,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13311
+        },
+        "status": "full",
+        "value": 14639
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 92514,
+      "token_cost_cache_discounted": 42978.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 567.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13554.0
+            ],
+            [
+              1.0,
+              14559.0
+            ],
+            [
+              2.0,
+              16928.0
+            ],
+            [
+              3.0,
+              17391.0
+            ],
+            [
+              4.0,
+              17498.0
+            ],
+            [
+              5.0,
+              17209.0
+            ],
+            [
+              6.0,
+              17881.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1863436123348017
+        },
+        "status": "full",
+        "value": 673.25
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1772 < 100040); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-json-config-migration",
+      "token_cost": 140384,
+      "token_cost_cache_discounted": 33248.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "median_adjacent_delta": 109.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13554.0
+            ],
+            [
+              1.0,
+              13477.0
+            ],
+            [
+              2.0,
+              14619.0
+            ],
+            [
+              3.0,
+              15651.0
+            ],
+            [
+              4.0,
+              15759.0
+            ],
+            [
+              5.0,
+              15868.0
+            ]
+          ],
+          "slope_median_delta_ratio": 5.0977719528178245,
+          "slope_median_divergence": true
+        },
+        "status": "full",
+        "value": 555.6571428571428
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1772 < 20040); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-json-config-migration",
+      "token_cost": 92554,
+      "token_cost_cache_discounted": 36336.4,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "median_adjacent_delta": 457.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13571.0
+            ],
+            [
+              1.0,
+              13307.0
+            ],
+            [
+              2.0,
+              14031.0
+            ],
+            [
+              3.0,
+              14556.0
+            ],
+            [
+              4.0,
+              15976.0
+            ],
+            [
+              5.0,
+              16433.0
+            ],
+            [
+              6.0,
+              16749.0
+            ],
+            [
+              7.0,
+              16427.0
+            ],
+            [
+              8.0,
+              17085.0
+            ],
+            [
+              9.0,
+              17321.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0504873682116571
+        },
+        "status": "full",
+        "value": 480.07272727272726
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1772 < 50040); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-json-config-migration",
+      "token_cost": 159926,
+      "token_cost_cache_discounted": 58550.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "context_thread_sizes": [
+            10,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 359.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13301.0
+            ],
+            [
+              1.0,
+              14424.0
+            ],
+            [
+              2.0,
+              15177.0
+            ],
+            [
+              3.0,
+              15683.0
+            ],
+            [
+              4.0,
+              15814.0
+            ],
+            [
+              5.0,
+              16201.0
+            ],
+            [
+              6.0,
+              16560.0
+            ],
+            [
+              7.0,
+              16872.0
+            ],
+            [
+              8.0,
+              17144.0
+            ],
+            [
+              9.0,
+              17385.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1359669114543767
+        },
+        "status": "full",
+        "value": 407.8121212121212
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1333,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13265
+        },
+        "status": "full",
+        "value": 14598
+      },
+      "success": false,
+      "task_id": "python-json-config-migration",
+      "token_cost": 183065,
+      "token_cost_cache_discounted": 46437.79999999999,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 485.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13221.0
+            ],
+            [
+              1.0,
+              15459.0
+            ],
+            [
+              2.0,
+              15944.0
+            ],
+            [
+              3.0,
+              17942.0
+            ],
+            [
+              4.0,
+              17694.0
+            ],
+            [
+              5.0,
+              18179.0
+            ],
+            [
+              6.0,
+              18380.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.6691458026509574
+        },
+        "status": "full",
+        "value": 809.5357142857143
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1903 < 100041); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 144161,
+      "token_cost_cache_discounted": 65364.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "context_thread_sizes": [
+            9,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 743.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13604.0
+            ],
+            [
+              1.0,
+              15592.0
+            ],
+            [
+              2.0,
+              16679.0
+            ],
+            [
+              3.0,
+              18917.0
+            ],
+            [
+              4.0,
+              19026.0
+            ],
+            [
+              5.0,
+              19129.0
+            ],
+            [
+              6.0,
+              19817.0
+            ],
+            [
+              7.0,
+              19506.0
+            ],
+            [
+              8.0,
+              20304.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0100942126514132
+        },
+        "status": "full",
+        "value": 750.5
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1903 < 20041); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 190769,
+      "token_cost_cache_discounted": 147338.6,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 787.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13656.0
+            ],
+            [
+              1.0,
+              14758.0
+            ],
+            [
+              2.0,
+              15545.0
+            ],
+            [
+              3.0,
+              17973.0
+            ],
+            [
+              4.0,
+              18092.0
+            ],
+            [
+              5.0,
+              18340.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.3015066255218732
+        },
+        "status": "full",
+        "value": 1024.2857142857142
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1903 < 50041); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 125327,
+      "token_cost_cache_discounted": 79247.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 610.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13304.0
+            ],
+            [
+              1.0,
+              14836.0
+            ],
+            [
+              2.0,
+              14874.0
+            ],
+            [
+              3.0,
+              16644.0
+            ],
+            [
+              4.0,
+              16393.0
+            ],
+            [
+              5.0,
+              17003.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.1679625292740048
+        },
+        "status": "full",
+        "value": 712.4571428571429
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1337,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13267
+        },
+        "status": "full",
+        "value": 14604
+      },
+      "success": true,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 117688,
+      "token_cost_cache_discounted": 84740.79999999999,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "context_thread_sizes": [
+            8,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 279.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13572.0
+            ],
+            [
+              1.0,
+              14650.0
+            ],
+            [
+              2.0,
+              14917.0
+            ],
+            [
+              3.0,
+              16733.0
+            ],
+            [
+              4.0,
+              16843.0
+            ],
+            [
+              5.0,
+              16563.0
+            ],
+            [
+              6.0,
+              17091.0
+            ],
+            [
+              7.0,
+              17370.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.8705837173579107
+        },
+        "status": "full",
+        "value": 521.8928571428571
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1776 < 100036); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-path-safety",
+      "token_cost": 153009,
+      "token_cost_cache_discounted": 39882.59999999999,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 511.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13572.0
+            ],
+            [
+              1.0,
+              15236.0
+            ],
+            [
+              2.0,
+              15647.0
+            ],
+            [
+              3.0,
+              16490.0
+            ],
+            [
+              4.0,
+              17001.0
+            ],
+            [
+              5.0,
+              17277.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.3789767961979311
+        },
+        "status": "full",
+        "value": 704.6571428571428
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1776 < 20036); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-path-safety",
+      "token_cost": 120588,
+      "token_cost_cache_discounted": 39602.399999999994,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            6,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_adjacent_delta": 340.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13555.0
+            ],
+            [
+              1.0,
+              14755.0
+            ],
+            [
+              2.0,
+              15095.0
+            ],
+            [
+              3.0,
+              16875.0
+            ],
+            [
+              4.0,
+              16969.0
+            ],
+            [
+              5.0,
+              16828.0
+            ]
+          ],
+          "slope_median_delta_ratio": 2.0829411764705883,
+          "slope_median_divergence": true
+        },
+        "status": "full",
+        "value": 708.2
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1776 < 50036); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "python-path-safety",
+      "token_cost": 129810,
+      "token_cost_cache_discounted": 53893.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "context_thread_sizes": [
+            7,
+            5
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "median_adjacent_delta": 313.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13311.0
+            ],
+            [
+              1.0,
+              15072.0
+            ],
+            [
+              2.0,
+              15441.0
+            ],
+            [
+              3.0,
+              15653.0
+            ],
+            [
+              4.0,
+              15399.0
+            ],
+            [
+              5.0,
+              16059.0
+            ],
+            [
+              6.0,
+              16317.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.2474367737525631
+        },
+        "status": "full",
+        "value": 391.07142857142856
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1333,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13279
+        },
+        "status": "full",
+        "value": 14612
+      },
+      "success": true,
+      "task_id": "python-path-safety",
+      "token_cost": 150339,
+      "token_cost_cache_discounted": 51151.8,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 319.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13614.0
+            ],
+            [
+              1.0,
+              15403.0
+            ],
+            [
+              2.0,
+              16354.0
+            ],
+            [
+              3.0,
+              16673.0
+            ],
+            [
+              4.0,
+              16824.0
+            ],
+            [
+              5.0,
+              17025.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.9379310344827587
+        },
+        "status": "full",
+        "value": 618.2
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1815 < 100038); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-plugin-registry",
+      "token_cost": 121940,
+      "token_cost_cache_discounted": 48327.2,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "median_adjacent_delta": 334.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13600.0
+            ],
+            [
+              1.0,
+              13692.0
+            ],
+            [
+              2.0,
+              14946.0
+            ],
+            [
+              3.0,
+              15589.0
+            ],
+            [
+              4.0,
+              15721.0
+            ],
+            [
+              5.0,
+              16227.0
+            ],
+            [
+              6.0,
+              16389.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.5196749358426005
+        },
+        "status": "full",
+        "value": 507.57142857142856
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1815 < 20038); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-plugin-registry",
+      "token_cost": 109915,
+      "token_cost_cache_discounted": 61531.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "context_thread_sizes": [
+            7,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_adjacent_delta": 346.5,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13214.0
+            ],
+            [
+              1.0,
+              14967.0
+            ],
+            [
+              2.0,
+              15357.0
+            ],
+            [
+              3.0,
+              15660.0
+            ],
+            [
+              4.0,
+              15771.0
+            ],
+            [
+              5.0,
+              15479.0
+            ],
+            [
+              6.0,
+              16020.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0158730158730158
+        },
+        "status": "full",
+        "value": 352.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1815 < 50038); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": false,
+      "task_id": "python-plugin-registry",
+      "token_cost": 139506,
+      "token_cost_cache_discounted": 44926.8,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 124,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 193.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              12912.0
+            ],
+            [
+              1.0,
+              15420.0
+            ],
+            [
+              2.0,
+              15613.0
+            ],
+            [
+              3.0,
+              16060.0
+            ],
+            [
+              4.0,
+              16171.0
+            ],
+            [
+              5.0,
+              16355.0
+            ]
+          ],
+          "slope_median_delta_ratio": 2.948186528497409,
+          "slope_median_divergence": true
+        },
+        "status": "full",
+        "value": 569.0
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1332,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 12878
+        },
+        "status": "full",
+        "value": 14210
+      },
+      "success": false,
+      "task_id": "python-plugin-registry",
+      "token_cost": 118398,
+      "token_cost_cache_discounted": 88676.4,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2
+          ],
+          "median_adjacent_delta": 128.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13625.0
+            ],
+            [
+              1.0,
+              13753.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 128.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "100k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1906 < 100031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 29439,
+      "token_cost_cache_discounted": 5247.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2
+          ],
+          "median_adjacent_delta": 135.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13625.0
+            ],
+            [
+              1.0,
+              13760.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 135.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "200k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1906 < 200031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 29448,
+      "token_cost_cache_discounted": 5140.799999999999,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2
+          ],
+          "median_adjacent_delta": 127.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13608.0
+            ],
+            [
+              1.0,
+              13735.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 127.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "20k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1906 < 20031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 29415,
+      "token_cost_cache_discounted": 6720.5999999999985,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2
+          ],
+          "median_adjacent_delta": 129.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              13608.0
+            ],
+            [
+              1.0,
+              13737.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 129.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "50k",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "reason": "model_call input_tokens is below the benchmark prompt token estimate (1906 < 50031); startup tax is not comparable"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 29389,
+      "token_cost_cache_discounted": 5427.399999999998,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2
+          ],
+          "median_adjacent_delta": 512.0,
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "points": [
+            [
+              0.0,
+              12906.0
+            ],
+            [
+              1.0,
+              13418.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 512.0
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "proxy",
+      "startup_tax": {
+        "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
+          "model_mismatch_call_indices": [
+            0
+          ],
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1332,
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 12879
+        },
+        "status": "full",
+        "value": 14211
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 27843,
+      "token_cost_cache_discounted": 13558.199999999999,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 49,
+    "by_perturbation": {
+      "100k": {
+        "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
+        "solve_rate": 0.5833333333333334,
+        "solved": 7
+      },
+      "200k": {
+        "attempted": 1,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 1,
+        "solve_rate": 1.0,
+        "solved": 1
+      },
+      "20k": {
+        "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
+        "solve_rate": 0.5833333333333334,
+        "solved": 7
+      },
+      "50k": {
+        "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
+        "solve_rate": 0.4166666666666667,
+        "solved": 5
+      },
+      "base": {
+        "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
+        "solve_rate": 0.6666666666666666,
+        "solved": 8
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 449.5459360367524,
+        "research_metric": "B",
+        "runs_full": 49,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 14540.083333333334,
+        "research_metric": "A",
+        "runs_full": 12,
+        "runs_partial": 0,
+        "runs_unsupported": 37,
+        "status": "partial",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 49,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_cache_discounted_per_oracle_solved_task": 50232.6081632653,
+        "token_cost_cache_discounted_per_solved_task": 87907.06428571428,
+        "token_cost_cache_discounted_total": 2461397.8,
+        "token_cost_per_oracle_solved_task": 121306.30612244898,
+        "token_cost_per_solved_task": 212286.0357142857,
+        "total_token_cost": 5944009,
+        "unit": "tokens per solved task"
+      }
+    },
+    "model_usage": {
+      "anthropic/claude-4.5-haiku-20251001": {
+        "calls": 49,
+        "input_tokens": 83915,
+        "output_tokens": 426
+      },
+      "deepseek/deepseek-v4-flash-20260423": {
+        "calls": 432,
+        "input_tokens": 5725293,
+        "output_tokens": 134375
+      }
+    },
+    "oracle_solve_rate": 1.0,
+    "oracle_solved": 49,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.4510501816,
+      "runs_with_dollar_cost": 49,
+      "source": "Provider/proxy-reported cost_usd from trace events; manifest pricing is empty."
+    },
+    "solve_rate": 0.5714285714285714,
+    "solved": 28
+  }
+}

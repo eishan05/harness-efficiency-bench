@@ -47,6 +47,11 @@ def main(argv: list[str] | None = None) -> int:
         default=1,
         help="Run each task/perturbation this many times for variance estimates.",
     )
+    run_task_parser.add_argument(
+        "--task-timeout-sec",
+        type=int,
+        help="Override task-manifest timeout budgets (e.g. for large injected-context runs).",
+    )
 
     run_suite_parser = subparsers.add_parser("run-suite", help="Run all task manifests with one harness.")
     run_suite_parser.add_argument("--tasks-dir", default="examples/tasks")
@@ -62,6 +67,11 @@ def main(argv: list[str] | None = None) -> int:
         type=int,
         default=1,
         help="Run each task/perturbation this many times for variance estimates.",
+    )
+    run_suite_parser.add_argument(
+        "--task-timeout-sec",
+        type=int,
+        help="Override task-manifest timeout budgets (e.g. for large injected-context runs).",
     )
     _add_task_filter_args(run_suite_parser)
 
@@ -115,6 +125,7 @@ def main(argv: list[str] | None = None) -> int:
             args.run_root,
             require_docker=args.require_docker_isolation,
             repo_cache=_repo_cache_from_args(args),
+            task_timeout_override_sec=args.task_timeout_sec,
         )
         task = TaskManifest.load(args.task)
         harness = HarnessManifest.load(args.harness)
@@ -130,6 +141,7 @@ def main(argv: list[str] | None = None) -> int:
             args.run_root,
             require_docker=args.require_docker_isolation,
             repo_cache=_repo_cache_from_args(args),
+            task_timeout_override_sec=args.task_timeout_sec,
         )
         harness = HarnessManifest.load(args.harness)
         results = []

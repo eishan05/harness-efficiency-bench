@@ -1,0 +1,1445 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 10,
+    "oracle_mode": "inline Docker SWE-bench oracle (ARM-local images)",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-10T16:31:44.690065+00:00",
+    "run_started_at": "2026-06-10T15:32:26.934714+00:00",
+    "suite": "swe-bench-lite-curated-10-contrast",
+    "tasks_dir": "examples/tasks/swe-bench-lite-curated-10"
+  },
+  "captured_at": "2026-06-10T21:53:33.971597Z",
+  "commands": null,
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/aider-docker-openrouter.yaml",
+    "docker_image": "harness-bench/aider:0.86.2",
+    "execution": "Docker-isolated aider-docker-openrouter via OpenRouter deepseek/deepseek-v4-flash over the 10 curated SWE-bench Lite tasks with generous bounds (contrast run).",
+    "id": "aider-docker-openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "django__django-11905",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "django__django-11905-e82d9a66a6",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 649,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [
+            "django__django-11905"
+          ],
+          "completed_instances": 1,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "django__django-11905"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [
+            "django__django-11905"
+          ],
+          "unresolved_instances": 1
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-11905__aider-docker-openrouter__204dffaaef/swebench_eval/harness-efficiency-bench.django__django-11905-e82d9a66a6.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 15:34:45,950 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 15:34:45,967 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:45,987 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:46,035 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:34:46,170 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:34:46,218 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:46,264 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:34:46,264 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:34:46,393 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:46,449 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:46,505 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:46,562 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:34:46,618 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 15:34:46,667 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:47,170 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5863.31 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 47956.83 examples/s]\n2026-06-10 15:34:47,603 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 15:34:47,621 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:47,666 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:34:47,712 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:34:47,761 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:34:47,821 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:34:47,870 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [01:05<?, ?it/s, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [01:05<00:00, 65.99s/it, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [01:05<00:00, 65.99s/it, \u2713=0, \u2716=1, error=0]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nNo environment images need to be built.\nRunning 1 instances...\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 1\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 1\nInstances with empty patches: 0\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.django__django-11905-e82d9a66a6.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "django__django-11905",
+      "token_cost": 24400
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "django__django-12308",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "django__django-12308-770eff08f6",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 1047,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [
+            "django__django-12308"
+          ],
+          "completed_instances": 1,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "django__django-12308"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [
+            "django__django-12308"
+          ],
+          "unresolved_instances": 1
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/django__django-12308__aider-docker-openrouter__2c018ef797/swebench_eval/harness-efficiency-bench.django__django-12308-770eff08f6.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 15:37:52,276 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 15:37:52,325 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:52,375 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:52,459 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:37:52,739 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:37:52,896 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:52,963 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:37:52,963 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:37:53,182 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:53,267 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:53,345 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:53,407 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:37:53,475 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 15:37:53,546 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:54,160 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5433.34 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 44842.88 examples/s]\n2026-06-10 15:37:54,647 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 15:37:54,673 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:54,726 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:37:54,772 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:37:54,824 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:37:54,886 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:37:54,934 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [00:19<?, ?it/s, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:19<00:00, 19.04s/it, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:19<00:00, 19.04s/it, \u2713=0, \u2716=1, error=0]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nNo environment images need to be built.\nFound 1 existing instance images. Will reuse them.\nRunning 1 instances...\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 1\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 1\nInstances with empty patches: 0\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.django__django-12308-770eff08f6.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "django__django-12308",
+      "token_cost": 21723
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "matplotlib__matplotlib-23913",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "matplotlib__matplotlib-23913-cf54725e86",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [],
+          "completed_instances": 0,
+          "empty_patch_ids": [
+            "matplotlib__matplotlib-23913"
+          ],
+          "empty_patch_instances": 1,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "matplotlib__matplotlib-23913"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [],
+          "unresolved_instances": 0
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-23913__aider-docker-openrouter__5fff8f2d31/swebench_eval/harness-efficiency-bench.matplotlib__matplotlib-23913-cf54725e86.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 15:52:10,789 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:52:10,789 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:52:10,807 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:10,823 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:10,872 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:11,022 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:11,139 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:11,216 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:11,409 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:11,459 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:11,510 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:11,563 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:11,619 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 15:52:11,676 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:12,248 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5402.00 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 45866.12 examples/s]\n2026-06-10 15:52:12,734 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 15:52:12,751 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:12,813 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:12,857 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:12,925 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:52:12,982 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:52:13,037 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n",
+        "stdout": "No instances to run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 0\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 0\nInstances with empty patches: 1\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.matplotlib__matplotlib-23913-cf54725e86.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "matplotlib__matplotlib-23913",
+      "token_cost": 159058
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "matplotlib__matplotlib-24334",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "matplotlib__matplotlib-24334-9f0983209e",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 1536,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [
+            "matplotlib__matplotlib-24334"
+          ],
+          "completed_instances": 1,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "matplotlib__matplotlib-24334"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [
+            "matplotlib__matplotlib-24334"
+          ],
+          "unresolved_instances": 1
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/matplotlib__matplotlib-24334__aider-docker-openrouter__5896356240/swebench_eval/harness-efficiency-bench.matplotlib__matplotlib-24334-9f0983209e.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 15:57:20,766 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 15:57:20,784 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:20,802 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:20,853 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:21,021 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:21,070 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:21,124 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:21,252 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:21,305 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:21,357 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:21,410 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:21,482 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 15:57:21,533 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:22,115 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 6158.64 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 52369.88 examples/s]\n2026-06-10 15:57:22,533 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:57:22,534 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 15:57:22,552 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:22,597 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:22,639 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:22,686 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 15:57:22,753 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 15:57:22,798 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [05:14<?, ?it/s, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [05:14<00:00, 314.96s/it, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [05:14<00:00, 314.96s/it, \u2713=0, \u2716=1, error=0]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nNo environment images need to be built.\nRunning 1 instances...\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 1\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 1\nInstances with empty patches: 0\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.matplotlib__matplotlib-24334-9f0983209e.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "matplotlib__matplotlib-24334",
+      "token_cost": 239170
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pydata__xarray-3364",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pydata__xarray-3364-257e2a6178",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 4675,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [],
+          "completed_instances": 0,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [
+            "pydata__xarray-3364"
+          ],
+          "error_instances": 1,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "pydata__xarray-3364"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [],
+          "unresolved_instances": 0
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-3364__aider-docker-openrouter__d564330565/swebench_eval/harness-efficiency-bench.pydata__xarray-3364-257e2a6178.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 16:16:54,713 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:16:54,728 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:54,746 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:54,792 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:16:54,792 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:16:54,933 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:16:54,981 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:55,031 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:16:55,155 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:55,207 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:55,260 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:55,311 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:16:55,367 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 16:16:55,418 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:56,057 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5510.94 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 45744.40 examples/s]\n2026-06-10 16:16:56,656 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:16:56,759 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:56,816 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:16:56,862 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:16:56,911 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:16:56,974 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:16:57,026 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\nTraceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/docker_build.py\", line 148, in build_image\n    raise docker.errors.BuildError(\ndocker.errors.BuildError: The command '/bin/sh -c /bin/bash -c \"source ~/.bashrc && /root/setup_env.sh\"' returned a non-zero code: 1\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 102, in run_threadpool\n    future.result()\n  File \"/usr/local/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/usr/local/lib/python3.12/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/docker_build.py\", line 154, in build_image\n    raise BuildImageError(image_name, str(e), logger) from e\nswebench.harness.docker_build.BuildImageError: Error building image sweb.env.py.arm64.502d8fc6ebccd881244091:latest: The command '/bin/sh -c /bin/bash -c \"source ~/.bashrc && /root/setup_env.sh\"' returned a non-zero code: 1\nCheck (logs/build_images/env/sweb.env.py.arm64.502d8fc6ebccd881244091__latest/build_image.log) for more information.\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, \u2713=0, \u2716=0, error=1]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 283.07it/s, \u2713=0, \u2716=0, error=1]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nTotal environment images to build: 1\n<class 'swebench.harness.docker_build.BuildImageError'>: Error building image sweb.env.py.arm64.502d8fc6ebccd881244091:latest: The command '/bin/sh -c /bin/bash -c \"source ~/.bashrc && /root/setup_env.sh\"' returned a non-zero code: 1\nCheck (logs/build_images/env/sweb.env.py.arm64.502d8fc6ebccd881244091__latest/build_image.log) for more information.\n1 environment images failed to build.\nRunning 1 instances...\nError building image pydata__xarray-3364: Environment image sweb.env.py.arm64.502d8fc6ebccd881244091:latest not found for pydata__xarray-3364\nCheck (logs/run_evaluation/pydata__xarray-3364-257e2a6178/harness-efficiency-bench/pydata__xarray-3364/run_instance.log) for more information.\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 0\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 0\nInstances with empty patches: 0\nInstances with errors: 1\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.pydata__xarray-3364-257e2a6178.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "pydata__xarray-3364",
+      "token_cost": 63833
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pydata__xarray-4248",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pydata__xarray-4248-72ec92ab93",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 775,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [],
+          "completed_instances": 0,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [
+            "pydata__xarray-4248"
+          ],
+          "error_instances": 1,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "pydata__xarray-4248"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [],
+          "unresolved_instances": 0
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pydata__xarray-4248__aider-docker-openrouter__8fa80fc569/swebench_eval/harness-efficiency-bench.pydata__xarray-4248-72ec92ab93.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 16:20:49,981 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:20:49,982 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:20:50,002 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:50,019 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:50,069 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:50,213 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:50,310 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:50,379 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:50,506 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:50,563 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:50,617 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:50,668 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:50,723 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 16:20:50,778 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:51,431 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 7100.62 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 48801.24 examples/s]\n2026-06-10 16:20:51,955 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:20:51,975 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:52,031 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:52,078 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:52,127 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:20:52,193 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:20:52,249 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\nTraceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/docker_build.py\", line 148, in build_image\n    raise docker.errors.BuildError(\ndocker.errors.BuildError: The command '/bin/sh -c /bin/bash -c \"source ~/.bashrc && /root/setup_env.sh\"' returned a non-zero code: 1\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/utils.py\", line 102, in run_threadpool\n    future.result()\n  File \"/usr/local/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/usr/local/lib/python3.12/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/swebench/harness/docker_build.py\", line 154, in build_image\n    raise BuildImageError(image_name, str(e), logger) from e\nswebench.harness.docker_build.BuildImageError: Error building image sweb.env.py.arm64.502d8fc6ebccd881244091:latest: The command '/bin/sh -c /bin/bash -c \"source ~/.bashrc && /root/setup_env.sh\"' returned a non-zero code: 1\nCheck (logs/build_images/env/sweb.env.py.arm64.502d8fc6ebccd881244091__latest/build_image.log) for more information.\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, \u2713=0, \u2716=0, error=1]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 179.24it/s, \u2713=0, \u2716=0, error=1]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nTotal environment images to build: 1\n<class 'swebench.harness.docker_build.BuildImageError'>: Error building image sweb.env.py.arm64.502d8fc6ebccd881244091:latest: The command '/bin/sh -c /bin/bash -c \"source ~/.bashrc && /root/setup_env.sh\"' returned a non-zero code: 1\nCheck (logs/build_images/env/sweb.env.py.arm64.502d8fc6ebccd881244091__latest/build_image.log) for more information.\n1 environment images failed to build.\nRunning 1 instances...\nError building image pydata__xarray-4248: Environment image sweb.env.py.arm64.502d8fc6ebccd881244091:latest not found for pydata__xarray-4248\nCheck (logs/run_evaluation/pydata__xarray-4248-72ec92ab93/harness-efficiency-bench/pydata__xarray-4248/run_instance.log) for more information.\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 0\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 0\nInstances with empty patches: 0\nInstances with errors: 1\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.pydata__xarray-4248-72ec92ab93.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "pydata__xarray-4248",
+      "token_cost": 27499
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "pytest-dev__pytest-5221",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "pytest-dev__pytest-5221-5743d55e1d",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 533,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [
+            "pytest-dev__pytest-5221"
+          ],
+          "completed_instances": 1,
+          "empty_patch_ids": [],
+          "empty_patch_instances": 0,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "pytest-dev__pytest-5221"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [
+            "pytest-dev__pytest-5221"
+          ],
+          "unresolved_instances": 1
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/pytest-dev__pytest-5221__aider-docker-openrouter__cf67a820d3/swebench_eval/harness-efficiency-bench.pytest-dev__pytest-5221-5743d55e1d.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 16:26:10,491 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:26:10,513 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:10,531 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:10,583 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:26:10,726 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:26:10,801 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:10,857 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:26:10,857 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:26:11,023 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:11,077 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:11,131 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:11,185 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:26:11,346 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 16:26:11,405 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:12,016 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 6000.43 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 41073.65 examples/s]\n2026-06-10 16:26:12,500 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:26:12,520 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:12,599 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:26:12,640 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:26:12,688 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:26:12,753 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:26:12,811 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n\nEvaluation:   0%|          | 0/1 [00:00<?, ?it/s, error=0, \u2713=0, \u2716=0]\nEvaluation:   0%|          | 0/1 [00:28<?, ?it/s, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:28<00:00, 28.68s/it, \u2713=0, \u2716=1, error=0]\nEvaluation: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:28<00:00, 28.68s/it, \u2713=0, \u2716=1, error=0]\n",
+        "stdout": "Base image sweb.base.py.arm64:latest already exists, skipping build.\nBase images built successfully.\nNo environment images need to be built.\nRunning 1 instances...\nAll instances run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 1\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 1\nInstances with empty patches: 0\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.pytest-dev__pytest-5221-5743d55e1d.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "pytest-dev__pytest-5221",
+      "token_cost": 177639
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "sympy__sympy-13146",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "sympy__sympy-13146-0fce09ddfe",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [],
+          "completed_instances": 0,
+          "empty_patch_ids": [
+            "sympy__sympy-13146"
+          ],
+          "empty_patch_instances": 1,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "sympy__sympy-13146"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [],
+          "unresolved_instances": 0
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-13146__aider-docker-openrouter__168026f095/swebench_eval/harness-efficiency-bench.sympy__sympy-13146-0fce09ddfe.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 16:30:55,839 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:30:55,857 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:55,875 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:55,932 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:30:55,932 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:30:56,079 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:30:56,218 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:56,271 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:30:56,403 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:56,459 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:56,509 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:56,564 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:30:56,625 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 16:30:56,680 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:57,237 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5827.89 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 42456.77 examples/s]\n2026-06-10 16:30:57,809 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:30:57,829 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:57,880 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:30:57,920 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:30:57,974 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:30:58,038 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:30:58,095 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n",
+        "stdout": "No instances to run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 0\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 0\nInstances with empty patches: 1\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.sympy__sympy-13146-0fce09ddfe.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "sympy__sympy-13146",
+      "token_cost": 7181
+    },
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "arch": "arm64",
+        "backend": "docker",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--label",
+          "harness-efficiency-bench=true",
+          "--label",
+          "harness-efficiency-bench.component=swebench-oracle",
+          "--user",
+          "1000:1000",
+          "--group-add",
+          "988",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "-e",
+          "DOCKER_HOST=unix:///var/run/docker.sock",
+          "-e",
+          "HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval",
+          "-e",
+          "HF_HOME=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/.cache/huggingface",
+          "-e",
+          "HF_DATASETS_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/.cache/huggingface/datasets",
+          "-e",
+          "HUGGINGFACE_HUB_CACHE=/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/.cache/huggingface/hub",
+          "-e",
+          "SWEBENCH_ARCH=arm64",
+          "-v",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval:/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval",
+          "-w",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval",
+          "harness-bench/swebench-oracle:4.1.0",
+          "python",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/swebench_arch_wrapper.py",
+          "--dataset_name",
+          "SWE-bench/SWE-bench_Lite",
+          "--split",
+          "test",
+          "--predictions_path",
+          "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/predictions.jsonl",
+          "--instance_ids",
+          "sympy__sympy-14308",
+          "--max_workers",
+          "1",
+          "--run_id",
+          "sympy__sympy-14308-24cb77cfd1",
+          "--cache_level",
+          "env",
+          "--timeout",
+          "1800",
+          "--namespace",
+          "none"
+        ],
+        "docker_socket": "/var/run/docker.sock",
+        "evaluator_image": "harness-bench/swebench-oracle:4.1.0",
+        "namespace": null,
+        "patch_bytes": 0,
+        "predictions_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/predictions.jsonl",
+        "report": {
+          "completed_ids": [],
+          "completed_instances": 0,
+          "empty_patch_ids": [
+            "sympy__sympy-14308"
+          ],
+          "empty_patch_instances": 1,
+          "error_ids": [],
+          "error_instances": 0,
+          "incomplete_ids": [],
+          "resolved_ids": [],
+          "resolved_instances": 0,
+          "schema_version": 2,
+          "submitted_ids": [
+            "sympy__sympy-14308"
+          ],
+          "submitted_instances": 1,
+          "total_instances": 1,
+          "unresolved_ids": [],
+          "unresolved_instances": 0
+        },
+        "report_path": "/home/eishan05/harness_efficiency_bench/runs/openrouter-deepseek-v4-flash-swe-contrast-20260610/aider-docker-openrouter/work/sympy__sympy-14308__aider-docker-openrouter__85cf8f2031/swebench_eval/harness-efficiency-bench.sympy__sympy-14308-24cb77cfd1.json",
+        "returncode": 0,
+        "stderr": "<frozen runpy>:128: RuntimeWarning: 'swebench.harness.run_evaluation' found in sys.modules after import of package 'swebench.harness', but prior to execution of 'swebench.harness.run_evaluation'; this may result in unpredictable behaviour\n2026-06-10 16:31:45,551 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\nWarning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:31:45,551 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n2026-06-10 16:31:45,571 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:45,595 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:45,648 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:45,845 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:45,896 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/revision/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:45,943 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:46,062 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:46,126 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data?recursive=true&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:46,234 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/tree/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e?recursive=false&expand=false \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:46,354 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:46,478 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/dev-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n2026-06-10 16:31:46,606 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Lite/xet-read-token/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:47,862 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/data/test-00000-of-00001.parquet \"HTTP/1.1 302 Found\"\n\nGenerating dev split:   0%|          | 0/23 [00:00<?, ? examples/s]\nGenerating dev split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 23/23 [00:00<00:00, 5589.49 examples/s]\n\nGenerating test split:   0%|          | 0/300 [00:00<?, ? examples/s]\nGenerating test split: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 300/300 [00:00<00:00, 48360.48 examples/s]\n2026-06-10 16:31:48,300 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/main/README.md \"HTTP/1.1 307 Temporary Redirect\"\n2026-06-10 16:31:48,320 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/SWE-bench/SWE-bench_Lite/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/README.md \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:48,366 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:48,414 - httpx - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/SWE-bench/SWE-bench_Lite/SWE-bench/SWE-bench_Lite.py \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:48,466 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/.huggingface.yaml \"HTTP/1.1 404 Not Found\"\n2026-06-10 16:31:48,523 - httpx - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=SWE-bench/SWE-bench_Lite \"HTTP/1.1 200 OK\"\n2026-06-10 16:31:48,570 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/69611d31007e1c6731db8bd5b5c3f2d33f5bab6e/dataset_infos.json \"HTTP/1.1 404 Not Found\"\n",
+        "stdout": "No instances to run.\nCleaning cached images...\nRemoved 0 images.\nTotal instances: 1\nInstances submitted: 1\nInstances completed: 0\nInstances incomplete: 0\nInstances resolved: 0\nInstances unresolved: 0\nInstances with empty patches: 1\nInstances with errors: 0\nUnstopped containers: 0\nUnremoved images: 0\nReport written to harness-efficiency-bench.sympy__sympy-14308-24cb77cfd1.json\n"
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "perturbation_id": "base",
+      "reason": "swe-bench instance unresolved",
+      "task_id": "sympy__sympy-14308",
+      "token_cost": 75331
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "context_thread_sizes": [
+            2,
+            1
+          ],
+          "excluded_call_indices": [
+            2
+          ],
+          "median_adjacent_delta": 5500.0,
+          "points": [
+            [
+              0.0,
+              2600.0
+            ],
+            [
+              1.0,
+              8100.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 5500.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2521,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2521
+        },
+        "status": "full",
+        "value": 2521
+      },
+      "success": false,
+      "task_id": "django__django-11905",
+      "token_cost": 24400,
+      "token_cost_cache_discounted": 24400.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "context_thread_sizes": [
+            2,
+            1
+          ],
+          "excluded_call_indices": [
+            2
+          ],
+          "median_adjacent_delta": 5300.0,
+          "points": [
+            [
+              0.0,
+              2100.0
+            ],
+            [
+              1.0,
+              7400.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 5300.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1999,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 1999
+        },
+        "status": "full",
+        "value": 1999
+      },
+      "success": false,
+      "task_id": "django__django-12308",
+      "token_cost": 21723,
+      "token_cost_cache_discounted": 21723.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "median_adjacent_delta": 151200.0,
+          "points": [
+            [
+              0.0,
+              2800.0
+            ],
+            [
+              1.0,
+              154000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 151200.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2650,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2650
+        },
+        "status": "full",
+        "value": 2650
+      },
+      "success": false,
+      "task_id": "matplotlib__matplotlib-23913",
+      "token_cost": 159058,
+      "token_cost_cache_discounted": 159058.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1,
+            2
+          ],
+          "median_adjacent_delta": 50900.0,
+          "points": [
+            [
+              0.0,
+              2200.0
+            ],
+            [
+              1.0,
+              105000.0
+            ],
+            [
+              2.0,
+              104000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 50900.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2024,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2024
+        },
+        "status": "full",
+        "value": 2024
+      },
+      "success": false,
+      "task_id": "matplotlib__matplotlib-24334",
+      "token_cost": 239170,
+      "token_cost_cache_discounted": 239170.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1,
+            2
+          ],
+          "median_adjacent_delta": 9300.0,
+          "points": [
+            [
+              0.0,
+              2400.0
+            ],
+            [
+              1.0,
+              19000.0
+            ],
+            [
+              2.0,
+              21000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 9300.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2268,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2268
+        },
+        "status": "full",
+        "value": 2268
+      },
+      "success": false,
+      "task_id": "pydata__xarray-3364",
+      "token_cost": 63833,
+      "token_cost_cache_discounted": 63833.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "context_thread_sizes": [
+            2,
+            1
+          ],
+          "excluded_call_indices": [
+            2
+          ],
+          "median_adjacent_delta": 6000.0,
+          "points": [
+            [
+              0.0,
+              2200.0
+            ],
+            [
+              1.0,
+              8200.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 6000.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 1973,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 1973
+        },
+        "status": "full",
+        "value": 1973
+      },
+      "success": false,
+      "task_id": "pydata__xarray-4248",
+      "token_cost": 27499,
+      "token_cost_cache_discounted": 27499.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "median_adjacent_delta": 7500.0,
+          "points": [
+            [
+              0.0,
+              2400.0
+            ],
+            [
+              1.0,
+              32000.0
+            ],
+            [
+              2.0,
+              34000.0
+            ],
+            [
+              3.0,
+              47000.0
+            ],
+            [
+              4.0,
+              45000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.336
+        },
+        "status": "full",
+        "value": 10020.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2346,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2346
+        },
+        "status": "full",
+        "value": 2346
+      },
+      "success": false,
+      "task_id": "pytest-dev__pytest-5221",
+      "token_cost": 177639,
+      "token_cost_cache_discounted": 177639.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "context_thread_sizes": [
+            2,
+            1
+          ],
+          "excluded_call_indices": [
+            2
+          ],
+          "median_adjacent_delta": 5100.0,
+          "points": [
+            [
+              0.0,
+              2900.0
+            ],
+            [
+              1.0,
+              8000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 5100.0
+      },
+      "oracle_message": "swe-bench instance resolved",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2603,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2603
+        },
+        "status": "full",
+        "value": 2603
+      },
+      "success": true,
+      "task_id": "pytest-dev__pytest-5227",
+      "token_cost": 22533,
+      "token_cost_cache_discounted": 22533.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "median_adjacent_delta": -1400.0,
+          "points": [
+            [
+              0.0,
+              2400.0
+            ],
+            [
+              1.0,
+              1000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": -1400.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2279,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2279
+        },
+        "status": "full",
+        "value": 2279
+      },
+      "success": false,
+      "task_id": "sympy__sympy-13146",
+      "token_cost": 7181,
+      "token_cost_cache_discounted": 7181.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "context_thread_sizes": [
+            2,
+            1
+          ],
+          "excluded_call_indices": [
+            2
+          ],
+          "median_adjacent_delta": 34700.0,
+          "points": [
+            [
+              0.0,
+              2300.0
+            ],
+            [
+              1.0,
+              37000.0
+            ]
+          ],
+          "slope_median_delta_ratio": 1.0
+        },
+        "status": "full",
+        "value": 34700.0
+      },
+      "oracle_message": "swe-bench instance unresolved",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2204,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2204
+        },
+        "status": "full",
+        "value": 2204
+      },
+      "success": false,
+      "task_id": "sympy__sympy-14308",
+      "token_cost": 75331,
+      "token_cost_cache_discounted": 75331.0,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 10,
+    "by_perturbation": {
+      "base": {
+        "attempted": 10,
+        "oracle_solve_rate": 0.1,
+        "oracle_solved": 1,
+        "solve_rate": 0.1,
+        "solved": 1
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": 27662.0,
+        "research_metric": "B",
+        "runs_full": 10,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 2286.7,
+        "research_metric": "A",
+        "runs_full": 10,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 10,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_cache_discounted_per_oracle_solved_task": 818367.0,
+        "token_cost_cache_discounted_per_solved_task": 818367.0,
+        "token_cost_cache_discounted_total": 818367.0,
+        "token_cost_per_oracle_solved_task": 818367.0,
+        "token_cost_per_solved_task": 818367.0,
+        "total_token_cost": 818367,
+        "unit": "tokens per solved task"
+      }
+    },
+    "model_usage": null,
+    "oracle_solve_rate": 0.1,
+    "oracle_solved": 1,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 0,
+      "source": "No manifest pricing configured; dollars remain zero unless the provider/proxy reports cost_usd."
+    },
+    "solve_rate": 0.1,
+    "solved": 1
+  }
+}
