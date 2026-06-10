@@ -36,6 +36,20 @@ Each batch runs the 12 score-facing non-SWE tasks (`--include-tag score-facing`)
 
 The model itself does not degrade at these context sizes (aider passes the full payload in one shot and stays perfect). Claude Code transmits faithfully and collapses at 100k: runs end after 2-3 calls with no edits — its final call sees ~33k input by its own accounting, consistent with compaction/truncation losing the task instruction buried after the payload. Codex transmits faithfully and stays robust but pays payload × turns (11x its base cost at 100k). Kilo's flat curve and flat cost are explained by it truncating the rendered prompt before sending — robustness by silently discarding user-provided context. Kilo's strict counts (5-8/12 per level) reflect 900s wall-cap exits, evenly spread across levels; its oracle solve is 49/49. The single 200k probe (`toy-write-file`) fails for the faithful harnesses at the model's 200k window, as expected.
 
+### 100k transmission-fidelity probe (2026-06-10)
+
+All 12 configurations were probed at the 100k injected-context level (the four contrast harnesses via their D-curve runs; the rest via three-task probes under `runs/openrouter-deepseek-v4-flash-fidelity-100k-20260610/`, identical harness config, 900s timeout). Fidelity = max model-call input tokens / rendered prompt tokens (`scripts/fidelity_100k_report.py`):
+
+| Behavior | Configs (median fidelity) |
+|---|---|
+| Faithful, robust | aider (1.03), aider-architect (1.01), codex (1.11), goose (1.06), hermes-agent (1.05), nanobot (1.10), qwen-code (1.23) |
+| Faithful, collapses | claude-code (1.05; 2/12 solved at 100k) |
+| Silent truncation | kilo (0.17), opencode (0.10) — both solve anyway, having dropped ~85-90% of the input |
+| Loud refusal | openclaw (0.00) — window-overflow precheck, zero model calls, clear error, exit 0 |
+| Hard crash | kimi-code (0.00) — unhandled `compaction.unable` Node exception, zero tokens |
+
+Notably the two silent truncators are the same two CLIs that route helper calls to Claude Haiku. None of this is visible from agent output alone; it requires network-level token counting.
+
 ### Cross-model rank agreement
 
 Spearman rank correlation between the two batches across the 12 configurations:

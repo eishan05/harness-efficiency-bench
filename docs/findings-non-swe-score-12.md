@@ -87,7 +87,9 @@ The third surprise was Kilo's curve: perfectly flat, and suspiciously cheap. It 
 
 Codex was the only loop agent that was both honest and sturdy: full payload, every call, 12/12 at every level. The price of that honesty is the boot-tax math again — it re-sends the garbage on every turn, so 100k of junk turned an 82k task into a 909k one. Eleven times the cost, paid entirely for noise it was too polite to drop.
 
-So: keep your prompts clean. The model can handle the junk; your agent's bill and your agent's attention often can't. And know which of the four behaviors your agent has, because "it still worked" can mean it coped, or it can mean it never read what you sent.
+After seeing Kilo's trick, I probed all twelve agents at the 100k level and checked, at the network layer, how much of the prompt each one actually transmitted. Seven of twelve passed it through faithfully. Two (Kilo and Opencode) silently dropped 85-90% of it and "solved" the tasks anyway. One (OpenClaw) checked the size up front, refused to run, and told me to use a larger-context model — annoying, but honest. One (Kimi Code) just crashed with an unhandled exception. And Claude Code transmitted everything and lost the plot. Five different behaviors for the same oversized input, and not one of them is visible from the agent's output alone.
+
+So: keep your prompts clean. The model can handle the junk; your agent's bill and your agent's attention often can't. And know which of these behaviors your agent has, because "it still worked" can mean it coped, or it can mean it never read what you sent.
 
 ## What I'd actually do with this
 
