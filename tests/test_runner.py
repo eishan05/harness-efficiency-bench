@@ -222,6 +222,62 @@ class RunnerTest(unittest.TestCase):
         self.assertEqual(summary["oracle_solved"], 1)
         self.assertEqual(summary["token_cost_per_oracle_solved_task"], 12.0)
 
+    def test_summary_reports_cache_discounted_token_cost(self):
+        summary = summarize_results(
+            [
+                {
+                    "success": True,
+                    "harness_id": "a",
+                    "metrics": {
+                        "usage": {
+                            "input_tokens": 1000,
+                            "cached_input_tokens": 600,
+                            "output_tokens": 100,
+                        }
+                    },
+                }
+            ]
+        )
+
+        # 600 cached tokens weighted at 0.1: 1100 - 600 * 0.9 = 560.
+        self.assertAlmostEqual(summary["token_cost_cache_discounted"], 560.0)
+        self.assertAlmostEqual(summary["token_cost_cache_discounted_per_solved_task"], 560.0)
+        self.assertAlmostEqual(summary["token_cost_cache_discounted_per_oracle_solved_task"], 560.0)
+        bucket = summary["by_harness"]["a"]
+        self.assertAlmostEqual(bucket["token_cost_cache_discounted"], 560.0)
+        self.assertAlmostEqual(bucket["token_cost_cache_discounted_per_solved_task"], 560.0)
+        self.assertAlmostEqual(bucket["token_cost_cache_discounted_per_oracle_solved_task"], 560.0)
+
+    def test_summary_reports_per_run_spread(self):
+        summary = summarize_results(
+            [
+                {
+                    "success": True,
+                    "harness_id": "a",
+                    "metrics": {
+                        "usage": {"input_tokens": 100, "output_tokens": 0},
+                        "startup_tax": {"status": "full", "value": 50.0},
+                    },
+                },
+                {
+                    "success": True,
+                    "harness_id": "a",
+                    "metrics": {
+                        "usage": {"input_tokens": 300, "output_tokens": 0},
+                        "startup_tax": {"status": "full", "value": 70.0},
+                    },
+                },
+            ]
+        )
+
+        bucket = summary["by_harness"]["a"]
+        self.assertEqual(bucket["token_cost_per_run"], {"min": 100.0, "median": 200.0, "max": 300.0})
+        startup = bucket["metrics"]["startup_tax"]
+        self.assertEqual(startup["min"], 50.0)
+        self.assertEqual(startup["median"], 60.0)
+        self.assertEqual(startup["max"], 70.0)
+        self.assertEqual(startup["avg"], 60.0)
+
     def test_summary_token_solve_efficiency_works_when_dollar_cost_missing(self):
         summary = summarize_results(
             [

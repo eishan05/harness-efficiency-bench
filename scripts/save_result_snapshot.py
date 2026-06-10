@@ -18,7 +18,7 @@ if str(SRC) not in sys.path:
 
 from harness_efficiency_bench.manifests import HarnessManifest  # noqa: E402
 from harness_efficiency_bench.manifests import TaskManifest  # noqa: E402
-from harness_efficiency_bench.metrics import compute_run_metrics  # noqa: E402
+from harness_efficiency_bench.metrics import compute_run_metrics, usage_token_cost_cache_discounted  # noqa: E402
 from harness_efficiency_bench.runner import summarize_results  # noqa: E402
 from harness_efficiency_bench.store import ResultStore  # noqa: E402
 from harness_efficiency_bench.tokenization import count_tokens, make_token_payload  # noqa: E402
@@ -338,6 +338,13 @@ def _snapshot_summary(
                 "total_token_cost": summary["token_cost"],
                 "token_cost_per_solved_task": summary["token_cost_per_solved_task"],
                 "token_cost_per_oracle_solved_task": summary["token_cost_per_oracle_solved_task"],
+                "token_cost_cache_discounted_total": summary["token_cost_cache_discounted"],
+                "token_cost_cache_discounted_per_solved_task": summary[
+                    "token_cost_cache_discounted_per_solved_task"
+                ],
+                "token_cost_cache_discounted_per_oracle_solved_task": summary[
+                    "token_cost_cache_discounted_per_oracle_solved_task"
+                ],
                 "runs_with_token_cost": coverage["solve_efficiency"]["runs_with_token_cost"],
                 "runs_without_token_cost": (
                     coverage["solve_efficiency"]["runs_total"]
@@ -350,8 +357,23 @@ def _snapshot_summary(
             "cost_usd_total_for_usage_runs": summary["cost_usd"],
             "runs_with_dollar_cost": harness_bucket["runs_with_dollar_cost"],
         },
+        "model_usage": _aggregate_model_usage(results) or None,
         "by_perturbation": summary["by_perturbation"],
     }
+
+
+def _aggregate_model_usage(results: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
+    """Tokens per billed model across the whole batch. Discloses helper-model
+    leakage (for example Opencode/Kilo title generation billed to Claude
+    Haiku) inside a nominally single-model experimental control."""
+    totals: dict[str, dict[str, int]] = {}
+    for item in results:
+        by_model = item.get("metrics", {}).get("usage", {}).get("by_model") or {}
+        for model, bucket in by_model.items():
+            model_totals = totals.setdefault(model, {"calls": 0, "input_tokens": 0, "output_tokens": 0})
+            for key in model_totals:
+                model_totals[key] += int(bucket.get(key, 0) or 0)
+    return totals
 
 
 def _pricing_source(summary: dict[str, Any], harness_bucket: dict[str, Any]) -> str:
@@ -406,6 +428,7 @@ def _per_run(item: dict[str, Any]) -> dict[str, Any]:
         "startup_tax": metrics.get("startup_tax"),
         "context_growth_rate": metrics.get("context_growth_rate"),
         "token_cost": int(usage.get("token_cost", 0) or 0),
+        "token_cost_cache_discounted": usage_token_cost_cache_discounted(usage),
         "selected_trace_source": item.get("metadata", {}).get("selected_trace_source"),
         "trace_quality": item.get("metadata", {}).get("trace_quality"),
     }

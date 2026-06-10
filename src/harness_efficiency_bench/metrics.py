@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import statistics
 from dataclasses import dataclass
 from typing import Any
 
@@ -63,6 +64,40 @@ def _auxiliary_preflight_call_indices(calls: list[dict[str, Any]], positions: se
     return [int(calls[position].get("call_index", position)) for position in sorted(positions)]
 
 
+def _call_model(call: dict[str, Any]) -> str | None:
+    metadata = call.get("metadata")
+    if isinstance(metadata, dict):
+        model = metadata.get("model")
+        if model:
+            return str(model)
+    return None
+
+
+def _model_mismatch_positions(calls: list[dict[str, Any]]) -> set[int]:
+    """Positions of calls billed to a different model than the run's dominant
+    model (the model carrying the most input tokens). Some CLIs route helper
+    requests such as title generation to a smaller model (Opencode and Kilo
+    bill theirs to Claude Haiku); those calls are not part of the task
+    conversation, so they are excluded from task-first startup tax and from
+    the context-growth fit. They still count toward solve-efficiency totals.
+    Note this assumes a single-model task conversation: a harness that
+    deliberately splits the task across models would need per-model fits."""
+    totals: dict[str, int] = {}
+    for call in calls:
+        model = _call_model(call)
+        if model is None:
+            continue
+        totals[model] = totals.get(model, 0) + int(call.get("input_tokens", 0) or 0)
+    if len(totals) < 2:
+        return set()
+    dominant = max(totals, key=lambda model: (totals[model], model))
+    return {
+        position
+        for position, call in enumerate(calls)
+        if _call_model(call) is not None and _call_model(call) != dominant
+    }
+
+
 # Conversation context grows roughly monotonically within one agent thread.
 # Some CLIs interleave a separate sub-conversation mid-run (Kilo and Opencode
 # both do), which shows up as the per-call input dropping sharply and later
@@ -113,7 +148,9 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
     provider_first = calls[0]
     task_candidates = [call for call in calls if not _is_preflight_model_call(call)]
     auxiliary_positions = _auxiliary_preflight_positions(task_candidates, user_prompt_tokens)
-    task_calls = [call for position, call in enumerate(task_candidates) if position not in auxiliary_positions]
+    mismatch_positions = _model_mismatch_positions(task_candidates)
+    excluded_positions = auxiliary_positions | mismatch_positions
+    task_calls = [call for position, call in enumerate(task_candidates) if position not in excluded_positions]
     provider_tax = _call_startup_tax(provider_first, user_prompt_tokens)
     if provider_tax is None:
         return MetricValue(
@@ -128,6 +165,10 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
     if auxiliary_positions:
         details["auxiliary_preflight_call_indices"] = _auxiliary_preflight_call_indices(
             task_candidates, auxiliary_positions
+        )
+    if mismatch_positions:
+        details["model_mismatch_call_indices"] = _auxiliary_preflight_call_indices(
+            task_candidates, mismatch_positions
         )
     if not task_calls:
         return MetricValue(
@@ -159,9 +200,11 @@ def context_growth_rate(events: list[TraceEvent], user_prompt_tokens: int = 0) -
     calls = _model_calls(events)
     candidates = [call for call in _per_call_model_calls(calls) if not _is_preflight_model_call(call)]
     auxiliary_positions = _auxiliary_preflight_positions(candidates, user_prompt_tokens)
+    mismatch_positions = _model_mismatch_positions(candidates)
+    excluded_positions = auxiliary_positions | mismatch_positions
     measured: list[tuple[int, float]] = []
     for position, call in enumerate(candidates):
-        if position in auxiliary_positions:
+        if position in excluded_positions:
             continue
         input_tokens = call.get("input_tokens")
         if input_tokens is not None:
@@ -190,6 +233,10 @@ def context_growth_rate(events: list[TraceEvent], user_prompt_tokens: int = 0) -
         details["auxiliary_preflight_call_indices"] = _auxiliary_preflight_call_indices(
             candidates, auxiliary_positions
         )
+    if mismatch_positions:
+        details["model_mismatch_call_indices"] = _auxiliary_preflight_call_indices(
+            candidates, mismatch_positions
+        )
     xs = [point[0] for point in points]
     ys = [point[1] for point in points]
     x_mean = sum(xs) / len(xs)
@@ -198,10 +245,38 @@ def context_growth_rate(events: list[TraceEvent], user_prompt_tokens: int = 0) -
     if denom == 0:
         return MetricValue(0.0, "full")
     slope = sum((x - x_mean) * (y - y_mean) for x, y in points) / denom
+    deltas = [ys[index + 1] - ys[index] for index in range(len(ys) - 1)]
+    if deltas:
+        median_delta = statistics.median(deltas)
+        details["median_adjacent_delta"] = median_delta
+        if slope * median_delta > 0:
+            details["slope_median_delta_ratio"] = max(abs(slope), abs(median_delta)) / min(
+                abs(slope), abs(median_delta)
+            )
+        if _slope_diverges_from_median_delta(slope, median_delta):
+            details["slope_median_divergence"] = True
     return MetricValue(slope, "full", details)
 
 
-def total_usage(events: list[TraceEvent]) -> dict[str, int | float | bool]:
+# The fitted slope and the median adjacent per-call delta should roughly agree
+# on a monotone thread. A divergence beyond this ratio means a few extreme
+# points dominate the fit — historically the signature of an aggregate summary
+# event or interleaved thread that slipped past structural detection — so the
+# run is flagged for inspection. Small-magnitude disagreements are noise.
+CONTEXT_GROWTH_DIVERGENCE_RATIO = 2.0
+CONTEXT_GROWTH_DIVERGENCE_MIN_TOKENS = 64.0
+
+
+def _slope_diverges_from_median_delta(slope: float, median_delta: float) -> bool:
+    magnitude = max(abs(slope), abs(median_delta))
+    if magnitude < CONTEXT_GROWTH_DIVERGENCE_MIN_TOKENS:
+        return False
+    if slope * median_delta <= 0:
+        return True
+    return magnitude / min(abs(slope), abs(median_delta)) > CONTEXT_GROWTH_DIVERGENCE_RATIO
+
+
+def total_usage(events: list[TraceEvent]) -> dict[str, Any]:
     usage = {
         "input_tokens": 0,
         "cached_input_tokens": 0,
@@ -228,6 +303,7 @@ def total_usage(events: list[TraceEvent]) -> dict[str, int | float | bool]:
     # so they only stand in for totals when no per-call usage exists.
     calls = per_call or all_calls
     cost_available = bool(calls)
+    by_model: dict[str, dict[str, int]] = {}
     for call in calls:
         usage["input_tokens"] += int(call.get("input_tokens", 0) or 0)
         usage["cached_input_tokens"] += int(call.get("cached_input_tokens", 0) or 0)
@@ -240,12 +316,21 @@ def total_usage(events: list[TraceEvent]) -> dict[str, int | float | bool]:
             cost_available = False
         else:
             usage["cost_usd"] += float(call.get("cost_usd", 0.0) or 0.0)
+        model = _call_model(call)
+        if model is not None:
+            model_bucket = by_model.setdefault(model, {"calls": 0, "input_tokens": 0, "output_tokens": 0})
+            model_bucket["calls"] += 1
+            model_bucket["input_tokens"] += int(call.get("input_tokens", 0) or 0)
+            model_bucket["output_tokens"] += int(call.get("output_tokens", 0) or 0)
     if not cost_available and per_call and summary_calls:
         if all(call.get("cost_usd") is not None for call in summary_calls):
             usage["cost_usd"] = sum(float(call.get("cost_usd") or 0.0) for call in summary_calls)
             cost_available = True
     usage["token_cost"] = usage_token_cost(usage)
+    usage["token_cost_cache_discounted"] = usage_token_cost_cache_discounted(usage)
     usage["cost_available"] = cost_available
+    if by_model:
+        usage["by_model"] = by_model
     return usage
 
 
@@ -260,6 +345,23 @@ def usage_token_cost(usage: dict[str, Any]) -> int:
         + int(usage.get("output_tokens", 0) or 0)
         + max(reasoning_tokens - nested_reasoning_tokens, 0)
     )
+
+
+# Cache reads are billed at roughly a tenth of the uncached input price by
+# most providers, so the cache-discounted token cost weights cached input
+# tokens at 0.1 instead of dropping them entirely.
+CACHED_INPUT_TOKEN_WEIGHT = 0.1
+
+
+def usage_token_cost_cache_discounted(usage: dict[str, Any]) -> float:
+    # cached_input_tokens is a subset of input_tokens (the OpenAI/OpenRouter
+    # convention, matching pricing.estimate_call_cost), so the discount
+    # subtracts the non-billed share of the cached portion.
+    cached_tokens = min(
+        int(usage.get("cached_input_tokens", 0) or 0),
+        int(usage.get("input_tokens", 0) or 0),
+    )
+    return usage_token_cost(usage) - cached_tokens * (1 - CACHED_INPUT_TOKEN_WEIGHT)
 
 
 def _is_aggregate_model_call(call: dict[str, Any]) -> bool:

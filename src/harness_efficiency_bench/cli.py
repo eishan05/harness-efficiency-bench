@@ -41,6 +41,12 @@ def main(argv: list[str] | None = None) -> int:
     run_task_parser.add_argument("--require-docker-isolation", action="store_true")
     run_task_parser.add_argument("--repo-cache", help=f"Git mirror cache path. Defaults to {DEFAULT_REPO_CACHE}.")
     run_task_parser.add_argument("--no-repo-cache", action="store_true", help="Disable Git mirror caching.")
+    run_task_parser.add_argument(
+        "--repeats",
+        type=int,
+        default=1,
+        help="Run each task/perturbation this many times for variance estimates.",
+    )
 
     run_suite_parser = subparsers.add_parser("run-suite", help="Run all task manifests with one harness.")
     run_suite_parser.add_argument("--tasks-dir", default="examples/tasks")
@@ -51,6 +57,12 @@ def main(argv: list[str] | None = None) -> int:
     run_suite_parser.add_argument("--require-docker-isolation", action="store_true")
     run_suite_parser.add_argument("--repo-cache", help=f"Git mirror cache path. Defaults to {DEFAULT_REPO_CACHE}.")
     run_suite_parser.add_argument("--no-repo-cache", action="store_true", help="Disable Git mirror caching.")
+    run_suite_parser.add_argument(
+        "--repeats",
+        type=int,
+        default=1,
+        help="Run each task/perturbation this many times for variance estimates.",
+    )
     _add_task_filter_args(run_suite_parser)
 
     analyze_parser = subparsers.add_parser("analyze", help="Print raw aggregate JSON.")
@@ -255,6 +267,7 @@ def _run_task_with_perturbations(
         perturbation_ids: list[str | None] = [None] + [item.id for item in task.perturbations]
     else:
         perturbation_ids = [args.perturbation]
+    repeats = max(int(getattr(args, "repeats", 1) or 1), 1)
     return [
         runner.run_task(
             task,
@@ -263,6 +276,7 @@ def _run_task_with_perturbations(
             keep_workspace=not args.delete_workspace,
         )
         for perturbation_id in perturbation_ids
+        for _ in range(repeats)
     ]
 
 
@@ -278,18 +292,23 @@ def _markdown_report(summary: dict[str, Any]) -> str:
         f"- Token cost: {summary['token_cost']}",
         f"- Token cost per solved task (strict): {summary['token_cost_per_solved_task']}",
         f"- Token cost per solved task (oracle): {summary['token_cost_per_oracle_solved_task']}",
+        f"- Token cost (cache-discounted): {summary['token_cost_cache_discounted']:.1f}",
+        f"- Cache-discounted token cost per solved task (strict): {summary['token_cost_cache_discounted_per_solved_task']}",
+        f"- Cache-discounted token cost per solved task (oracle): {summary['token_cost_cache_discounted_per_oracle_solved_task']}",
         f"- Cost USD: {summary['cost_usd']:.6f}",
         f"- Dollar cost per solved task (strict): {summary['dollar_cost_per_solved_task']}",
         f"- Dollar cost per solved task (oracle): {summary['dollar_cost_per_oracle_solved_task']}",
         "",
-        "| Harness | Attempted | Solved | Oracle Solved | Solve Rate | Token Cost | Tokens / Solved | Tokens / Oracle-Solved | Cost USD | USD / Solved | Startup Tax | Growth |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Harness | Attempted | Solved | Oracle Solved | Solve Rate | Token Cost | Tokens / Solved | Tokens / Oracle-Solved | Cache-Disc. Tokens / Oracle-Solved | Cost USD | USD / Solved | Startup Tax | Growth |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for harness_id, bucket in sorted(summary["by_harness"].items()):
         token_cost_per = bucket["token_cost_per_solved_task"]
         token_cost_per_text = "" if token_cost_per is None else f"{token_cost_per:.3f}"
         oracle_token_cost_per = bucket["token_cost_per_oracle_solved_task"]
         oracle_token_cost_per_text = "" if oracle_token_cost_per is None else f"{oracle_token_cost_per:.3f}"
+        discounted_oracle_per = bucket["token_cost_cache_discounted_per_oracle_solved_task"]
+        discounted_oracle_per_text = "" if discounted_oracle_per is None else f"{discounted_oracle_per:.3f}"
         dollar_cost_per = bucket["dollar_cost_per_solved_task"]
         dollar_cost_per_text = "" if dollar_cost_per is None else f"{dollar_cost_per:.6f}"
         metrics = bucket.get("metrics", {})
@@ -298,9 +317,25 @@ def _markdown_report(summary: dict[str, Any]) -> str:
         lines.append(
             f"| {harness_id} | {bucket['attempted']} | {bucket['solved']} | {bucket['oracle_solved']} | "
             f"{bucket['solve_rate']:.3f} | {bucket['token_cost']} | {token_cost_per_text} | "
-            f"{oracle_token_cost_per_text} | "
+            f"{oracle_token_cost_per_text} | {discounted_oracle_per_text} | "
             f"{bucket['cost_usd']:.6f} | {dollar_cost_per_text} | "
             f"{startup} | {growth} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Metric Spread (min / median / max across runs)",
+            "",
+            "| Harness | Startup Tax | Growth | Token Cost per Run |",
+            "|---|---|---|---|",
+        ]
+    )
+    for harness_id, bucket in sorted(summary["by_harness"].items()):
+        metrics = bucket.get("metrics", {})
+        lines.append(
+            f"| {harness_id} | {_spread_text(metrics.get('startup_tax', {}))} | "
+            f"{_spread_text(metrics.get('context_growth_rate', {}))} | "
+            f"{_spread_text(bucket.get('token_cost_per_run'))} |"
         )
     if summary.get("by_perturbation"):
         lines.extend(
@@ -337,6 +372,12 @@ def _optional_number(value: Any) -> str:
     if value is None:
         return ""
     return f"{float(value):.6f}"
+
+
+def _spread_text(stats: dict[str, Any] | None) -> str:
+    if not stats or stats.get("min") is None:
+        return ""
+    return f"{float(stats['min']):.1f} / {float(stats['median']):.1f} / {float(stats['max']):.1f}"
 
 
 def _export_predictions(results: list[dict[str, Any]], out_path: Path, model_name: str | None) -> None:

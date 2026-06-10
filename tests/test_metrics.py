@@ -1,6 +1,10 @@
 import unittest
 
-from harness_efficiency_bench.metrics import compute_run_metrics, research_metric_coverage
+from harness_efficiency_bench.metrics import (
+    compute_run_metrics,
+    research_metric_coverage,
+    usage_token_cost_cache_discounted,
+)
 from harness_efficiency_bench.tokenization import count_tokens
 from harness_efficiency_bench.tracing import model_call_event, tool_result_event
 
@@ -285,6 +289,106 @@ class MetricsTest(unittest.TestCase):
 
         self.assertEqual(metrics["usage"]["input_tokens"], 500)
         self.assertEqual(metrics["usage"]["token_cost"], 550)
+
+    def test_model_mismatch_calls_are_excluded_from_task_first_and_growth(self):
+        # Opencode/Kilo shape: helper requests (title generation) are billed
+        # to a different model than the task conversation. The first helper is
+        # large enough here to evade the size-based preflight heuristic, and a
+        # second helper appears mid-run where the size heuristic never looks.
+        prompt = "fix the bug"
+        helper = {"model": "anthropic/claude-4.5-haiku"}
+        task_model = {"model": "nvidia/nemotron"}
+        events = [
+            model_call_event(call_index=0, input_tokens=3000, output_tokens=10, metadata=dict(helper)),
+            model_call_event(call_index=1, input_tokens=8000, output_tokens=50, metadata=dict(task_model)),
+            model_call_event(call_index=2, input_tokens=8500, output_tokens=50, metadata=dict(task_model)),
+            model_call_event(call_index=3, input_tokens=700, output_tokens=10, metadata=dict(helper)),
+            model_call_event(call_index=4, input_tokens=9000, output_tokens=50, metadata=dict(task_model)),
+        ]
+
+        metrics = compute_run_metrics(events, count_tokens(prompt))
+
+        startup = metrics["startup_tax"]
+        self.assertEqual(startup["details"]["model_mismatch_call_indices"], [0, 3])
+        self.assertEqual(startup["details"]["task_first_call_index"], 1)
+        growth = metrics["context_growth_rate"]
+        self.assertEqual(growth["details"]["model_mismatch_call_indices"], [0, 3])
+        self.assertEqual(growth["details"]["call_indices"], [1, 2, 4])
+        self.assertAlmostEqual(growth["value"], 500.0)
+        # Helper calls still count toward solve-efficiency totals.
+        self.assertEqual(metrics["usage"]["input_tokens"], 3000 + 8000 + 8500 + 700 + 9000)
+
+    def test_single_model_runs_have_no_mismatch_exclusions(self):
+        events = [
+            model_call_event(call_index=0, input_tokens=1000, output_tokens=10, metadata={"model": "m"}),
+            model_call_event(call_index=1, input_tokens=2000, output_tokens=10, metadata={"model": "m"}),
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        self.assertNotIn("model_mismatch_call_indices", metrics["startup_tax"]["details"])
+        self.assertNotIn("model_mismatch_call_indices", metrics["context_growth_rate"]["details"])
+
+    def test_cache_discounted_token_cost_weights_cache_reads(self):
+        usage = {"input_tokens": 1000, "cached_input_tokens": 600, "output_tokens": 100}
+
+        # 600 cached input tokens billed at 0.1 weight: 1100 - 600 * 0.9.
+        self.assertAlmostEqual(usage_token_cost_cache_discounted(usage), 560.0)
+
+    def test_total_usage_includes_cache_discounted_cost_and_by_model(self):
+        events = [
+            model_call_event(
+                call_index=0,
+                input_tokens=1000,
+                cached_input_tokens=400,
+                output_tokens=20,
+                metadata={"model": "a"},
+            ),
+            model_call_event(
+                call_index=1,
+                input_tokens=2000,
+                cached_input_tokens=1500,
+                output_tokens=30,
+                metadata={"model": "b"},
+            ),
+        ]
+
+        usage = compute_run_metrics(events, user_prompt_tokens=0)["usage"]
+
+        self.assertEqual(usage["token_cost"], 3050)
+        self.assertAlmostEqual(usage["token_cost_cache_discounted"], 3050 - 1900 * 0.9)
+        self.assertEqual(
+            usage["by_model"],
+            {
+                "a": {"calls": 1, "input_tokens": 1000, "output_tokens": 20},
+                "b": {"calls": 1, "input_tokens": 2000, "output_tokens": 30},
+            },
+        )
+
+    def test_growth_flags_slope_median_divergence(self):
+        # A single extreme jump dominates the least-squares slope while the
+        # median adjacent delta stays small — the signature of an aggregate
+        # point or thread that slipped past structural detection.
+        events = [
+            model_call_event(call_index=index, input_tokens=tokens, output_tokens=1)
+            for index, tokens in enumerate([1000, 1010, 1020, 1030, 9000])
+        ]
+
+        growth = compute_run_metrics(events, user_prompt_tokens=0)["context_growth_rate"]
+
+        self.assertEqual(growth["details"]["median_adjacent_delta"], 10.0)
+        self.assertTrue(growth["details"]["slope_median_divergence"])
+
+    def test_growth_does_not_flag_linear_thread(self):
+        events = [
+            model_call_event(call_index=index, input_tokens=1000 + 500 * index, output_tokens=1)
+            for index in range(4)
+        ]
+
+        growth = compute_run_metrics(events, user_prompt_tokens=0)["context_growth_rate"]
+
+        self.assertEqual(growth["details"]["median_adjacent_delta"], 500.0)
+        self.assertNotIn("slope_median_divergence", growth["details"])
 
     def test_research_coverage_tracks_research_metrics_only(self):
         coverage = research_metric_coverage(

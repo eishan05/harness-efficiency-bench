@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import shutil
+import statistics
 import subprocess
 import uuid
 from pathlib import Path
@@ -13,7 +14,12 @@ from .adapters.base import AdapterRunContext
 from .git_utils import collect_git_diff
 from .isolation import describe_isolation, require_docker_isolation
 from .manifests import HarnessManifest, TaskManifest
-from .metrics import compute_run_metrics, research_metric_coverage, usage_token_cost
+from .metrics import (
+    compute_run_metrics,
+    research_metric_coverage,
+    usage_token_cost,
+    usage_token_cost_cache_discounted,
+)
 from .oracles import grade_oracle
 from .pricing import apply_pricing
 from .store import ResultStore
@@ -256,6 +262,7 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     oracle_solved = sum(1 for item in results if _result_oracle_success(item))
     total_cost = sum(float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0) for item in results)
     total_token_cost = sum(_result_token_cost(item) for item in results)
+    total_token_cost_cache_discounted = sum(_result_token_cost_cache_discounted(item) for item in results)
     all_dollar_costs_available = bool(results) and all(_result_dollar_cost_available(item) for item in results)
     by_harness: dict[str, dict[str, Any]] = {}
     for item in results:
@@ -267,8 +274,10 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
                 "solved": 0,
                 "oracle_solved": 0,
                 "token_cost": 0,
+                "token_cost_cache_discounted": 0.0,
                 "cost_usd": 0.0,
                 "runs_with_dollar_cost": 0,
+                "run_token_costs": [],
                 "metric_values": {
                     "startup_tax": [],
                     "context_growth_rate": [],
@@ -279,6 +288,8 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         bucket["solved"] += 1 if item.get("success") else 0
         bucket["oracle_solved"] += 1 if _result_oracle_success(item) else 0
         bucket["token_cost"] += _result_token_cost(item)
+        bucket["token_cost_cache_discounted"] += _result_token_cost_cache_discounted(item)
+        bucket["run_token_costs"].append(_result_token_cost(item))
         bucket["cost_usd"] += float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0)
         bucket["runs_with_dollar_cost"] += 1 if _result_dollar_cost_available(item) else 0
         for metric_name in bucket["metric_values"]:
@@ -294,6 +305,13 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         bucket["token_cost_per_oracle_solved_task"] = (
             bucket["token_cost"] / bucket["oracle_solved"] if bucket["oracle_solved"] else None
         )
+        bucket["token_cost_cache_discounted_per_solved_task"] = (
+            bucket["token_cost_cache_discounted"] / bucket["solved"] if bucket["solved"] else None
+        )
+        bucket["token_cost_cache_discounted_per_oracle_solved_task"] = (
+            bucket["token_cost_cache_discounted"] / bucket["oracle_solved"] if bucket["oracle_solved"] else None
+        )
+        bucket["token_cost_per_run"] = _spread_stats(bucket.pop("run_token_costs"))
         bucket["dollar_cost_per_solved_task"] = (
             bucket["cost_usd"] / bucket["solved"]
             if bucket["solved"] and bucket["runs_with_dollar_cost"] == bucket["attempted"]
@@ -308,6 +326,7 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
             name: {
                 "avg": (sum(values) / len(values)) if values else None,
                 "count": len(values),
+                **(_spread_stats(values) or {}),
             }
             for name, values in bucket.pop("metric_values").items()
         }
@@ -320,6 +339,13 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "token_cost": total_token_cost,
         "token_cost_per_solved_task": total_token_cost / solved if solved else None,
         "token_cost_per_oracle_solved_task": total_token_cost / oracle_solved if oracle_solved else None,
+        "token_cost_cache_discounted": total_token_cost_cache_discounted,
+        "token_cost_cache_discounted_per_solved_task": (
+            total_token_cost_cache_discounted / solved if solved else None
+        ),
+        "token_cost_cache_discounted_per_oracle_solved_task": (
+            total_token_cost_cache_discounted / oracle_solved if oracle_solved else None
+        ),
         "cost_usd": total_cost,
         "dollar_cost_per_solved_task": (
             total_cost / solved if solved and all_dollar_costs_available else None
@@ -336,6 +362,23 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
 def _result_token_cost(item: dict[str, Any]) -> int:
     usage = item.get("metrics", {}).get("usage", {})
     return usage_token_cost(usage)
+
+
+def _result_token_cost_cache_discounted(item: dict[str, Any]) -> float:
+    usage = item.get("metrics", {}).get("usage", {})
+    return usage_token_cost_cache_discounted(usage)
+
+
+def _spread_stats(values: list[float] | list[int]) -> dict[str, float] | None:
+    # Min/median/max across runs; with --repeats this is the variance signal
+    # that single-run averages cannot provide.
+    if not values:
+        return None
+    return {
+        "min": float(min(values)),
+        "median": float(statistics.median(values)),
+        "max": float(max(values)),
+    }
 
 
 def _result_oracle_success(item: dict[str, Any]) -> bool:

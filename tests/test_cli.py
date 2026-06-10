@@ -87,6 +87,36 @@ class CliTest(unittest.TestCase):
         self.assertEqual(payload["summary"]["attempted"], 1)
         self.assertEqual(payload["results"][0]["task_id"], "score")
 
+    def test_run_suite_repeats_each_task(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tasks_dir = root / "tasks"
+            tasks_dir.mkdir()
+            write_task(tasks_dir, "score", ["score-facing"])
+
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                exit_code = main(
+                    [
+                        "--run-root",
+                        str(root / "runs"),
+                        "run-suite",
+                        "--tasks-dir",
+                        str(tasks_dir),
+                        "--harness",
+                        str(ROOT / "examples/harnesses/demo.yaml"),
+                        "--repeats",
+                        "3",
+                        "--delete-workspace",
+                    ]
+                )
+
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["summary"]["attempted"], 3)
+        self.assertEqual({item["task_id"] for item in payload["results"]}, {"score"})
+        self.assertIn("token_cost_per_run", payload["summary"]["by_harness"]["demo"])
+
 
 if __name__ == "__main__":
     unittest.main()
