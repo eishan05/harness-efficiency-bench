@@ -1,0 +1,447 @@
+{
+  "artifact_type": "benchmark_result_snapshot",
+  "benchmark": {
+    "attempted_runs": 12,
+    "oracle_mode": "task manifests filtered by score-facing tag",
+    "perturbation_mode": "base-only",
+    "run_finished_at": "2026-06-10T03:34:46.948147+00:00",
+    "run_started_at": "2026-06-10T03:23:46.890160+00:00",
+    "suite": "non-swe-score-12",
+    "tasks_dir": "examples/tasks"
+  },
+  "captured_at": "2026-06-10T07:53:10.041613Z",
+  "commands": [
+    "OPENROUTER_MODEL=nvidia/nemotron-3-ultra-550b-a55b:free PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-nemotron-non-swe-score-12-20260609/aider-docker-openrouter run-suite --tasks-dir examples/tasks --include-tag score-facing --harness examples/harnesses/aider-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
+  ],
+  "harness": {
+    "adapter": "docker_agent_cli",
+    "base_manifest": "examples/harnesses/aider-docker-openrouter.yaml",
+    "docker_image": "harness-bench/aider:0.86.2",
+    "execution": "Docker-isolated aider-docker-openrouter via OpenRouter using nvidia/nemotron-3-ultra-550b-a55b:free over the 12 score-facing non-SWE tasks.",
+    "id": "aider-docker-openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "timeout_sec": 900
+  },
+  "known_failures": [
+    {
+      "adapter_exit_code": 0,
+      "metric_impact": "A/B/C token metrics are available for this run unless the per_run metric status says otherwise.",
+      "oracle_details": {
+        "command": "python3 -m unittest discover -s tests",
+        "returncode": 1,
+        "stderr": ".F.\n======================================================================\nFAIL: test_requires_subcommand (test_tool.ToolTest.test_requires_subcommand)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eishan05/harness_efficiency_bench/runs/openrouter-nemotron-non-swe-score-12-20260609/aider-docker-openrouter/work/python-cli-subcommands__aider-docker-openrouter__16d1153083/workspace/tests/test_tool.py\", line 25, in test_requires_subcommand\n    self.assertIn(\"usage:\", completed.stderr)\nAssertionError: 'usage:' not found in ''\n\n----------------------------------------------------------------------\nRan 3 tests in 0.068s\n\nFAILED (failures=1)\n",
+        "stdout": ""
+      },
+      "oracle_message": "command failed",
+      "perturbation_id": "base",
+      "reason": "command failed",
+      "task_id": "python-cli-subcommands",
+      "token_cost": 3734
+    }
+  ],
+  "per_run": [
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3173,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3173
+        },
+        "status": "full",
+        "value": 3173
+      },
+      "success": true,
+      "task_id": "harness-stress-conflicting-specs",
+      "token_cost": 3838,
+      "token_cost_cache_discounted": 3838.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3076,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3076
+        },
+        "status": "full",
+        "value": 3076
+      },
+      "success": true,
+      "task_id": "harness-stress-log-triage",
+      "token_cost": 3703,
+      "token_cost_cache_discounted": 3703.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3269,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3269
+        },
+        "status": "full",
+        "value": 3269
+      },
+      "success": true,
+      "task_id": "python-cache-ttl-lru",
+      "token_cost": 4060,
+      "token_cost_cache_discounted": 4060.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command failed",
+      "oracle_success": false,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3162,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3162
+        },
+        "status": "full",
+        "value": 3162
+      },
+      "success": false,
+      "task_id": "python-cli-subcommands",
+      "token_cost": 3734,
+      "token_cost_cache_discounted": 3734.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3067,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3067
+        },
+        "status": "full",
+        "value": 3067
+      },
+      "success": true,
+      "task_id": "python-csv-ledger-reconcile",
+      "token_cost": 3824,
+      "token_cost_cache_discounted": 3824.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3068,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3068
+        },
+        "status": "full",
+        "value": 3068
+      },
+      "success": true,
+      "task_id": "python-datetime-windowing",
+      "token_cost": 4200,
+      "token_cost_cache_discounted": 4200.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2982,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2982
+        },
+        "status": "full",
+        "value": 2982
+      },
+      "success": true,
+      "task_id": "python-fix-calculator",
+      "token_cost": 3315,
+      "token_cost_cache_discounted": 3315.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3164,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3164
+        },
+        "status": "full",
+        "value": 3164
+      },
+      "success": true,
+      "task_id": "python-json-config-migration",
+      "token_cost": 4400,
+      "token_cost_cache_discounted": 4400.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3363,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3363
+        },
+        "status": "full",
+        "value": 3363
+      },
+      "success": true,
+      "task_id": "python-markdown-link-normalizer",
+      "token_cost": 4332,
+      "token_cost_cache_discounted": 4332.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 3068,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 3068
+        },
+        "status": "full",
+        "value": 3068
+      },
+      "success": true,
+      "task_id": "python-path-safety",
+      "token_cost": 3682,
+      "token_cost_cache_discounted": 3682.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "command passed",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2966,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2966
+        },
+        "status": "full",
+        "value": 2966
+      },
+      "success": true,
+      "task_id": "python-plugin-registry",
+      "token_cost": 3576,
+      "token_cost_cache_discounted": 3576.0,
+      "trace_quality": "structured"
+    },
+    {
+      "adapter_exit_code": 0,
+      "context_growth_rate": {
+        "details": {
+          "reason": "need at least two non-aggregate non-preflight model calls"
+        },
+        "status": "unsupported",
+        "value": null
+      },
+      "oracle_message": "file matched",
+      "oracle_success": true,
+      "perturbation_id": "base",
+      "selected_trace_source": "native",
+      "startup_tax": {
+        "details": {
+          "provider_first_call_index": 0,
+          "provider_first_startup_tax": 2473,
+          "task_first_call_index": 0,
+          "task_first_startup_tax": 2473
+        },
+        "status": "full",
+        "value": 2473
+      },
+      "success": true,
+      "task_id": "toy-write-file",
+      "token_cost": 2590,
+      "token_cost_cache_discounted": 2590.0,
+      "trace_quality": "structured"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "attempted": 12,
+    "by_perturbation": {
+      "base": {
+        "attempted": 12,
+        "oracle_solve_rate": 0.9166666666666666,
+        "oracle_solved": 11,
+        "solve_rate": 0.9166666666666666,
+        "solved": 11
+      }
+    },
+    "metrics": {
+      "context_growth_rate": {
+        "avg": null,
+        "research_metric": "B",
+        "runs_full": 0,
+        "runs_unsupported": 12,
+        "status": "unsupported",
+        "unit": "input tokens per model call"
+      },
+      "startup_tax": {
+        "avg": 3069.25,
+        "research_metric": "A",
+        "runs_full": 12,
+        "runs_partial": 0,
+        "runs_unsupported": 0,
+        "status": "full",
+        "unit": "first-call input tokens"
+      },
+      "token_solve_efficiency": {
+        "research_metric": "C",
+        "runs_with_token_cost": 12,
+        "runs_without_token_cost": 0,
+        "status": "full",
+        "token_cost_cache_discounted_per_oracle_solved_task": 4114.0,
+        "token_cost_cache_discounted_per_solved_task": 4114.0,
+        "token_cost_cache_discounted_total": 45254.0,
+        "token_cost_per_oracle_solved_task": 4114.0,
+        "token_cost_per_solved_task": 4114.0,
+        "total_token_cost": 45254,
+        "unit": "tokens per solved task"
+      }
+    },
+    "model_usage": null,
+    "oracle_solve_rate": 0.9166666666666666,
+    "oracle_solved": 11,
+    "pricing_estimate": {
+      "cost_usd_total_for_usage_runs": 0.0,
+      "runs_with_dollar_cost": 0,
+      "source": "No manifest pricing configured; dollars remain zero unless the provider/proxy reports cost_usd."
+    },
+    "solve_rate": 0.9166666666666666,
+    "solved": 11
+  }
+}
