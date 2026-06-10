@@ -9,7 +9,7 @@
     "suite": "non-swe-score-12",
     "tasks_dir": "examples/tasks"
   },
-  "captured_at": "2026-06-09T22:19:47.536476Z",
+  "captured_at": "2026-06-10T03:33:43.018630Z",
   "commands": [
     "OPENROUTER_MODEL=deepseek/deepseek-v4-flash PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-deepseek-v4-flash-non-swe-score-12-20260609/goose-docker-openrouter run-suite --tasks-dir examples/tasks --include-tag score-facing --harness examples/harnesses/goose-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
   ],
@@ -28,6 +28,20 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "median_adjacent_delta": 257.5,
           "points": [
             [
               0.0,
@@ -73,10 +87,11 @@
               10.0,
               7797.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.60423654015887
         },
         "status": "full",
-        "value": 413.090909090909
+        "value": 413.09090909090907
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -95,12 +110,25 @@
       "success": true,
       "task_id": "harness-stress-conflicting-specs",
       "token_cost": 66927,
+      "token_cost_cache_discounted": 34325.399999999994,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "median_adjacent_delta": 265.5,
           "points": [
             [
               0.0,
@@ -138,7 +166,8 @@
               8.0,
               6207.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.1799121155053358
         },
         "status": "full",
         "value": 313.26666666666665
@@ -160,12 +189,27 @@
       "success": true,
       "task_id": "harness-stress-log-triage",
       "token_cost": 47726,
+      "token_cost_cache_discounted": 15930.8,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "median_adjacent_delta": 203.0,
           "points": [
             [
               0.0,
@@ -211,7 +255,8 @@
               10.0,
               6808.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.593193013882669
         },
         "status": "full",
         "value": 323.41818181818184
@@ -233,12 +278,26 @@
       "success": true,
       "task_id": "python-cache-ttl-lru",
       "token_cost": 61646,
+      "token_cost_cache_discounted": 27316.4,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "median_adjacent_delta": 258.0,
           "points": [
             [
               0.0,
@@ -280,7 +339,8 @@
               9.0,
               6464.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.1849189570119802
         },
         "status": "full",
         "value": 305.7090909090909
@@ -302,12 +362,25 @@
       "success": true,
       "task_id": "python-cli-subcommands",
       "token_cost": 54379,
+      "token_cost_cache_discounted": 17284.6,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "median_adjacent_delta": 315.0,
           "points": [
             [
               0.0,
@@ -345,7 +418,8 @@
               8.0,
               6927.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.3692063492063493
         },
         "status": "full",
         "value": 431.3
@@ -367,12 +441,26 @@
       "success": true,
       "task_id": "python-csv-ledger-reconcile",
       "token_cost": 53348,
+      "token_cost_cache_discounted": 25469.6,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "median_adjacent_delta": 187.0,
           "points": [
             [
               0.0,
@@ -414,7 +502,9 @@
               9.0,
               7652.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 2.5742667314859826,
+          "slope_median_divergence": true
         },
         "status": "full",
         "value": 481.3878787878788
@@ -436,12 +526,23 @@
       "success": true,
       "task_id": "python-datetime-windowing",
       "token_cost": 61292,
+      "token_cost_cache_discounted": 26386.4,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "median_adjacent_delta": 287.5,
           "points": [
             [
               0.0,
@@ -471,7 +572,8 @@
               6.0,
               5690.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.1039751552795032
         },
         "status": "full",
         "value": 317.39285714285717
@@ -493,12 +595,30 @@
       "success": true,
       "task_id": "python-fix-calculator",
       "token_cost": 35315,
+      "token_cost_cache_discounted": 11353.399999999998,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "median_adjacent_delta": 202.0,
           "points": [
             [
               0.0,
@@ -556,7 +676,8 @@
               13.0,
               8293.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.8045696877380046
         },
         "status": "full",
         "value": 364.5230769230769
@@ -578,12 +699,27 @@
       "success": true,
       "task_id": "python-json-config-migration",
       "token_cost": 94474,
+      "token_cost_cache_discounted": 28579.59999999999,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "median_adjacent_delta": 285.0,
           "points": [
             [
               0.0,
@@ -629,7 +765,8 @@
               10.0,
               8372.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.72414673046252
         },
         "status": "full",
         "value": 491.3818181818182
@@ -651,12 +788,25 @@
       "success": true,
       "task_id": "python-markdown-link-normalizer",
       "token_cost": 68944,
+      "token_cost_cache_discounted": 28393.6,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "median_adjacent_delta": 219.5,
           "points": [
             [
               0.0,
@@ -694,7 +844,9 @@
               8.0,
               7537.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 2.4629460895975703,
+          "slope_median_divergence": true
         },
         "status": "full",
         "value": 540.6166666666667
@@ -716,12 +868,26 @@
       "success": true,
       "task_id": "python-path-safety",
       "token_cost": 55671,
+      "token_cost_cache_discounted": 20304.6,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "median_adjacent_delta": 202.0,
           "points": [
             [
               0.0,
@@ -763,7 +929,8 @@
               9.0,
               7201.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.8932493249324933
         },
         "status": "full",
         "value": 382.43636363636364
@@ -785,12 +952,18 @@
       "success": true,
       "task_id": "python-plugin-registry",
       "token_cost": 60137,
+      "token_cost_cache_discounted": 21084.199999999997,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1
+          ],
+          "median_adjacent_delta": 101.0,
           "points": [
             [
               0.0,
@@ -800,7 +973,8 @@
               1.0,
               4072.0
             ]
-          ]
+          ],
+          "slope_median_delta_ratio": 1.0
         },
         "status": "full",
         "value": 101.0
@@ -822,6 +996,7 @@
       "success": true,
       "task_id": "toy-write-file",
       "token_cost": 8230,
+      "token_cost_cache_discounted": 2700.3999999999996,
       "trace_quality": "structured"
     }
   ],
@@ -831,6 +1006,8 @@
     "by_perturbation": {
       "base": {
         "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
         "solve_rate": 1.0,
         "solved": 12
       }
@@ -858,9 +1035,20 @@
         "runs_with_token_cost": 12,
         "runs_without_token_cost": 0,
         "status": "full",
+        "token_cost_cache_discounted_per_oracle_solved_task": 21594.083333333332,
+        "token_cost_cache_discounted_per_solved_task": 21594.083333333332,
+        "token_cost_cache_discounted_total": 259128.99999999997,
+        "token_cost_per_oracle_solved_task": 55674.083333333336,
         "token_cost_per_solved_task": 55674.083333333336,
         "total_token_cost": 668089,
         "unit": "tokens per solved task"
+      }
+    },
+    "model_usage": {
+      "deepseek/deepseek-v4-flash-20260423": {
+        "calls": 113,
+        "input_tokens": 631855,
+        "output_tokens": 24865
       }
     },
     "oracle_solve_rate": 1.0,
