@@ -9,7 +9,7 @@
     "suite": "non-swe-score-12",
     "tasks_dir": "examples/tasks"
   },
-  "captured_at": "2026-06-09T22:19:47.755064Z",
+  "captured_at": "2026-06-10T02:42:00.577486Z",
   "commands": [
     "OPENROUTER_MODEL=deepseek/deepseek-v4-flash PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-deepseek-v4-flash-non-swe-score-12-20260609/kilo-docker-openrouter run-suite --tasks-dir examples/tasks --include-tag score-facing --harness examples/harnesses/kilo-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
   ],
@@ -104,47 +104,56 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
           "points": [
             [
               0.0,
-              1355.0
-            ],
-            [
-              1.0,
               13284.0
             ],
             [
-              2.0,
+              1.0,
               13614.0
             ],
             [
-              3.0,
+              2.0,
               14118.0
             ],
             [
-              4.0,
+              3.0,
               14148.0
             ],
             [
-              5.0,
+              4.0,
               15134.0
             ],
             [
-              6.0,
+              5.0,
               15262.0
             ],
             [
-              7.0,
+              6.0,
               15384.0
             ],
             [
-              8.0,
+              7.0,
               15564.0
             ]
           ]
         },
         "status": "full",
-        "value": 1124.1333333333334
+        "value": 347.95238095238096
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -152,13 +161,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1328,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1328
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13257
         },
         "status": "full",
-        "value": 1328
+        "value": 14585
       },
       "success": true,
       "task_id": "harness-stress-conflicting-specs",
@@ -169,39 +182,46 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "points": [
             [
               0.0,
-              1353.0
-            ],
-            [
-              1.0,
               12899.0
             ],
             [
-              2.0,
+              1.0,
               13528.0
             ],
             [
-              3.0,
+              2.0,
               13895.0
             ],
             [
-              4.0,
+              3.0,
               14595.0
             ],
             [
-              5.0,
+              4.0,
               14712.0
             ],
             [
-              6.0,
+              5.0,
               14905.0
             ]
           ]
         },
         "status": "full",
-        "value": 1619.607142857143
+        "value": 408.0571428571429
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -209,13 +229,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1329,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1329
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 12875
         },
         "status": "full",
-        "value": 1329
+        "value": 14204
       },
       "success": true,
       "task_id": "harness-stress-log-triage",
@@ -226,55 +250,52 @@
       "adapter_exit_code": 124,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            5,
+            5
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "points": [
             [
               0.0,
-              1371.0
-            ],
-            [
-              1.0,
               12918.0
             ],
             [
-              2.0,
-              5831.0
-            ],
-            [
-              3.0,
-              6210.0
-            ],
-            [
-              4.0,
-              7814.0
-            ],
-            [
-              5.0,
-              8073.0
-            ],
-            [
-              6.0,
-              8020.0
-            ],
-            [
-              7.0,
+              1.0,
               14337.0
             ],
             [
-              8.0,
+              2.0,
               14656.0
             ],
             [
-              9.0,
+              3.0,
               15196.0
             ],
             [
-              10.0,
+              4.0,
               15394.0
             ]
           ]
         },
         "status": "full",
-        "value": 1110.5636363636363
+        "value": 581.1
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -282,13 +303,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1340,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1340
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 12887
         },
         "status": "full",
-        "value": 1340
+        "value": 14227
       },
       "success": false,
       "task_id": "python-cache-ttl-lru",
@@ -299,67 +324,71 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "context_thread_sizes": [
+            9,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
           "points": [
             [
               0.0,
-              1372.0
-            ],
-            [
-              1.0,
               13317.0
             ],
             [
-              2.0,
-              5846.0
-            ],
-            [
-              3.0,
-              6491.0
-            ],
-            [
-              4.0,
-              7376.0
-            ],
-            [
-              5.0,
-              7774.0
-            ],
-            [
-              6.0,
+              1.0,
               15322.0
             ],
             [
-              7.0,
+              2.0,
               15725.0
             ],
             [
-              8.0,
+              3.0,
               15872.0
             ],
             [
-              9.0,
+              4.0,
               15995.0
             ],
             [
-              10.0,
+              5.0,
               15698.0
             ],
             [
-              11.0,
+              6.0,
               16365.0
             ],
             [
-              12.0,
+              7.0,
               16754.0
             ],
             [
-              13.0,
+              8.0,
               16520.0
             ]
           ]
         },
         "status": "full",
-        "value": 1014.5999999999999
+        "value": 303.56666666666666
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -367,13 +396,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1334,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1334
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13279
         },
         "status": "full",
-        "value": 1334
+        "value": 14613
       },
       "success": true,
       "task_id": "python-cli-subcommands",
@@ -384,51 +417,55 @@
       "adapter_exit_code": 124,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
           "points": [
             [
               0.0,
-              1369.0
-            ],
-            [
-              1.0,
               12916.0
             ],
             [
-              2.0,
-              5792.0
-            ],
-            [
-              3.0,
-              6317.0
-            ],
-            [
-              4.0,
-              7046.0
-            ],
-            [
-              5.0,
+              1.0,
               14094.0
             ],
             [
-              6.0,
+              2.0,
               15651.0
             ],
             [
-              7.0,
+              3.0,
               15906.0
             ],
             [
-              8.0,
+              4.0,
               16016.0
             ],
             [
-              9.0,
+              5.0,
               16190.0
             ]
           ]
         },
         "status": "full",
-        "value": 1458.8424242424242
+        "value": 639.7428571428571
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -436,13 +473,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1336,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1336
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 12883
         },
         "status": "full",
-        "value": 1336
+        "value": 14219
       },
       "success": false,
       "task_id": "python-csv-ledger-reconcile",
@@ -453,63 +494,66 @@
       "adapter_exit_code": 124,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "context_thread_sizes": [
+            8,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
           "points": [
             [
               0.0,
-              1367.0
-            ],
-            [
-              1.0,
               13315.0
             ],
             [
-              2.0,
-              5807.0
-            ],
-            [
-              3.0,
-              6813.0
-            ],
-            [
-              4.0,
-              8600.0
-            ],
-            [
-              5.0,
-              9080.0
-            ],
-            [
-              6.0,
+              1.0,
               14637.0
             ],
             [
-              7.0,
+              2.0,
               15023.0
             ],
             [
-              8.0,
+              3.0,
               15924.0
             ],
             [
-              9.0,
+              4.0,
               16625.0
             ],
             [
-              10.0,
+              5.0,
               16796.0
             ],
             [
-              11.0,
+              6.0,
               16964.0
             ],
             [
-              12.0,
+              7.0,
               17051.0
             ]
           ]
         },
         "status": "full",
-        "value": 1133.6923076923076
+        "value": 521.5119047619048
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -517,13 +561,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1335,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1335
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13283
         },
         "status": "full",
-        "value": 1335
+        "value": 14618
       },
       "success": false,
       "task_id": "python-datetime-windowing",
@@ -534,51 +582,55 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "context_thread_sizes": [
+            6,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
           "points": [
             [
               0.0,
-              1346.0
-            ],
-            [
-              1.0,
               12894.0
             ],
             [
-              2.0,
-              5774.0
-            ],
-            [
-              3.0,
-              5889.0
-            ],
-            [
-              4.0,
-              6845.0
-            ],
-            [
-              5.0,
+              1.0,
               13888.0
             ],
             [
-              6.0,
+              2.0,
               14583.0
             ],
             [
-              7.0,
+              3.0,
               15008.0
             ],
             [
-              8.0,
+              4.0,
               15152.0
             ],
             [
-              9.0,
+              5.0,
               15011.0
             ]
           ]
         },
         "status": "full",
-        "value": 1321.7333333333333
+        "value": 422.9142857142857
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -586,13 +638,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1328,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1328
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 12876
         },
         "status": "full",
-        "value": 1328
+        "value": 14204
       },
       "success": true,
       "task_id": "python-fix-calculator",
@@ -603,55 +659,56 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            6,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
           "points": [
             [
               0.0,
-              1369.0
-            ],
-            [
-              1.0,
               13315.0
             ],
             [
-              2.0,
-              5703.0
-            ],
-            [
-              3.0,
-              6419.0
-            ],
-            [
-              4.0,
-              6941.0
-            ],
-            [
-              5.0,
-              7463.0
-            ],
-            [
-              6.0,
+              1.0,
               14771.0
             ],
             [
-              7.0,
+              2.0,
               15216.0
             ],
             [
-              8.0,
+              3.0,
               16379.0
             ],
             [
-              9.0,
+              4.0,
               16092.0
             ],
             [
-              10.0,
+              5.0,
               16721.0
             ]
           ]
         },
         "status": "full",
-        "value": 1321.090909090909
+        "value": 633.0285714285715
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -659,13 +716,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1333,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1333
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13279
         },
         "status": "full",
-        "value": 1333
+        "value": 14612
       },
       "success": true,
       "task_id": "python-json-config-migration",
@@ -676,55 +737,60 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            7,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
           "points": [
             [
               0.0,
-              1374.0
-            ],
-            [
-              1.0,
               13321.0
             ],
             [
-              2.0,
-              5841.0
-            ],
-            [
-              3.0,
-              7032.0
-            ],
-            [
-              4.0,
-              8229.0
-            ],
-            [
-              5.0,
+              1.0,
               15138.0
             ],
             [
-              6.0,
+              2.0,
               15982.0
             ],
             [
-              7.0,
+              3.0,
               18655.0
             ],
             [
-              8.0,
+              4.0,
               18764.0
             ],
             [
-              9.0,
+              5.0,
               18851.0
             ],
             [
-              10.0,
+              6.0,
               18674.0
             ]
           ]
         },
         "status": "full",
-        "value": 1621.709090909091
+        "value": 938.1071428571429
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -732,13 +798,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1337,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1337
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13284
         },
         "status": "full",
-        "value": 1337
+        "value": 14621
       },
       "success": true,
       "task_id": "python-markdown-link-normalizer",
@@ -749,55 +819,56 @@
       "adapter_exit_code": 124,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "context_thread_sizes": [
+            6,
+            4
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
           "points": [
             [
               0.0,
-              1365.0
-            ],
-            [
-              1.0,
               13311.0
             ],
             [
-              2.0,
-              5643.0
-            ],
-            [
-              3.0,
-              7204.0
-            ],
-            [
-              4.0,
-              8091.0
-            ],
-            [
-              5.0,
-              8342.0
-            ],
-            [
-              6.0,
+              1.0,
               14746.0
             ],
             [
-              7.0,
+              2.0,
               18103.0
             ],
             [
-              8.0,
+              3.0,
               18046.0
             ],
             [
-              9.0,
+              4.0,
               18155.0
             ],
             [
-              10.0,
+              5.0,
               18825.0
             ]
           ]
         },
         "status": "full",
-        "value": 1566.709090909091
+        "value": 1078.2857142857142
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -805,13 +876,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1333,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1333
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13279
         },
         "status": "full",
-        "value": 1333
+        "value": 14612
       },
       "success": false,
       "task_id": "python-path-safety",
@@ -822,47 +897,50 @@
       "adapter_exit_code": 124,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            5,
+            6,
+            7,
+            8
+          ],
+          "context_thread_sizes": [
+            5,
+            3
+          ],
+          "excluded_call_indices": [
+            2,
+            3,
+            4
+          ],
           "points": [
             [
               0.0,
-              1366.0
-            ],
-            [
-              1.0,
               13295.0
             ],
             [
-              2.0,
-              5796.0
-            ],
-            [
-              3.0,
-              6873.0
-            ],
-            [
-              4.0,
-              7968.0
-            ],
-            [
-              5.0,
+              1.0,
               14497.0
             ],
             [
-              6.0,
+              2.0,
               15324.0
             ],
             [
-              7.0,
+              3.0,
               15835.0
             ],
             [
-              8.0,
+              4.0,
               16041.0
             ]
           ]
         },
         "status": "full",
-        "value": 1550.0
+        "value": 683.0
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -870,13 +948,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1332,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1332
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13261
         },
         "status": "full",
-        "value": 1332
+        "value": 14593
       },
       "success": false,
       "task_id": "python-plugin-registry",
@@ -887,23 +969,26 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "call_indices": [
+            1,
+            2
+          ],
           "points": [
             [
               0.0,
-              1359.0
-            ],
-            [
-              1.0,
               13306.0
             ],
             [
-              2.0,
+              1.0,
               13437.0
             ]
           ]
         },
         "status": "full",
-        "value": 6039.0
+        "value": 131.0
       },
       "oracle_message": "file matched",
       "oracle_success": true,
@@ -911,13 +996,17 @@
       "selected_trace_source": "proxy",
       "startup_tax": {
         "details": {
+          "auxiliary_preflight_call_indices": [
+            0
+          ],
+          "composition": "provider_first_startup_tax + task_first_startup_tax",
           "provider_first_call_index": 0,
           "provider_first_startup_tax": 1332,
-          "task_first_call_index": 0,
-          "task_first_startup_tax": 1332
+          "task_first_call_index": 1,
+          "task_first_startup_tax": 13279
         },
         "status": "full",
-        "value": 1332
+        "value": 14611
       },
       "success": true,
       "task_id": "toy-write-file",
@@ -931,13 +1020,15 @@
     "by_perturbation": {
       "base": {
         "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
         "solve_rate": 0.5833333333333334,
         "solved": 7
       }
     },
     "metrics": {
       "context_growth_rate": {
-        "avg": 1740.140105727606,
+        "avg": 557.3555555555555,
         "research_metric": "B",
         "runs_full": 12,
         "runs_unsupported": 0,
@@ -945,7 +1036,7 @@
         "unit": "input tokens per model call"
       },
       "startup_tax": {
-        "avg": 1333.0833333333333,
+        "avg": 14476.583333333334,
         "research_metric": "A",
         "runs_full": 12,
         "runs_partial": 0,
@@ -958,6 +1049,7 @@
         "runs_with_token_cost": 12,
         "runs_without_token_cost": 0,
         "status": "full",
+        "token_cost_per_oracle_solved_task": 119315.58333333333,
         "token_cost_per_solved_task": 204541.0,
         "total_token_cost": 1431787,
         "unit": "tokens per solved task"

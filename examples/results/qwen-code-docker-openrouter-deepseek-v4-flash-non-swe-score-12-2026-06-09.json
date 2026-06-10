@@ -9,7 +9,7 @@
     "suite": "non-swe-score-12",
     "tasks_dir": "examples/tasks"
   },
-  "captured_at": "2026-06-09T22:19:48.260636Z",
+  "captured_at": "2026-06-10T02:53:16.188323Z",
   "commands": [
     "OPENROUTER_MODEL=deepseek/deepseek-v4-flash PYTHONPATH=src python3 -m harness_efficiency_bench.cli --run-root runs/openrouter-deepseek-v4-flash-non-swe-score-12-20260609/qwen-code-docker-openrouter run-suite --tasks-dir examples/tasks --include-tag score-facing --harness examples/harnesses/qwen-code-docker-openrouter.yaml --require-docker-isolation --delete-workspace"
   ],
@@ -28,6 +28,18 @@
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
           "points": [
             [
               0.0,
@@ -68,15 +80,11 @@
             [
               9.0,
               25024.0
-            ],
-            [
-              10.0,
-              234001.0
             ]
           ]
         },
         "status": "full",
-        "value": 9891.4
+        "value": 424.8424242424242
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -94,13 +102,22 @@
       },
       "success": true,
       "task_id": "harness-stress-conflicting-specs",
-      "token_cost": 472228,
+      "token_cost": 236114,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "points": [
             [
               0.0,
@@ -129,15 +146,11 @@
             [
               6.0,
               23191.0
-            ],
-            [
-              7.0,
-              156931.0
             ]
           ]
         },
         "status": "full",
-        "value": 11407.285714285714
+        "value": 296.89285714285717
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -155,13 +168,20 @@
       },
       "success": true,
       "task_id": "harness-stress-log-triage",
-      "token_cost": 315650,
+      "token_cost": 157825,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
           "points": [
             [
               0.0,
@@ -182,15 +202,11 @@
             [
               4.0,
               23447.0
-            ],
-            [
-              5.0,
-              112756.0
             ]
           ]
         },
         "status": "full",
-        "value": 13203.65714285714
+        "value": 555.2
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -208,13 +224,21 @@
       },
       "success": true,
       "task_id": "python-cache-ttl-lru",
-      "token_cost": 228126,
+      "token_cost": 114063,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "points": [
             [
               0.0,
@@ -239,15 +263,11 @@
             [
               5.0,
               23351.0
-            ],
-            [
-              6.0,
-              134740.0
             ]
           ]
         },
         "status": "full",
-        "value": 12221.107142857143
+        "value": 305.2
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -265,13 +285,24 @@
       },
       "success": true,
       "task_id": "python-cli-subcommands",
-      "token_cost": 271508,
+      "token_cost": 135754,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
           "points": [
             [
               0.0,
@@ -308,15 +339,11 @@
             [
               8.0,
               25410.0
-            ],
-            [
-              9.0,
-              215957.0
             ]
           ]
         },
         "status": "full",
-        "value": 10816.557575757577
+        "value": 475.6333333333333
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -334,13 +361,23 @@
       },
       "success": true,
       "task_id": "python-csv-ledger-reconcile",
-      "token_cost": 437362,
+      "token_cost": 218681,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
           "points": [
             [
               0.0,
@@ -373,15 +410,11 @@
             [
               7.0,
               25508.0
-            ],
-            [
-              8.0,
-              189967.0
             ]
           ]
         },
         "status": "full",
-        "value": 11522.583333333336
+        "value": 630.25
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -399,13 +432,21 @@
       },
       "success": true,
       "task_id": "python-datetime-windowing",
-      "token_cost": 385542,
+      "token_cost": 192771,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
           "points": [
             [
               0.0,
@@ -430,15 +471,11 @@
             [
               5.0,
               23062.0
-            ],
-            [
-              6.0,
-              133589.0
             ]
           ]
         },
         "status": "full",
-        "value": 12098.0
+        "value": 272.65714285714284
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -456,13 +493,22 @@
       },
       "success": true,
       "task_id": "python-fix-calculator",
-      "token_cost": 269136,
+      "token_cost": 134568,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
           "points": [
             [
               0.0,
@@ -491,15 +537,11 @@
             [
               6.0,
               25314.0
-            ],
-            [
-              7.0,
-              164396.0
             ]
           ]
         },
         "status": "full",
-        "value": 12176.5
+        "value": 650.8928571428571
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -517,13 +559,27 @@
       },
       "success": true,
       "task_id": "python-json-config-migration",
-      "token_cost": 333900,
+      "token_cost": 166950,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
           "points": [
             [
               0.0,
@@ -572,15 +628,11 @@
             [
               11.0,
               28197.0
-            ],
-            [
-              12.0,
-              303838.0
             ]
           ]
         },
         "status": "full",
-        "value": 9658.807692307693
+        "value": 606.951048951049
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -598,13 +650,24 @@
       },
       "success": true,
       "task_id": "python-markdown-link-normalizer",
-      "token_cost": 616600,
+      "token_cost": 308300,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
           "points": [
             [
               0.0,
@@ -641,15 +704,11 @@
             [
               8.0,
               27133.0
-            ],
-            [
-              9.0,
-              229414.0
             ]
           ]
         },
         "status": "full",
-        "value": 11631.721212121212
+        "value": 699.35
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -667,13 +726,25 @@
       },
       "success": true,
       "task_id": "python-path-safety",
-      "token_cost": 468724,
+      "token_cost": 234362,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
           "points": [
             [
               0.0,
@@ -714,15 +785,11 @@
             [
               9.0,
               25021.0
-            ],
-            [
-              10.0,
-              235076.0
             ]
           ]
         },
         "status": "full",
-        "value": 9905.690909090908
+        "value": 385.26060606060605
       },
       "oracle_message": "command passed",
       "oracle_success": true,
@@ -740,13 +807,17 @@
       },
       "success": true,
       "task_id": "python-plugin-registry",
-      "token_cost": 474780,
+      "token_cost": 237390,
       "trace_quality": "structured"
     },
     {
       "adapter_exit_code": 0,
       "context_growth_rate": {
         "details": {
+          "call_indices": [
+            0,
+            1
+          ],
           "points": [
             [
               0.0,
@@ -755,15 +826,11 @@
             [
               1.0,
               21576.0
-            ],
-            [
-              2.0,
-              43029.0
             ]
           ]
         },
         "status": "full",
-        "value": 10788.0
+        "value": 123.0
       },
       "oracle_message": "file matched",
       "oracle_success": true,
@@ -781,7 +848,7 @@
       },
       "success": true,
       "task_id": "toy-write-file",
-      "token_cost": 86320,
+      "token_cost": 43160,
       "trace_quality": "structured"
     }
   ],
@@ -791,13 +858,15 @@
     "by_perturbation": {
       "base": {
         "attempted": 12,
+        "oracle_solve_rate": 1.0,
+        "oracle_solved": 12,
         "solve_rate": 1.0,
         "solved": 12
       }
     },
     "metrics": {
       "context_growth_rate": {
-        "avg": 11276.775893550892,
+        "avg": 452.1775224775225,
         "research_metric": "B",
         "runs_full": 12,
         "runs_unsupported": 0,
@@ -818,8 +887,9 @@
         "runs_with_token_cost": 12,
         "runs_without_token_cost": 0,
         "status": "full",
-        "token_cost_per_solved_task": 363323.0,
-        "total_token_cost": 4359876,
+        "token_cost_per_oracle_solved_task": 181661.5,
+        "token_cost_per_solved_task": 181661.5,
+        "total_token_cost": 2179938,
         "unit": "tokens per solved task"
       }
     },

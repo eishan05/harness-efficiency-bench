@@ -40,6 +40,7 @@ def model_call_event(
     input_text: str | None = None,
     cached_input_tokens: int = 0,
     reasoning_output_tokens: int = 0,
+    reasoning_in_output: bool = False,
     cost_usd: float | None = None,
     metadata: dict[str, Any] | None = None,
 ) -> TraceEvent:
@@ -50,6 +51,8 @@ def model_call_event(
         "output_tokens": output_tokens,
         "reasoning_output_tokens": reasoning_output_tokens,
     }
+    if reasoning_in_output:
+        data["reasoning_in_output"] = True
     if input_text is not None:
         data["input_text"] = input_text
     if cost_usd is not None:

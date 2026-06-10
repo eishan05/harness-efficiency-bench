@@ -337,6 +337,7 @@ def _snapshot_summary(
                 "unit": "tokens per solved task",
                 "total_token_cost": summary["token_cost"],
                 "token_cost_per_solved_task": summary["token_cost_per_solved_task"],
+                "token_cost_per_oracle_solved_task": summary["token_cost_per_oracle_solved_task"],
                 "runs_with_token_cost": coverage["solve_efficiency"]["runs_with_token_cost"],
                 "runs_without_token_cost": (
                     coverage["solve_efficiency"]["runs_total"]

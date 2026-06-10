@@ -75,6 +75,7 @@ class CodexAdapter(BaseAdapter):
                         cached_input_tokens=cached,
                         output_tokens=output_tokens,
                         reasoning_output_tokens=reasoning,
+                        reasoning_in_output=_reasoning_in_output(usage),
                         metadata={"source": "codex_json", "raw_event_type": event_type},
                     )
                 )
@@ -117,6 +118,7 @@ class CodexAdapter(BaseAdapter):
                     cached_input_tokens=int(usage.get("cached_input_tokens", 0) or 0),
                     output_tokens=int(usage.get("output_tokens", 0) or 0),
                     reasoning_output_tokens=int(usage.get("reasoning_output_tokens", 0) or 0),
+                    reasoning_in_output=_reasoning_in_output(usage),
                     metadata={
                         "source": "codex_rollout_trace",
                         "inference_call_id": item.get("inference_call_id"),
@@ -221,6 +223,21 @@ class CodexAdapter(BaseAdapter):
             return context
         harness = replace(context.harness, model=model)
         return replace(context, harness=harness)
+
+
+def _reasoning_in_output(usage: dict[str, Any]) -> bool:
+    # Codex token counts follow OpenAI Responses semantics: output_tokens
+    # already includes reasoning_output_tokens and total_tokens is
+    # input + output. Trust total_tokens to confirm when it is reported.
+    reasoning = int(usage.get("reasoning_output_tokens", 0) or 0)
+    if not reasoning:
+        return False
+    total = int(usage.get("total_tokens", 0) or 0)
+    if not total:
+        return True
+    input_tokens = int(usage.get("input_tokens", 0) or 0)
+    output_tokens = int(usage.get("output_tokens", 0) or 0)
+    return total < input_tokens + output_tokens + reasoning
 
 
 def _usage_from_response_payload(bundle: Path, response_ref: Any) -> dict[str, Any] | None:

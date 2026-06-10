@@ -178,6 +178,50 @@ class RunnerTest(unittest.TestCase):
         self.assertEqual(summary["by_perturbation"]["base"]["solve_rate"], 1.0)
         self.assertIn("research_metric_coverage", summary)
 
+    def test_summary_reports_oracle_denominator_separately(self):
+        # A run that passes the oracle but exits nonzero (e.g. a wall-time
+        # cap) counts for the oracle denominator but not the strict one.
+        summary = summarize_results(
+            [
+                {
+                    "success": False,
+                    "oracle_result": {"success": True},
+                    "harness_id": "a",
+                    "metrics": {"usage": {"input_tokens": 10, "output_tokens": 2}},
+                },
+                {
+                    "success": True,
+                    "oracle_result": {"success": True},
+                    "harness_id": "a",
+                    "metrics": {"usage": {"input_tokens": 20, "output_tokens": 4}},
+                },
+            ]
+        )
+
+        self.assertEqual(summary["solved"], 1)
+        self.assertEqual(summary["oracle_solved"], 2)
+        self.assertEqual(summary["oracle_solve_rate"], 1.0)
+        self.assertEqual(summary["token_cost_per_solved_task"], 36.0)
+        self.assertEqual(summary["token_cost_per_oracle_solved_task"], 18.0)
+        self.assertEqual(summary["by_harness"]["a"]["oracle_solved"], 2)
+        self.assertEqual(summary["by_harness"]["a"]["token_cost_per_oracle_solved_task"], 18.0)
+        self.assertEqual(summary["by_perturbation"]["base"]["oracle_solved"], 2)
+        self.assertEqual(summary["by_perturbation"]["base"]["oracle_solve_rate"], 1.0)
+
+    def test_summary_oracle_denominator_falls_back_to_strict_success(self):
+        summary = summarize_results(
+            [
+                {
+                    "success": True,
+                    "harness_id": "a",
+                    "metrics": {"usage": {"input_tokens": 10, "output_tokens": 2}},
+                }
+            ]
+        )
+
+        self.assertEqual(summary["oracle_solved"], 1)
+        self.assertEqual(summary["token_cost_per_oracle_solved_task"], 12.0)
+
     def test_summary_token_solve_efficiency_works_when_dollar_cost_missing(self):
         summary = summarize_results(
             [

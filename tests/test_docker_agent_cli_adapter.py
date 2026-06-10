@@ -315,6 +315,70 @@ class DockerAgentCliAdapterTest(unittest.TestCase):
         self.assertEqual(events[0].data["metadata"]["status_code"], 200)
         self.assertEqual(events[1].data["input_tokens"], 99)
 
+    def test_cumulative_summary_event_marked_aggregate(self):
+        # Qwen Code ends its stream with a result event whose usage equals
+        # the cumulative totals of all prior calls.
+        stdout = "\n".join(
+            [
+                json.dumps({"type": "assistant", "usage": {"prompt_tokens": 100, "completion_tokens": 10}}),
+                json.dumps({"type": "assistant", "usage": {"prompt_tokens": 150, "completion_tokens": 20}}),
+                json.dumps({"type": "assistant", "usage": {"prompt_tokens": 200, "completion_tokens": 30}}),
+                json.dumps({"type": "result", "usage": {"prompt_tokens": 450, "completion_tokens": 60}}),
+            ]
+        )
+
+        events = parse_docker_agent_events(stdout, {"trace": {"parser": "generic_json"}})
+
+        calls = [event for event in events if event.type == "model_call"]
+        self.assertEqual(len(calls), 4)
+        self.assertNotIn("aggregate", calls[0].data.get("metadata", {}))
+        self.assertNotIn("aggregate", calls[2].data.get("metadata", {}))
+        self.assertTrue(calls[3].data["metadata"]["aggregate"])
+        self.assertIn("cumulative totals", calls[3].data["metadata"]["aggregate_reason"])
+
+    def test_proxy_reasoning_from_completion_details_is_flagged_nested(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            (workspace / ".harness-usage-proxy.jsonl").write_text(
+                "\n".join(
+                    [
+                        json.dumps(
+                            {
+                                "source": "usage_proxy",
+                                "usage": {
+                                    "prompt_tokens": 100,
+                                    "completion_tokens": 80,
+                                    "completion_tokens_details": {"reasoning_tokens": 60},
+                                },
+                            }
+                        ),
+                        json.dumps(
+                            {
+                                "source": "usage_proxy",
+                                "usage": {
+                                    "input_tokens": 120,
+                                    "output_tokens": 40,
+                                    "reasoning_output_tokens": 30,
+                                },
+                            }
+                        ),
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            events = parse_proxy_trace_events(
+                workspace,
+                {"trace": {"proxy": {"trace_path": ".harness-usage-proxy.jsonl"}}},
+            )
+
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0].data["reasoning_output_tokens"], 60)
+        self.assertTrue(events[0].data.get("reasoning_in_output"))
+        self.assertEqual(events[1].data["reasoning_output_tokens"], 30)
+        self.assertFalse(events[1].data.get("reasoning_in_output", False))
+
     def test_select_trace_prefers_proxy_when_it_has_cost_for_same_call_count(self):
         native = [tool_result_event(name="shell", output="ok"), model_call_event(call_index=0, input_tokens=10)]
         proxy = [model_call_event(call_index=0, input_tokens=10, cost_usd=0.001)]

@@ -28,9 +28,71 @@ def _model_calls(events: list[TraceEvent]) -> list[dict[str, Any]]:
     return sorted(calls, key=lambda item: int(item.get("call_index", len(calls))))
 
 
+# A leading call is treated as an auxiliary preflight request (for example title
+# generation) when it is this much smaller than the early calls that follow it
+# and its overhead beyond the rendered task prompt stays under the cap. Without
+# this, CLIs that send a tiny helper request first (Opencode, Kilo) report that
+# request as the task-first call, which understates startup tax and contaminates
+# the context-growth slope with the jump to the real first task call.
+AUXILIARY_PREFLIGHT_MAX_INPUT_RATIO = 0.25
+AUXILIARY_PREFLIGHT_MAX_OVERHEAD_TOKENS = 2000
+AUXILIARY_PREFLIGHT_LOOKAHEAD_CALLS = 3
+
+
+def _auxiliary_preflight_positions(calls: list[dict[str, Any]], user_prompt_tokens: int) -> set[int]:
+    positions: set[int] = set()
+    for position in range(len(calls) - 1):
+        input_tokens = calls[position].get("input_tokens")
+        if input_tokens is None:
+            break
+        input_token_count = int(input_tokens)
+        if input_token_count > user_prompt_tokens + AUXILIARY_PREFLIGHT_MAX_OVERHEAD_TOKENS:
+            break
+        following = [
+            int(call["input_tokens"])
+            for call in calls[position + 1 : position + 1 + AUXILIARY_PREFLIGHT_LOOKAHEAD_CALLS]
+            if call.get("input_tokens") is not None
+        ]
+        if not following or input_token_count > AUXILIARY_PREFLIGHT_MAX_INPUT_RATIO * max(following):
+            break
+        positions.add(position)
+    return positions
+
+
+def _auxiliary_preflight_call_indices(calls: list[dict[str, Any]], positions: set[int]) -> list[int]:
+    return [int(calls[position].get("call_index", position)) for position in sorted(positions)]
+
+
+# Conversation context grows roughly monotonically within one agent thread.
+# Some CLIs interleave a separate sub-conversation mid-run (Kilo and Opencode
+# both do), which shows up as the per-call input dropping sharply and later
+# returning to the main thread's level. Fitting one slope across interleaved
+# threads inflates the growth rate, so calls are segmented into monotone
+# threads and the slope is fit on the dominant one. The tolerance absorbs
+# small within-thread dips from prompt trimming or token-count jitter.
+CONTEXT_THREAD_JITTER_RATIO = 0.05
+CONTEXT_THREAD_JITTER_MIN_TOKENS = 512
+
+
+def _segment_context_threads(values: list[tuple[int, float]]) -> list[list[tuple[int, float]]]:
+    threads: list[list[tuple[int, float]]] = []
+    for call_index, input_tokens in values:
+        best: list[tuple[int, float]] | None = None
+        for thread in threads:
+            tail = thread[-1][1]
+            tolerance = max(tail * CONTEXT_THREAD_JITTER_RATIO, CONTEXT_THREAD_JITTER_MIN_TOKENS)
+            if tail <= input_tokens + tolerance and (best is None or tail > best[-1][1]):
+                best = thread
+        if best is None:
+            threads.append([(call_index, input_tokens)])
+        else:
+            best.append((call_index, input_tokens))
+    return threads
+
+
 def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValue:
     all_calls = _model_calls(events)
-    calls = [call for call in all_calls if not _is_aggregate_model_call(call)]
+    calls = _per_call_model_calls(all_calls)
     if not calls:
         if not all_calls:
             return MetricValue(None, "unsupported", {"reason": "no model_call events"})
@@ -49,7 +111,9 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
             {"reason": "model_call input_tokens are aggregate run usage, not first-call usage"},
         )
     provider_first = calls[0]
-    task_calls = [call for call in calls if not _is_preflight_model_call(call)]
+    task_candidates = [call for call in calls if not _is_preflight_model_call(call)]
+    auxiliary_positions = _auxiliary_preflight_positions(task_candidates, user_prompt_tokens)
+    task_calls = [call for position, call in enumerate(task_candidates) if position not in auxiliary_positions]
     provider_tax = _call_startup_tax(provider_first, user_prompt_tokens)
     if provider_tax is None:
         return MetricValue(
@@ -61,6 +125,10 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
         "provider_first_startup_tax": provider_tax,
         "provider_first_call_index": provider_first.get("call_index"),
     }
+    if auxiliary_positions:
+        details["auxiliary_preflight_call_indices"] = _auxiliary_preflight_call_indices(
+            task_candidates, auxiliary_positions
+        )
     if not task_calls:
         return MetricValue(
             provider_tax,
@@ -87,17 +155,41 @@ def startup_tax(events: list[TraceEvent], user_prompt_tokens: int) -> MetricValu
     return MetricValue(provider_tax + task_tax, "full", details)
 
 
-def context_growth_rate(events: list[TraceEvent]) -> MetricValue:
+def context_growth_rate(events: list[TraceEvent], user_prompt_tokens: int = 0) -> MetricValue:
     calls = _model_calls(events)
-    points: list[tuple[float, float]] = []
-    for index, call in enumerate(calls):
-        if _is_aggregate_model_call(call) or _is_preflight_model_call(call):
+    candidates = [call for call in _per_call_model_calls(calls) if not _is_preflight_model_call(call)]
+    auxiliary_positions = _auxiliary_preflight_positions(candidates, user_prompt_tokens)
+    measured: list[tuple[int, float]] = []
+    for position, call in enumerate(candidates):
+        if position in auxiliary_positions:
             continue
         input_tokens = call.get("input_tokens")
         if input_tokens is not None:
-            points.append((float(call.get("call_index", index)), float(input_tokens)))
-    if len(points) < 2:
+            measured.append((int(call.get("call_index", position)), float(input_tokens)))
+    if len(measured) < 2:
         return MetricValue(None, "unsupported", {"reason": "need at least two non-aggregate non-preflight model calls"})
+    threads = _segment_context_threads(measured)
+    dominant = max(threads, key=lambda thread: (len(thread), thread[-1][1]))
+    fitted = dominant if len(dominant) >= 2 else measured
+    # x is the call's turn position within its thread, so the slope reads as
+    # input-token growth per turn of the dominant conversation.
+    points = [(float(position), input_tokens) for position, (_, input_tokens) in enumerate(fitted)]
+    details: dict[str, Any] = {
+        "points": points,
+        "call_indices": [call_index for call_index, _ in fitted],
+    }
+    if len(threads) > 1 and fitted is dominant:
+        details["context_thread_sizes"] = sorted((len(thread) for thread in threads), reverse=True)
+        details["excluded_call_indices"] = sorted(
+            call_index
+            for thread in threads
+            if thread is not dominant
+            for call_index, _ in thread
+        )
+    if auxiliary_positions:
+        details["auxiliary_preflight_call_indices"] = _auxiliary_preflight_call_indices(
+            candidates, auxiliary_positions
+        )
     xs = [point[0] for point in points]
     ys = [point[1] for point in points]
     x_mean = sum(xs) / len(xs)
@@ -106,7 +198,7 @@ def context_growth_rate(events: list[TraceEvent]) -> MetricValue:
     if denom == 0:
         return MetricValue(0.0, "full")
     slope = sum((x - x_mean) * (y - y_mean) for x, y in points) / denom
-    return MetricValue(slope, "full", {"points": points})
+    return MetricValue(slope, "full", details)
 
 
 def total_usage(events: list[TraceEvent]) -> dict[str, int | float | bool]:
@@ -115,37 +207,96 @@ def total_usage(events: list[TraceEvent]) -> dict[str, int | float | bool]:
         "cached_input_tokens": 0,
         "output_tokens": 0,
         "reasoning_output_tokens": 0,
+        "reasoning_tokens_in_output": 0,
         "token_cost": 0,
         "cost_usd": 0.0,
         "cost_available": False,
     }
-    calls = _model_calls(events)
+    all_calls = _model_calls(events)
+    summary_positions = _cumulative_summary_positions(all_calls)
+    per_call = [
+        call
+        for position, call in enumerate(all_calls)
+        if position not in summary_positions and not _is_aggregate_model_call(call)
+    ]
+    summary_calls = [
+        call
+        for position, call in enumerate(all_calls)
+        if position in summary_positions or _is_aggregate_model_call(call)
+    ]
+    # Aggregate/summary calls repeat usage already counted by per-call events,
+    # so they only stand in for totals when no per-call usage exists.
+    calls = per_call or all_calls
     cost_available = bool(calls)
     for call in calls:
         usage["input_tokens"] += int(call.get("input_tokens", 0) or 0)
         usage["cached_input_tokens"] += int(call.get("cached_input_tokens", 0) or 0)
         usage["output_tokens"] += int(call.get("output_tokens", 0) or 0)
-        usage["reasoning_output_tokens"] += int(call.get("reasoning_output_tokens", 0) or 0)
+        reasoning_tokens = int(call.get("reasoning_output_tokens", 0) or 0)
+        usage["reasoning_output_tokens"] += reasoning_tokens
+        if call.get("reasoning_in_output"):
+            usage["reasoning_tokens_in_output"] += reasoning_tokens
         if call.get("cost_usd") is None:
             cost_available = False
         else:
             usage["cost_usd"] += float(call.get("cost_usd", 0.0) or 0.0)
+    if not cost_available and per_call and summary_calls:
+        if all(call.get("cost_usd") is not None for call in summary_calls):
+            usage["cost_usd"] = sum(float(call.get("cost_usd") or 0.0) for call in summary_calls)
+            cost_available = True
     usage["token_cost"] = usage_token_cost(usage)
     usage["cost_available"] = cost_available
     return usage
 
 
 def usage_token_cost(usage: dict[str, Any]) -> int:
+    # Reasoning tokens reported as a breakdown of completion/output tokens
+    # (OpenAI-compatible completion_tokens_details) are already inside
+    # output_tokens; only separately billed reasoning tokens are additive.
+    reasoning_tokens = int(usage.get("reasoning_output_tokens", 0) or 0)
+    nested_reasoning_tokens = int(usage.get("reasoning_tokens_in_output", 0) or 0)
     return (
         int(usage.get("input_tokens", 0) or 0)
         + int(usage.get("output_tokens", 0) or 0)
-        + int(usage.get("reasoning_output_tokens", 0) or 0)
+        + max(reasoning_tokens - nested_reasoning_tokens, 0)
     )
 
 
 def _is_aggregate_model_call(call: dict[str, Any]) -> bool:
     metadata = call.get("metadata")
     return isinstance(metadata, dict) and bool(metadata.get("aggregate"))
+
+
+def _cumulative_summary_positions(calls: list[dict[str, Any]]) -> set[int]:
+    """Positions of calls whose usage repeats the cumulative totals of the
+    calls before them (for example Qwen Code's final result event). Adapters
+    mark these as aggregate for new runs; detecting them here as well keeps
+    metrics correct when recomputing from traces recorded before that."""
+    positions: set[int] = set()
+    running_input = 0
+    running_output = 0
+    counted = 0
+    for position, call in enumerate(calls):
+        if _is_aggregate_model_call(call):
+            continue
+        input_tokens = int(call.get("input_tokens", 0) or 0)
+        output_tokens = int(call.get("output_tokens", 0) or 0)
+        if counted >= 2 and running_input > 0 and input_tokens == running_input and output_tokens == running_output:
+            positions.add(position)
+            continue
+        running_input += input_tokens
+        running_output += output_tokens
+        counted += 1
+    return positions
+
+
+def _per_call_model_calls(calls: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    summary_positions = _cumulative_summary_positions(calls)
+    return [
+        call
+        for position, call in enumerate(calls)
+        if position not in summary_positions and not _is_aggregate_model_call(call)
+    ]
 
 
 def _is_preflight_model_call(call: dict[str, Any]) -> bool:
@@ -233,7 +384,7 @@ def compute_run_metrics(events: list[TraceEvent], user_prompt_tokens: int) -> di
     usage = total_usage(events)
     return {
         "startup_tax": startup_tax(events, user_prompt_tokens).to_dict(),
-        "context_growth_rate": context_growth_rate(events).to_dict(),
+        "context_growth_rate": context_growth_rate(events, user_prompt_tokens).to_dict(),
         "tool_output_retention_ratio": tool_output_retention_ratio(events).to_dict(),
         "usage": usage,
     }

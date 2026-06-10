@@ -253,6 +253,7 @@ class BenchmarkRunner:
 def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(results)
     solved = sum(1 for item in results if item.get("success"))
+    oracle_solved = sum(1 for item in results if _result_oracle_success(item))
     total_cost = sum(float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0) for item in results)
     total_token_cost = sum(_result_token_cost(item) for item in results)
     all_dollar_costs_available = bool(results) and all(_result_dollar_cost_available(item) for item in results)
@@ -264,6 +265,7 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
             {
                 "attempted": 0,
                 "solved": 0,
+                "oracle_solved": 0,
                 "token_cost": 0,
                 "cost_usd": 0.0,
                 "runs_with_dollar_cost": 0,
@@ -275,6 +277,7 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         )
         bucket["attempted"] += 1
         bucket["solved"] += 1 if item.get("success") else 0
+        bucket["oracle_solved"] += 1 if _result_oracle_success(item) else 0
         bucket["token_cost"] += _result_token_cost(item)
         bucket["cost_usd"] += float(item.get("metrics", {}).get("usage", {}).get("cost_usd", 0.0) or 0.0)
         bucket["runs_with_dollar_cost"] += 1 if _result_dollar_cost_available(item) else 0
@@ -284,12 +287,21 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
                 bucket["metric_values"][metric_name].append(float(metric["value"]))
     for bucket in by_harness.values():
         bucket["solve_rate"] = bucket["solved"] / bucket["attempted"] if bucket["attempted"] else 0.0
+        bucket["oracle_solve_rate"] = bucket["oracle_solved"] / bucket["attempted"] if bucket["attempted"] else 0.0
         bucket["token_cost_per_solved_task"] = (
             bucket["token_cost"] / bucket["solved"] if bucket["solved"] else None
+        )
+        bucket["token_cost_per_oracle_solved_task"] = (
+            bucket["token_cost"] / bucket["oracle_solved"] if bucket["oracle_solved"] else None
         )
         bucket["dollar_cost_per_solved_task"] = (
             bucket["cost_usd"] / bucket["solved"]
             if bucket["solved"] and bucket["runs_with_dollar_cost"] == bucket["attempted"]
+            else None
+        )
+        bucket["dollar_cost_per_oracle_solved_task"] = (
+            bucket["cost_usd"] / bucket["oracle_solved"]
+            if bucket["oracle_solved"] and bucket["runs_with_dollar_cost"] == bucket["attempted"]
             else None
         )
         bucket["metrics"] = {
@@ -303,11 +315,17 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "attempted": total,
         "solved": solved,
         "solve_rate": solved / total if total else 0.0,
+        "oracle_solved": oracle_solved,
+        "oracle_solve_rate": oracle_solved / total if total else 0.0,
         "token_cost": total_token_cost,
         "token_cost_per_solved_task": total_token_cost / solved if solved else None,
+        "token_cost_per_oracle_solved_task": total_token_cost / oracle_solved if oracle_solved else None,
         "cost_usd": total_cost,
         "dollar_cost_per_solved_task": (
             total_cost / solved if solved and all_dollar_costs_available else None
+        ),
+        "dollar_cost_per_oracle_solved_task": (
+            total_cost / oracle_solved if oracle_solved and all_dollar_costs_available else None
         ),
         "by_harness": by_harness,
         "by_perturbation": _summarize_by_perturbation(results),
@@ -320,6 +338,16 @@ def _result_token_cost(item: dict[str, Any]) -> int:
     return usage_token_cost(usage)
 
 
+def _result_oracle_success(item: dict[str, Any]) -> bool:
+    # Strict success also requires a zero adapter exit code, which penalizes
+    # runs that pass the oracle but exit through a wall-time or budget cap.
+    # The oracle denominator measures task outcome alone.
+    oracle = item.get("oracle_result")
+    if isinstance(oracle, dict) and "success" in oracle:
+        return bool(oracle.get("success"))
+    return bool(item.get("success"))
+
+
 def _result_dollar_cost_available(item: dict[str, Any]) -> bool:
     usage = item.get("metrics", {}).get("usage", {})
     return usage_token_cost(usage) > 0 and bool(usage.get("cost_available"))
@@ -329,9 +357,11 @@ def _summarize_by_perturbation(results: list[dict[str, Any]]) -> dict[str, dict[
     buckets: dict[str, dict[str, Any]] = {}
     for item in results:
         perturbation_id = str(item.get("perturbation_id") or "base")
-        bucket = buckets.setdefault(perturbation_id, {"attempted": 0, "solved": 0})
+        bucket = buckets.setdefault(perturbation_id, {"attempted": 0, "solved": 0, "oracle_solved": 0})
         bucket["attempted"] += 1
         bucket["solved"] += 1 if item.get("success") else 0
+        bucket["oracle_solved"] += 1 if _result_oracle_success(item) else 0
     for bucket in buckets.values():
         bucket["solve_rate"] = bucket["solved"] / bucket["attempted"] if bucket["attempted"] else 0.0
+        bucket["oracle_solve_rate"] = bucket["oracle_solved"] / bucket["attempted"] if bucket["attempted"] else 0.0
     return buckets

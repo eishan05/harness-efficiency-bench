@@ -74,8 +74,11 @@ class MetricsTest(unittest.TestCase):
         metrics = compute_run_metrics(events, user_prompt_tokens=0)
 
         self.assertEqual(metrics["context_growth_rate"]["status"], "full")
-        self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(0.0, 10.0), (2.0, 20.0)])
-        self.assertEqual(metrics["context_growth_rate"]["value"], 5.0)
+        # x is the turn position within the conversation thread; the
+        # aggregate call between the two real calls is not a turn.
+        self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(0.0, 10.0), (1.0, 20.0)])
+        self.assertEqual(metrics["context_growth_rate"]["details"]["call_indices"], [0, 2])
+        self.assertEqual(metrics["context_growth_rate"]["value"], 10.0)
 
     def test_startup_tax_sums_provider_first_and_task_first_when_distinct(self):
         prompt = "fix the bug"
@@ -101,8 +104,187 @@ class MetricsTest(unittest.TestCase):
             "provider_first_startup_tax + task_first_startup_tax",
         )
         self.assertEqual(metrics["context_growth_rate"]["status"], "full")
-        self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(1.0, 100.0), (2.0, 120.0)])
+        self.assertEqual(metrics["context_growth_rate"]["details"]["points"], [(0.0, 100.0), (1.0, 120.0)])
+        self.assertEqual(metrics["context_growth_rate"]["details"]["call_indices"], [1, 2])
         self.assertEqual(metrics["usage"]["input_tokens"], 270)
+
+    def test_tiny_first_call_counts_as_auxiliary_preflight(self):
+        # Opencode/Kilo shape: a small helper request (e.g. title generation)
+        # precedes the first call that carries the injected agent context.
+        prompt = "fix the bug"
+        prompt_tokens = count_tokens(prompt)
+        events = [
+            model_call_event(call_index=0, input_tokens=672, output_tokens=8),
+            model_call_event(call_index=1, input_tokens=7786, output_tokens=20),
+            model_call_event(call_index=2, input_tokens=8071, output_tokens=20),
+        ]
+
+        metrics = compute_run_metrics(events, prompt_tokens)
+
+        self.assertEqual(metrics["startup_tax"]["status"], "full")
+        self.assertEqual(
+            metrics["startup_tax"]["value"],
+            (672 - prompt_tokens) + (7786 - prompt_tokens),
+        )
+        self.assertEqual(metrics["startup_tax"]["details"]["provider_first_call_index"], 0)
+        self.assertEqual(metrics["startup_tax"]["details"]["task_first_call_index"], 1)
+        self.assertEqual(metrics["startup_tax"]["details"]["auxiliary_preflight_call_indices"], [0])
+        self.assertEqual(
+            metrics["context_growth_rate"]["details"]["points"],
+            [(0.0, 7786.0), (1.0, 8071.0)],
+        )
+        self.assertEqual(metrics["context_growth_rate"]["details"]["call_indices"], [1, 2])
+        self.assertEqual(metrics["context_growth_rate"]["details"]["auxiliary_preflight_call_indices"], [0])
+
+    def test_lean_first_call_is_not_auxiliary_preflight(self):
+        # Aider-architect shape: a genuinely lean first call followed by a
+        # moderately larger second call must stay the task-first call.
+        prompt = "fix the bug"
+        prompt_tokens = count_tokens(prompt)
+        events = [
+            model_call_event(call_index=0, input_tokens=739, output_tokens=50),
+            model_call_event(call_index=1, input_tokens=1183, output_tokens=50),
+        ]
+
+        metrics = compute_run_metrics(events, prompt_tokens)
+
+        self.assertEqual(metrics["startup_tax"]["value"], 739 - prompt_tokens)
+        self.assertNotIn("auxiliary_preflight_call_indices", metrics["startup_tax"]["details"])
+        self.assertEqual(len(metrics["context_growth_rate"]["details"]["points"]), 2)
+
+    def test_large_first_call_is_not_auxiliary_preflight_despite_jump(self):
+        # A first call already carrying a big injected context stays the
+        # task-first call even if a large tool result lands on call two.
+        prompt = "fix the bug"
+        prompt_tokens = count_tokens(prompt)
+        events = [
+            model_call_event(call_index=0, input_tokens=4302, output_tokens=20),
+            model_call_event(call_index=1, input_tokens=17000, output_tokens=20),
+            model_call_event(call_index=2, input_tokens=17500, output_tokens=20),
+        ]
+
+        metrics = compute_run_metrics(events, prompt_tokens)
+
+        self.assertEqual(metrics["startup_tax"]["value"], 4302 - prompt_tokens)
+        self.assertNotIn("auxiliary_preflight_call_indices", metrics["startup_tax"]["details"])
+        self.assertEqual(len(metrics["context_growth_rate"]["details"]["points"]), 3)
+
+    def test_growth_fits_dominant_thread_and_excludes_interleaved_subthread(self):
+        # Kilo shape: the main conversation is interrupted by a smaller
+        # sub-conversation, then resumes. The slope must come from the main
+        # thread only, measured per turn of that thread.
+        inputs = [13000, 5800, 6100, 6900, 13900, 14600, 15000]
+        events = [
+            model_call_event(call_index=index, input_tokens=value, output_tokens=10)
+            for index, value in enumerate(inputs)
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        growth = metrics["context_growth_rate"]
+        self.assertEqual(growth["status"], "full")
+        self.assertEqual(growth["details"]["call_indices"], [0, 4, 5, 6])
+        self.assertEqual(growth["details"]["excluded_call_indices"], [1, 2, 3])
+        self.assertEqual(growth["details"]["context_thread_sizes"], [4, 3])
+        self.assertAlmostEqual(growth["value"], 670.0)
+
+    def test_growth_keeps_small_dips_in_one_thread(self):
+        # Small within-thread decreases (prompt trimming, token jitter) must
+        # not split the conversation into separate threads.
+        inputs = [10000, 9900, 10500, 10400, 11000]
+        events = [
+            model_call_event(call_index=index, input_tokens=value, output_tokens=10)
+            for index, value in enumerate(inputs)
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        growth = metrics["context_growth_rate"]
+        self.assertEqual(growth["details"]["call_indices"], [0, 1, 2, 3, 4])
+        self.assertNotIn("excluded_call_indices", growth["details"])
+
+    def test_token_cost_excludes_reasoning_nested_in_output(self):
+        events = [
+            model_call_event(
+                call_index=0,
+                input_tokens=100,
+                output_tokens=80,
+                reasoning_output_tokens=60,
+                reasoning_in_output=True,
+            ),
+            model_call_event(
+                call_index=1,
+                input_tokens=120,
+                output_tokens=40,
+                reasoning_output_tokens=30,
+            ),
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        usage = metrics["usage"]
+        self.assertEqual(usage["reasoning_output_tokens"], 90)
+        self.assertEqual(usage["reasoning_tokens_in_output"], 60)
+        # Nested reasoning is already inside output_tokens; only the separate
+        # 30 reasoning tokens are additive.
+        self.assertEqual(usage["token_cost"], 100 + 80 + 120 + 40 + 30)
+
+    def test_total_usage_skips_aggregate_calls_when_per_call_usage_exists(self):
+        # Qwen shape: a final summary event repeats the cumulative session
+        # usage. It must not be double-counted in solve-efficiency totals.
+        events = [
+            model_call_event(call_index=0, input_tokens=100, output_tokens=10),
+            model_call_event(call_index=1, input_tokens=200, output_tokens=20),
+            model_call_event(
+                call_index=2,
+                input_tokens=300,
+                output_tokens=30,
+                cost_usd=0.5,
+                metadata={"aggregate": True, "aggregate_reason": "usage equals cumulative totals of prior model calls"},
+            ),
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        usage = metrics["usage"]
+        self.assertEqual(usage["input_tokens"], 300)
+        self.assertEqual(usage["output_tokens"], 30)
+        self.assertEqual(usage["token_cost"], 330)
+        # The aggregate call carries the only cost; it stands in for totals.
+        self.assertEqual(usage["cost_usd"], 0.5)
+        self.assertTrue(usage["cost_available"])
+        self.assertEqual(metrics["context_growth_rate"]["details"]["call_indices"], [0, 1])
+
+    def test_unmarked_cumulative_summary_call_detected_structurally(self):
+        # Traces recorded before adapters marked summary events still need
+        # the cumulative call excluded when metrics are recomputed.
+        events = [
+            model_call_event(call_index=0, input_tokens=100, output_tokens=10),
+            model_call_event(call_index=1, input_tokens=150, output_tokens=20),
+            model_call_event(call_index=2, input_tokens=200, output_tokens=30),
+            model_call_event(call_index=3, input_tokens=450, output_tokens=60),
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        self.assertEqual(metrics["usage"]["input_tokens"], 450)
+        self.assertEqual(metrics["usage"]["token_cost"], 510)
+        self.assertEqual(metrics["context_growth_rate"]["details"]["call_indices"], [0, 1, 2])
+
+    def test_total_usage_still_uses_aggregate_only_runs(self):
+        events = [
+            model_call_event(
+                call_index=0,
+                input_tokens=500,
+                output_tokens=50,
+                metadata={"aggregate": True},
+            )
+        ]
+
+        metrics = compute_run_metrics(events, user_prompt_tokens=0)
+
+        self.assertEqual(metrics["usage"]["input_tokens"], 500)
+        self.assertEqual(metrics["usage"]["token_cost"], 550)
 
     def test_research_coverage_tracks_research_metrics_only(self):
         coverage = research_metric_coverage(

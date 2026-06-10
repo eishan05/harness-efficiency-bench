@@ -109,18 +109,40 @@ def parse_docker_agent_events(stdout: str, config: dict[str, Any], stderr: str =
     raw_events = _parse_json_or_jsonl(stdout)
     normalized: list[TraceEvent] = []
     call_index = 0
+    running_input_tokens = 0
+    running_output_tokens = 0
     for raw in raw_events:
         usage = _event_usage(raw)
         if usage and _usage_has_activity(usage):
+            input_tokens = _input_tokens(usage)
+            output_tokens = _int_value(usage.get("output_tokens", usage.get("completion_tokens", 0)))
+            reasoning_tokens, reasoning_in_output = _reasoning_tokens_info(usage)
+            metadata: dict[str, Any] = {"source": parser, "raw_event_type": raw.get("type") or raw.get("role")}
+            # Some CLIs (Qwen Code) end the stream with a summary event whose
+            # usage is the cumulative total of every prior call. Counting it
+            # as a model call doubles solve-efficiency totals and corrupts
+            # the context-growth slope.
+            if (
+                call_index >= 2
+                and running_input_tokens > 0
+                and input_tokens == running_input_tokens
+                and output_tokens == running_output_tokens
+            ):
+                metadata["aggregate"] = True
+                metadata["aggregate_reason"] = "usage equals cumulative totals of prior model calls"
+            else:
+                running_input_tokens += input_tokens
+                running_output_tokens += output_tokens
             normalized.append(
                 model_call_event(
                     call_index=call_index,
-                    input_tokens=_input_tokens(usage),
+                    input_tokens=input_tokens,
                     cached_input_tokens=_cached_tokens(usage),
-                    output_tokens=_int_value(usage.get("output_tokens", usage.get("completion_tokens", 0))),
-                    reasoning_output_tokens=_reasoning_tokens(usage),
+                    output_tokens=output_tokens,
+                    reasoning_output_tokens=reasoning_tokens,
+                    reasoning_in_output=reasoning_in_output,
                     cost_usd=_cost_usd(raw, usage),
-                    metadata={"source": parser, "raw_event_type": raw.get("type") or raw.get("role")},
+                    metadata=metadata,
                 )
             )
             call_index += 1
@@ -154,13 +176,15 @@ def parse_proxy_trace_events(workspace: Path, config: dict[str, Any]) -> list[Tr
         usage = _event_usage(raw)
         if not usage or not _usage_has_activity(usage):
             continue
+        reasoning_tokens, reasoning_in_output = _reasoning_tokens_info(usage)
         events.append(
             model_call_event(
                 call_index=call_index,
                 input_tokens=_input_tokens(usage),
                 cached_input_tokens=_cached_tokens(usage),
                 output_tokens=_int_value(usage.get("output_tokens", usage.get("completion_tokens", 0))),
-                reasoning_output_tokens=_reasoning_tokens(usage),
+                reasoning_output_tokens=reasoning_tokens,
+                reasoning_in_output=reasoning_in_output,
                 cost_usd=_cost_usd(raw, usage),
                 metadata=_proxy_metadata(raw, default_source),
             )
@@ -313,18 +337,21 @@ def _cached_tokens(usage: dict[str, Any]) -> int:
     return _int_value(usage.get("cache_read_input_tokens", usage.get("cached_input_tokens", 0)))
 
 
+def _reasoning_tokens_info(usage: dict[str, Any]) -> tuple[int, bool]:
+    # OpenAI-compatible usage reports reasoning as a breakdown of
+    # completion/output tokens, so those counts are already inside
+    # output_tokens and must not be added again to token cost.
+    for details_key in ("completion_tokens_details", "output_tokens_details"):
+        details = usage.get(details_key)
+        if isinstance(details, dict):
+            detail_value = _int_value(details.get("reasoning_tokens", details.get("thinking_tokens")))
+            if detail_value:
+                return detail_value, True
+    return _int_value(usage.get("reasoning_output_tokens", usage.get("thinking_tokens", 0))), False
+
+
 def _reasoning_tokens(usage: dict[str, Any]) -> int:
-    details = usage.get("completion_tokens_details")
-    if isinstance(details, dict):
-        detail_value = _int_value(details.get("reasoning_tokens", details.get("thinking_tokens")))
-        if detail_value:
-            return detail_value
-    details = usage.get("output_tokens_details")
-    if isinstance(details, dict):
-        detail_value = _int_value(details.get("reasoning_tokens", details.get("thinking_tokens")))
-        if detail_value:
-            return detail_value
-    return _int_value(usage.get("reasoning_output_tokens", usage.get("thinking_tokens", 0)))
+    return _reasoning_tokens_info(usage)[0]
 
 
 def _tool_result(raw: dict[str, Any], parser: str) -> TraceEvent | None:

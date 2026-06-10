@@ -271,27 +271,34 @@ def _markdown_report(summary: dict[str, Any]) -> str:
         "# Harness Efficiency Report",
         "",
         f"- Attempted: {summary['attempted']}",
-        f"- Solved: {summary['solved']}",
-        f"- Solve rate: {summary['solve_rate']:.3f}",
+        f"- Solved (strict): {summary['solved']}",
+        f"- Solve rate (strict): {summary['solve_rate']:.3f}",
+        f"- Solved (oracle): {summary['oracle_solved']}",
+        f"- Solve rate (oracle): {summary['oracle_solve_rate']:.3f}",
         f"- Token cost: {summary['token_cost']}",
-        f"- Token cost per solved task: {summary['token_cost_per_solved_task']}",
+        f"- Token cost per solved task (strict): {summary['token_cost_per_solved_task']}",
+        f"- Token cost per solved task (oracle): {summary['token_cost_per_oracle_solved_task']}",
         f"- Cost USD: {summary['cost_usd']:.6f}",
-        f"- Dollar cost per solved task: {summary['dollar_cost_per_solved_task']}",
+        f"- Dollar cost per solved task (strict): {summary['dollar_cost_per_solved_task']}",
+        f"- Dollar cost per solved task (oracle): {summary['dollar_cost_per_oracle_solved_task']}",
         "",
-        "| Harness | Attempted | Solved | Solve Rate | Token Cost | Tokens / Solved | Cost USD | USD / Solved | Startup Tax | Growth |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Harness | Attempted | Solved | Oracle Solved | Solve Rate | Token Cost | Tokens / Solved | Tokens / Oracle-Solved | Cost USD | USD / Solved | Startup Tax | Growth |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for harness_id, bucket in sorted(summary["by_harness"].items()):
         token_cost_per = bucket["token_cost_per_solved_task"]
         token_cost_per_text = "" if token_cost_per is None else f"{token_cost_per:.3f}"
+        oracle_token_cost_per = bucket["token_cost_per_oracle_solved_task"]
+        oracle_token_cost_per_text = "" if oracle_token_cost_per is None else f"{oracle_token_cost_per:.3f}"
         dollar_cost_per = bucket["dollar_cost_per_solved_task"]
         dollar_cost_per_text = "" if dollar_cost_per is None else f"{dollar_cost_per:.6f}"
         metrics = bucket.get("metrics", {})
         startup = _optional_number(metrics.get("startup_tax", {}).get("avg"))
         growth = _optional_number(metrics.get("context_growth_rate", {}).get("avg"))
         lines.append(
-            f"| {harness_id} | {bucket['attempted']} | {bucket['solved']} | "
+            f"| {harness_id} | {bucket['attempted']} | {bucket['solved']} | {bucket['oracle_solved']} | "
             f"{bucket['solve_rate']:.3f} | {bucket['token_cost']} | {token_cost_per_text} | "
+            f"{oracle_token_cost_per_text} | "
             f"{bucket['cost_usd']:.6f} | {dollar_cost_per_text} | "
             f"{startup} | {growth} |"
         )
@@ -301,13 +308,14 @@ def _markdown_report(summary: dict[str, Any]) -> str:
                 "",
                 "## Perturbations",
                 "",
-                "| Perturbation | Attempted | Solved | Solve Rate |",
-                "|---|---:|---:|---:|",
+                "| Perturbation | Attempted | Solved | Oracle Solved | Solve Rate |",
+                "|---|---:|---:|---:|---:|",
             ]
         )
         for perturbation_id, bucket in sorted(summary["by_perturbation"].items()):
             lines.append(
-                f"| {perturbation_id} | {bucket['attempted']} | {bucket['solved']} | {bucket['solve_rate']:.3f} |"
+                f"| {perturbation_id} | {bucket['attempted']} | {bucket['solved']} | "
+                f"{bucket['oracle_solved']} | {bucket['solve_rate']:.3f} |"
             )
     coverage = summary.get("research_metric_coverage")
     if coverage:
