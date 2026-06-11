@@ -1,0 +1,678 @@
+{
+ "dcurve": {
+  "aider": {
+   "100k": {
+    "attempted": 12,
+    "mean_tokens": 106009.58333333333,
+    "oracle_solved": 12
+   },
+   "200k": {
+    "attempted": 1,
+    "mean_tokens": 202052.0,
+    "oracle_solved": 1
+   },
+   "20k": {
+    "attempted": 12,
+    "mean_tokens": 24715.5,
+    "oracle_solved": 11
+   },
+   "50k": {
+    "attempted": 12,
+    "mean_tokens": 55262.166666666664,
+    "oracle_solved": 12
+   },
+   "base": {
+    "attempted": 12,
+    "mean_tokens": 4789.416666666667,
+    "oracle_solved": 12
+   }
+  },
+  "claude-code": {
+   "100k": {
+    "attempted": 12,
+    "mean_tokens": 286510.0833333333,
+    "oracle_solved": 2
+   },
+   "200k": {
+    "attempted": 1,
+    "mean_tokens": 409468.0,
+    "oracle_solved": 0
+   },
+   "20k": {
+    "attempted": 12,
+    "mean_tokens": 221975.91666666666,
+    "oracle_solved": 12
+   },
+   "50k": {
+    "attempted": 12,
+    "mean_tokens": 472761.8333333333,
+    "oracle_solved": 12
+   },
+   "base": {
+    "attempted": 12,
+    "mean_tokens": 46696.166666666664,
+    "oracle_solved": 12
+   }
+  },
+  "codex": {
+   "100k": {
+    "attempted": 12,
+    "mean_tokens": 909360.0,
+    "oracle_solved": 12
+   },
+   "200k": {
+    "attempted": 1,
+    "mean_tokens": 0.0,
+    "oracle_solved": 0
+   },
+   "20k": {
+    "attempted": 12,
+    "mean_tokens": 237359.16666666666,
+    "oracle_solved": 12
+   },
+   "50k": {
+    "attempted": 12,
+    "mean_tokens": 479756.5,
+    "oracle_solved": 12
+   },
+   "base": {
+    "attempted": 12,
+    "mean_tokens": 82134.16666666667,
+    "oracle_solved": 12
+   }
+  },
+  "kilo": {
+   "100k": {
+    "attempted": 12,
+    "mean_tokens": 125550.0,
+    "oracle_solved": 12
+   },
+   "200k": {
+    "attempted": 1,
+    "mean_tokens": 29448.0,
+    "oracle_solved": 1
+   },
+   "20k": {
+    "attempted": 12,
+    "mean_tokens": 122611.0,
+    "oracle_solved": 12
+   },
+   "50k": {
+    "attempted": 12,
+    "mean_tokens": 125427.25,
+    "oracle_solved": 12
+   },
+   "base": {
+    "attempted": 12,
+    "mean_tokens": 119291.83333333333,
+    "oracle_solved": 12
+   }
+  }
+ },
+ "decomposition": {
+  "deepseek": {
+   "n": 12,
+   "r2_logC_on_logAT": 0.9902978257008176,
+   "slope": 0.8135761175777886,
+   "spearman_C_vs_AT": 0.9790209790209791
+  },
+  "nemotron": {
+   "n": 12,
+   "r2_logC_on_logAT": 0.9918368829151905,
+   "slope": 0.8747827250644518,
+   "spearman_C_vs_AT": 0.986013986013986
+  }
+ },
+ "deepseek": {
+  "aider": {
+   "attempted": 12,
+   "c_oracle": 5031.090909090909,
+   "c_oracle_disc": 5031.090909090909,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": null,
+   "models_on_wire": [],
+   "oracle_solved": 11,
+   "startup_tax": 3044.25,
+   "total_tokens": 55342,
+   "turns_mean": 1.0,
+   "turns_median": 1.0
+  },
+  "aider-architect": {
+   "attempted": 12,
+   "c_oracle": 4125.090909090909,
+   "c_oracle_disc": 4125.090909090909,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 498.0833333333333,
+   "models_on_wire": [],
+   "oracle_solved": 11,
+   "startup_tax": 708.3333333333334,
+   "total_tokens": 45376,
+   "turns_mean": 2.0,
+   "turns_median": 2.0
+  },
+  "claude-code": {
+   "attempted": 12,
+   "c_oracle": 51820.166666666664,
+   "c_oracle_disc": 51793.46666666667,
+   "cached_share_of_input": 0.0006142760515164092,
+   "cached_share_of_total": 0.0005724926910694772,
+   "cached_tokens": 356.00000000002586,
+   "growth": 429.20882034632035,
+   "models_on_wire": [
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 4511.583333333333,
+   "total_tokens": 621842,
+   "turns_mean": 9.0,
+   "turns_median": 9.0
+  },
+  "codex": {
+   "attempted": 12,
+   "c_oracle": 84793.66666666667,
+   "c_oracle_disc": 26291.266666666663,
+   "cached_share_of_input": 0.8115552401948901,
+   "cached_share_of_total": 0.7665981342946211,
+   "cached_tokens": 780032.0,
+   "growth": 319.4155705405705,
+   "models_on_wire": [
+    "deepseek/deepseek-v4-flash"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 8038.5,
+   "total_tokens": 1017524,
+   "turns_mean": 8.166666666666666,
+   "turns_median": 8.5
+  },
+  "goose": {
+   "attempted": 12,
+   "c_oracle": 55674.083333333336,
+   "c_oracle_disc": 21594.083333333332,
+   "cached_share_of_input": 0.7191523371659637,
+   "cached_share_of_total": 0.6801489023169068,
+   "cached_tokens": 454400.0,
+   "growth": 372.12695915195917,
+   "models_on_wire": [
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 3920.0833333333335,
+   "total_tokens": 668089,
+   "turns_mean": 9.416666666666666,
+   "turns_median": 10.0
+  },
+  "hermes-agent": {
+   "attempted": 12,
+   "c_oracle": 30454.25,
+   "c_oracle_disc": 16044.65,
+   "cached_share_of_input": 0.5818710439443957,
+   "cached_share_of_total": 0.5257284834355358,
+   "cached_tokens": 192128.0,
+   "growth": 505.0835317460317,
+   "models_on_wire": [
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 2573.5,
+   "total_tokens": 365451,
+   "turns_mean": 6.75,
+   "turns_median": 7.0
+  },
+  "kilo": {
+   "attempted": 12,
+   "c_oracle": 119315.58333333333,
+   "c_oracle_disc": 49072.38333333333,
+   "cached_share_of_input": 0.6792374012230358,
+   "cached_share_of_total": 0.6541308169441404,
+   "cached_tokens": 936576.0,
+   "growth": 557.3555555555555,
+   "models_on_wire": [
+    "anthropic/claude-4.5-haiku-20251001",
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 14476.583333333334,
+   "total_tokens": 1431787,
+   "turns_mean": 8.916666666666666,
+   "turns_median": 9.5
+  },
+  "kimi-code": {
+   "attempted": 12,
+   "c_oracle": 105184.75,
+   "c_oracle_disc": 53488.75,
+   "cached_share_of_input": 0.5610881828616083,
+   "cached_share_of_total": 0.5460867663801073,
+   "cached_tokens": 689280.0,
+   "growth": 513.5192460317461,
+   "models_on_wire": [
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 16040.833333333334,
+   "total_tokens": 1262217,
+   "turns_mean": 5.833333333333333,
+   "turns_median": 6.0
+  },
+  "nanobot": {
+   "attempted": 12,
+   "c_oracle": 73511.66666666667,
+   "c_oracle_disc": 18897.266666666666,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.8254834833473145,
+   "cached_tokens": 728192.0,
+   "growth": 459.2967088467089,
+   "models_on_wire": [],
+   "oracle_solved": 12,
+   "startup_tax": 8499.416666666666,
+   "total_tokens": 882140,
+   "turns_mean": 7.083333333333333,
+   "turns_median": 7.0
+  },
+  "openclaw": {
+   "attempted": 12,
+   "c_oracle": 190777.72727272726,
+   "c_oracle_disc": 71095.4,
+   "cached_share_of_input": 0.7063016918495814,
+   "cached_share_of_total": 0.6970434417968554,
+   "cached_tokens": 1462784.0,
+   "growth": 232.19045815295814,
+   "models_on_wire": [
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 11,
+   "startup_tax": 23682.0,
+   "total_tokens": 2098555,
+   "turns_mean": 7.0,
+   "turns_median": 7.0
+  },
+  "opencode": {
+   "attempted": 12,
+   "c_oracle": 79634.0,
+   "c_oracle_disc": 25067.599999999995,
+   "cached_share_of_input": 0.7957127545551983,
+   "cached_share_of_total": 0.7613498421947075,
+   "cached_tokens": 727552.0,
+   "growth": 480.27182539682536,
+   "models_on_wire": [
+    "anthropic/claude-4.5-haiku-20251001",
+    "deepseek/deepseek-v4-flash-20260423"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 8366.333333333334,
+   "total_tokens": 955608,
+   "turns_mean": 8.416666666666666,
+   "turns_median": 8.5
+  },
+  "qwen-code": {
+   "attempted": 12,
+   "c_oracle": 181661.5,
+   "c_oracle_disc": 71203.9,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.6756008657126947,
+   "cached_tokens": 1472768.0000000002,
+   "growth": 452.1775224775225,
+   "models_on_wire": [],
+   "oracle_solved": 12,
+   "startup_tax": 21408.083333333332,
+   "total_tokens": 2179938,
+   "turns_mean": 8.583333333333334,
+   "turns_median": 8.5
+  }
+ },
+ "fidelity": {
+  "aider": {
+   "max": 1.2295573593506337,
+   "median": 1.0296241871974041,
+   "min": 1.0196838979916225,
+   "oracle_solved": 12,
+   "runs": 12
+  },
+  "aider-architect": {
+   "max": 1.2095645567595665,
+   "median": 1.009631484533377,
+   "min": 0.9996900960702182,
+   "oracle_solved": 10,
+   "runs": 12
+  },
+  "claude-code": {
+   "max": 1.2541884921428286,
+   "median": 1.0542315613179438,
+   "min": 1.0541832032070058,
+   "oracle_solved": 2,
+   "runs": 12
+  },
+  "codex": {
+   "max": 1.3291215162541485,
+   "median": 1.106799663158831,
+   "min": 1.0826843678459677,
+   "oracle_solved": 12,
+   "runs": 12
+  },
+  "goose": {
+   "max": 1.268343396377304,
+   "median": 1.0727491670250173,
+   "min": 1.0413971668782678,
+   "oracle_solved": 12,
+   "runs": 12
+  },
+  "hermes-agent": {
+   "max": 1.249380223119677,
+   "median": 1.0528649654137305,
+   "min": 1.0288410592716257,
+   "oracle_solved": 12,
+   "runs": 12
+  },
+  "kilo": {
+   "max": 0.1837246728841175,
+   "median": 0.16661917026203524,
+   "min": 0.13748737891253712,
+   "oracle_solved": 12,
+   "runs": 12
+  },
+  "kimi-code": {
+   "max": 0.0,
+   "median": 0.0,
+   "min": 0.0,
+   "oracle_solved": 0,
+   "runs": 12
+  },
+  "nanobot": {
+   "max": 1.3107381342716622,
+   "median": 1.1060186528359526,
+   "min": 1.0859733482620388,
+   "oracle_solved": 12,
+   "runs": 12
+  },
+  "openclaw": {
+   "max": 0.0,
+   "median": 0.0,
+   "min": 0.0,
+   "oracle_solved": 0,
+   "runs": 12
+  },
+  "opencode": {
+   "max": 0.13563438990014096,
+   "median": 0.1081744494036197,
+   "min": 0.08031510231828133,
+   "oracle_solved": 11,
+   "runs": 12
+  },
+  "qwen-code": {
+   "max": 1.4569554960214324,
+   "median": 1.247894351845272,
+   "min": 1.2160230328598134,
+   "oracle_solved": 12,
+   "runs": 12
+  }
+ },
+ "harness_order": [
+  "aider-architect",
+  "aider",
+  "claude-code",
+  "codex",
+  "goose",
+  "hermes-agent",
+  "kilo",
+  "kimi-code",
+  "nanobot",
+  "openclaw",
+  "opencode",
+  "qwen-code"
+ ],
+ "nemotron": {
+  "aider": {
+   "attempted": 12,
+   "c_oracle": 4114.0,
+   "c_oracle_disc": 4114.0,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": null,
+   "models_on_wire": [],
+   "oracle_solved": 11,
+   "startup_tax": 3069.25,
+   "total_tokens": 45254,
+   "turns_mean": 1.0,
+   "turns_median": 1.0
+  },
+  "aider-architect": {
+   "attempted": 12,
+   "c_oracle": 3522.090909090909,
+   "c_oracle_disc": 3522.090909090909,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 399.5,
+   "models_on_wire": [],
+   "oracle_solved": 11,
+   "startup_tax": 741.4166666666666,
+   "total_tokens": 38743,
+   "turns_mean": 2.0,
+   "turns_median": 2.0
+  },
+  "claude-code": {
+   "attempted": 12,
+   "c_oracle": 54579.833333333336,
+   "c_oracle_disc": 54579.833333333336,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 299.0794733044733,
+   "models_on_wire": [
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 4612.666666666667,
+   "total_tokens": 654958,
+   "turns_mean": 10.166666666666666,
+   "turns_median": 11.0
+  },
+  "codex": {
+   "attempted": 12,
+   "c_oracle": 89642.81818181818,
+   "c_oracle_disc": 89642.81818181818,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 241.28419497169497,
+   "models_on_wire": [
+    "nvidia/nemotron-3-ultra-550b-a55b:free"
+   ],
+   "oracle_solved": 11,
+   "startup_tax": 8359.0,
+   "total_tokens": 986071,
+   "turns_mean": 8.666666666666666,
+   "turns_median": 9.0
+  },
+  "goose": {
+   "attempted": 12,
+   "c_oracle": 61864.72727272727,
+   "c_oracle_disc": 61864.72727272727,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 163.54323454323455,
+   "models_on_wire": [
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 11,
+   "startup_tax": 4435.0,
+   "total_tokens": 680512,
+   "turns_mean": 10.416666666666666,
+   "turns_median": 11.0
+  },
+  "hermes-agent": {
+   "attempted": 12,
+   "c_oracle": 34319.666666666664,
+   "c_oracle_disc": 34319.666666666664,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 258.3305056055056,
+   "models_on_wire": [
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 2541.9166666666665,
+   "total_tokens": 411836,
+   "turns_mean": 9.166666666666666,
+   "turns_median": 9.0
+  },
+  "kilo": {
+   "attempted": 12,
+   "c_oracle": 120407.08333333333,
+   "c_oracle_disc": 120407.08333333333,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 334.6684523809524,
+   "models_on_wire": [
+    "anthropic/claude-4.5-haiku-20251001",
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 14877.25,
+   "total_tokens": 1444885,
+   "turns_mean": 7.75,
+   "turns_median": 8.0
+  },
+  "kimi-code": {
+   "attempted": 12,
+   "c_oracle": 116046.83333333333,
+   "c_oracle_disc": 116046.83333333333,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 289.7446428571429,
+   "models_on_wire": [
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 16510.5,
+   "total_tokens": 1392562,
+   "turns_mean": 6.5,
+   "turns_median": 6.5
+  },
+  "nanobot": {
+   "attempted": 12,
+   "c_oracle": 84488.25,
+   "c_oracle_disc": 84488.25,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 325.1852342102342,
+   "models_on_wire": [],
+   "oracle_solved": 12,
+   "startup_tax": 9691.0,
+   "total_tokens": 1013859,
+   "turns_mean": 7.666666666666667,
+   "turns_median": 7.5
+  },
+  "openclaw": {
+   "attempted": 12,
+   "c_oracle": 292281.45454545453,
+   "c_oracle_disc": 292281.45454545453,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 188.1975538350538,
+   "models_on_wire": [
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 11,
+   "startup_tax": 29035.166666666668,
+   "total_tokens": 3215096,
+   "turns_mean": 8.916666666666666,
+   "turns_median": 8.0
+  },
+  "opencode": {
+   "attempted": 12,
+   "c_oracle": 71863.91666666667,
+   "c_oracle_disc": 71863.91666666667,
+   "cached_share_of_input": 0.0,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 343.7490329115329,
+   "models_on_wire": [
+    "anthropic/claude-4.5-haiku-20251001",
+    "nvidia/nemotron-3-ultra-550b-a55b-20260604:free"
+   ],
+   "oracle_solved": 12,
+   "startup_tax": 8672.25,
+   "total_tokens": 862367,
+   "turns_mean": 7.5,
+   "turns_median": 8.0
+  },
+  "qwen-code": {
+   "attempted": 12,
+   "c_oracle": 140996.08333333334,
+   "c_oracle_disc": 140996.08333333334,
+   "cached_share_of_input": null,
+   "cached_share_of_total": 0.0,
+   "cached_tokens": 0.0,
+   "growth": 289.34696969696967,
+   "models_on_wire": [],
+   "oracle_solved": 12,
+   "startup_tax": 19030.916666666668,
+   "total_tokens": 1691953,
+   "turns_mean": 6.916666666666667,
+   "turns_median": 7.0
+  }
+ },
+ "spearman": {
+  "A": {
+   "n": 12,
+   "rho": 1.0
+  },
+  "B": {
+   "n": 10,
+   "rho": 0.6727272727272727
+  },
+  "C_oracle": {
+   "n": 12,
+   "rho": 0.993006993006993
+  },
+  "turns": {
+   "n": 12,
+   "rho": 0.6643356643356644
+  }
+ },
+ "swe": {
+  "aider": {
+   "attempted": 10,
+   "oracle_solved": 1,
+   "resolved_tasks": [
+    "pytest-dev__pytest-5227"
+   ],
+   "total_tokens": 818367
+  },
+  "claude-code": {
+   "attempted": 10,
+   "oracle_solved": 1,
+   "resolved_tasks": [
+    "pytest-dev__pytest-5227"
+   ],
+   "total_tokens": 5268772
+  },
+  "codex": {
+   "attempted": 10,
+   "oracle_solved": 1,
+   "resolved_tasks": [
+    "pytest-dev__pytest-5227"
+   ],
+   "total_tokens": 14964368
+  },
+  "kilo": {
+   "attempted": 10,
+   "oracle_solved": 1,
+   "resolved_tasks": [
+    "pytest-dev__pytest-5227"
+   ],
+   "total_tokens": 12328721
+  }
+ }
+}
