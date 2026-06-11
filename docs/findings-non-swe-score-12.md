@@ -1,4 +1,4 @@
-# How much of your AI coding bill is the harness, not the model?
+# How much of your AI coding bill is the harness?
 
 Everyone compares models. Almost nobody compares the harness, the CLI tool that wraps the model and drives it. I wanted to know how much that wrapper actually costs.
 
@@ -31,7 +31,7 @@ Tokens spent per solved task, with the range across the two models:
 | Qwen Code | ~141,000-182,000 | ~20,000 |
 | OpenClaw | ~191,000-292,000 | ~26,000 |
 
-The ordering barely moved between DeepSeek and Nemotron. The startup overhead ranking didn't change at all. The cost-per-task ranking changed by one adjacent swap. Whatever these numbers are measuring, it's a property of the harnesses, not the models.
+The ordering barely moved between DeepSeek and Nemotron. The startup overhead ranking didn't change at all. The cost-per-task ranking changed by one adjacent swap. Whatever these numbers are measuring, it's baked into the harness software itself.
 
 ## The startup tax
 
@@ -45,7 +45,7 @@ And it matters way more than it looks, because it isn't paid once. Models don't 
 
 I expected the costly harnesses to be the ones whose conversations balloon the fastest. That's not what the data shows. Every harness grew its context at a few hundred tokens per turn, and the growth-rate ranking didn't even hold up between the two models. It's noise.
 
-What actually separated them was how many turns they take and how big a floor each turn re-carries. Twenty turns with a 16k floor costs vastly more than six turns with a 4k floor, even when both conversations grow at the same rate. If you're building or tuning a harness, cut turns and cut the prompt floor. Context management is not where the money is.
+What actually separated them was how many turns they take and how big a floor each turn re-carries. Twenty turns with a 16k floor costs vastly more than six turns with a 4k floor, even when both conversations grow at the same rate. If you're building or tuning a harness, cut turns and cut the prompt floor before you touch anything fancier.
 
 ## Cached tokens flip the rankings
 
@@ -61,10 +61,6 @@ Aider solved 11 of the 12 tasks at around 4-5k tokens each. That's roughly 10x c
 
 The agentic loop (look around, act, check, repeat) is a cost multiplier. It earns its keep on hard problems: unfamiliar code, failing tests, changes that span files. On a small, well-described edit, the loop mostly re-confirms things a single call could have assumed. Matching the harness to the size of the task is the biggest cost lever I found in this entire dataset.
 
-## The surprise second model
-
-Two of the harnesses quietly sent a small request per task to Claude Haiku, for generating conversation titles, no matter what model I had configured. It's around 1% of their usage, so the cost is trivia. But it's a second vendor and a second place your code travels, and I only noticed because I was counting tokens at the network level. "I configured model X" and "my harness only talks to model X" turn out to be different statements.
-
 ## So I ran the hard tasks too
 
 The obvious objection to all of this: maybe the heavy scaffolding earns its cost back on hard problems. Fair. So I took four harnesses spanning the cost spectrum (Aider, Claude Code, Codex, and Kilo) and ran them on 10 real SWE-bench Lite tasks with generous limits. No tight budgets, no 90-second timeouts. Let them work.
@@ -73,7 +69,7 @@ All four resolved exactly one task out of ten. The same task.
 
 Aider got there on 0.8M tokens. Claude Code spent 5.3M. Kilo spent 12.3M. Codex spent 15M. An 18x spread in spending, identical results. I even reran Claude Code with five times its earlier budget to make sure I wasn't strangling it. It produced real patches on nine of ten tasks instead of one, and not a single extra one resolved.
 
-The lesson isn't that harnesses are useless on hard tasks. It's that when the model can't solve the problem, no amount of scaffolding rescues it. DeepSeek V4 Flash is a capable small model, but these tasks were past its ceiling, and the expensive loops just circled that ceiling at 15M tokens instead of finding a way over it. Capability comes from the model. The harness decides how expensive it is to find that out.
+Harnesses still have a job on hard tasks. But when the model can't solve the problem, no amount of scaffolding rescues it. DeepSeek V4 Flash is a capable small model, but these tasks were past its ceiling, and the expensive loops just circled that ceiling at 15M tokens instead of finding a way over it. Capability comes from the model. The harness decides how expensive it is to find that out.
 
 ## Then I stuffed the context with garbage
 
@@ -81,7 +77,7 @@ The other thing I wanted to test was context rot directly. Same 12 small tasks, 
 
 The first surprise: the model doesn't rot. Aider passes the whole 100k mess to the model in one call, and it solved 12/12 anyway. Whatever folklore says about long context making models dumb, at 100k tokens on these tasks, it didn't.
 
-The second surprise: Claude Code fell off a cliff. Perfect through 50k, then 2 out of 12 at 100k. It faithfully sends the full context, then after two or three calls it loses the plot. The runs end with no edits, as if the actual task drowned in the noise. Same model that Aider used to go 12/12. The failure is the harness's context handling, not the model.
+The second surprise: Claude Code fell off a cliff. Perfect through 50k, then 2 out of 12 at 100k. It faithfully sends the full context, then after two or three calls it loses the plot. The runs end with no edits, as if the actual task drowned in the noise. Same model that Aider used to go 12/12. The failure sits in Claude Code's context pipeline.
 
 The third surprise was Kilo's curve: perfectly flat, and suspiciously cheap. It solved everything at every level while its token count barely moved. The reason: it silently throws away most of the prompt. The 100k payload arrived at the model as 13k. It looks robust on a chart, but a harness that quietly drops your input when it gets large is not something I'd call robust. Next time, the thing it drops might be the part you needed.
 
@@ -97,10 +93,10 @@ If you're working through small, well-specified tasks, use a one-shot harness li
 
 If you're choosing between harnesses, weigh that choice at least as heavily as the model choice. The spread between harnesses was 40-70x. No model pricing difference comes close.
 
-If you're looking at token dashboards, check the cached share before believing any number. And if you're picky about where your code goes, check which models your harness actually calls, not just the one you configured.
+If you're looking at token dashboards, check the cached share before believing any number. And if you're picky about where your code goes, check which models your harness actually calls. The model you configured and the models on the wire can differ.
 
-## It's not a takedown of the heavy harnesses
+## The honest limits
 
-The core numbers come from twelve small Python tasks, two models served through OpenRouter, one run per pairing. The SWE-bench and garbage-context follow-ups used four harnesses and one model, so treat those as strong single-model results, not universal law. A frontier model might give the heavy scaffolding more to work with on hard tasks; that experiment costs real money and I haven't run it.
+The core numbers come from twelve small Python tasks, two models served through OpenRouter, one run per pairing. The SWE-bench and garbage-context follow-ups used four harnesses and one model, so those are strong results about one model and I hold them more loosely. A frontier model might give the heavy scaffolding more to work with on hard tasks; that experiment costs real money and I haven't run it.
 
-But the original question has an answer. Most of what you pay for an AI coding session is not the model thinking about your problem. It's the harness re-sending its own packaging, turn after turn. Capability comes from the model; cost comes from the harness. And you can change the harness without changing models at all.
+But the original question has an answer. Most of what you pay for in an AI coding session goes to the harness re-sending its own packaging, turn after turn. The model supplies the capability. The harness sets the price. And you can change the harness without touching the model.
