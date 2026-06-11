@@ -1,4 +1,4 @@
-# I ran 12 coding harnesses on the same model. The worst cost 70x more.
+# I tested 12 coding harnesses for efficiency. The worst one cost 70x more.
 
 Everyone compares models. Almost nobody compares the harness, the CLI tool that wraps the model and drives it. I wanted to know how much that wrapper actually costs.
 
