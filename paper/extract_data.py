@@ -251,6 +251,37 @@ def load_fidelity() -> dict:
     return out
 
 
+def load_pro_100k() -> dict | None:
+    """Budget-truncated Claude Code 100k probe on DeepSeek V4 Pro."""
+    root = os.path.join(ROOT, "runs",
+                        "openrouter-deepseek-v4-pro-claude-code-100k-20260611",
+                        "claude-code-docker-openrouter")
+    paths = sorted(glob.glob(os.path.join(root, "results", "*.json")))
+    if not paths:
+        return None
+    attempted = solved = 0
+    calls_per_run, max_inputs = [], []
+    for rp in paths:
+        result = json.load(open(rp))
+        attempted += 1
+        solved += 1 if (result.get("oracle_result") or {}).get("success") else 0
+        n, mx = 0, 0
+        try:
+            for line in open(result["trace_path"]):
+                ev = json.loads(line)
+                if ev.get("type") != "model_call" or (ev.get("metadata") or {}).get("aggregate"):
+                    continue
+                n += 1
+                mx = max(mx, ev.get("input_tokens") or 0)
+        except (FileNotFoundError, KeyError):
+            pass
+        calls_per_run.append(n)
+        max_inputs.append(mx)
+    return {"attempted": attempted, "oracle_solved": solved,
+            "median_calls": median(calls_per_run),
+            "median_max_input": median(max_inputs)}
+
+
 def main() -> None:
     deepseek = load_score12("deepseek-v4-flash")
     nemotron = load_score12("nemotron")
@@ -288,6 +319,7 @@ def main() -> None:
         "dcurve": load_dcurve(),
         "swe": load_swe(),
         "fidelity": load_fidelity(),
+        "pro_100k_claude_code": load_pro_100k(),
     }
     out = os.path.join(ROOT, "paper", "data.json")
     json.dump(data, open(out, "w"), indent=1, sort_keys=True)

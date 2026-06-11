@@ -623,6 +623,12 @@
    "turns_median": 7.0
   }
  },
+ "pro_100k_claude_code": {
+  "attempted": 6,
+  "median_calls": 3.0,
+  "median_max_input": 105464.5,
+  "oracle_solved": 0
+ },
  "spearman": {
   "A": {
    "n": 12,

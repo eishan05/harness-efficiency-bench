@@ -169,6 +169,16 @@ for n, q in quoted.items():
 check("openclaw zero calls", fid["openclaw"]["median"] == 0.0)
 check("kimi-code crash (0.0)", fid["kimi-code"]["median"] == 0.0)
 
+# Budget-truncated Pro replication of the Claude Code 100k collapse
+pro = DATA.get("pro_100k_claude_code")
+check("pro 100k probe present", pro is not None)
+if pro:
+    check("pro 100k: 0/6 with 3-call signature",
+          pro["attempted"] == 6 and pro["oracle_solved"] == 0
+          and pro["median_calls"] == 3.0 and pro["median_max_input"] > 100_000,
+          json.dumps(pro))
+    check("tex mentions Pro probe", "DeepSeek V4 Pro" in TEX and "all six tasks" in TEX)
+
 print()
 if failures:
     print(f"{len(failures)} check(s) failed")
