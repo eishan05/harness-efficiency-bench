@@ -18,18 +18,18 @@ Tokens spent per solved task, with the range across the two models:
 
 | Agent | Tokens per solved task | Startup overhead |
 |---|---:|---:|
-| Aider (architect mode) | ~3,500–4,100 | ~700 |
-| Aider | ~4,100–5,000 | ~3,000 |
-| Hermes | ~30,000–34,000 | ~2,500 |
-| Claude Code | ~52,000–55,000 | ~4,500 |
-| Goose | ~56,000–62,000 | ~4,000 |
-| Opencode | ~72,000–80,000 | ~8,500 |
-| Nanobot | ~74,000–84,000 | ~9,000 |
-| Codex | ~85,000–90,000 | ~8,200 |
-| Kimi Code | ~105,000–116,000 | ~16,000 |
-| Kilo | ~119,000–120,000 | ~14,700 |
-| Qwen Code | ~141,000–182,000 | ~20,000 |
-| OpenClaw | ~191,000–292,000 | ~26,000 |
+| Aider (architect mode) | ~3,500-4,100 | ~700 |
+| Aider | ~4,100-5,000 | ~3,000 |
+| Hermes | ~30,000-34,000 | ~2,500 |
+| Claude Code | ~52,000-55,000 | ~4,500 |
+| Goose | ~56,000-62,000 | ~4,000 |
+| Opencode | ~72,000-80,000 | ~8,500 |
+| Nanobot | ~74,000-84,000 | ~9,000 |
+| Codex | ~85,000-90,000 | ~8,200 |
+| Kimi Code | ~105,000-116,000 | ~16,000 |
+| Kilo | ~119,000-120,000 | ~14,700 |
+| Qwen Code | ~141,000-182,000 | ~20,000 |
+| OpenClaw | ~191,000-292,000 | ~26,000 |
 
 The ordering barely moved between DeepSeek and Nemotron. The startup overhead ranking didn't change at all. The cost-per-task ranking changed by one adjacent swap. Whatever these numbers are measuring, it's a property of the agents, not the models.
 
@@ -57,7 +57,7 @@ One catch: Nemotron's free tier reported no caching at all. The discount only ex
 
 ## The cheapest agent won by not being an agent
 
-Aider solved 11 of the 12 tasks at around 4–5k tokens each. That's roughly 10x cheaper than the middle of the pack. It wins because for tasks like these it doesn't run a loop at all. One call: here's the file, here's the request, give me the diff.
+Aider solved 11 of the 12 tasks at around 4-5k tokens each. That's roughly 10x cheaper than the middle of the pack. It wins because for tasks like these it doesn't run a loop at all. One call: here's the file, here's the request, give me the diff.
 
 The agentic loop (look around, act, check, repeat) is a cost multiplier. It earns its keep on hard problems: unfamiliar code, failing tests, changes that span files. On a small, well-described edit, the loop mostly re-confirms things a single call could have assumed. Matching the tool to the size of the task is the biggest cost lever I found in this entire dataset.
 
@@ -95,7 +95,7 @@ So: keep your prompts clean. The model can handle the junk; your agent's bill an
 
 If you're working through small, well-specified tasks, use a one-shot tool like Aider and pocket the 10x. Bring in the heavy agents when the problem genuinely needs exploration and iteration.
 
-If you're choosing between agents, weigh that choice at least as heavily as the model choice. The spread between agents was 40–70x. No model pricing difference comes close.
+If you're choosing between agents, weigh that choice at least as heavily as the model choice. The spread between agents was 40-70x. No model pricing difference comes close.
 
 If you're looking at token dashboards, check the cached share before believing any number. And if you're picky about where your code goes, check which models your agent actually calls, not just the one you configured.
 
