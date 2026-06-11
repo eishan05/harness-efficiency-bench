@@ -33,11 +33,19 @@ Tokens spent per solved task, with the range across the two models:
 
 The ordering barely moved between DeepSeek and Nemotron. The startup overhead ranking didn't change at all. The cost-per-task ranking changed by one adjacent swap. Whatever these numbers are measuring, it's baked into the harness software itself.
 
+![Tokens per solved task across twelve harness configurations on two models, log scale](figures/fig_cost.png)
+
+*Note the log scale: each gridline is 10x. The two bars per harness are two different models — they move together.*
+
 ## The startup tax
 
 Before your prompt does anything, the harness sends its own baggage: system prompt, tool descriptions, environment setup. Aider in architect mode ships about 700 tokens of overhead. OpenClaw ships about 26,000. That's a 40x difference before any work has started.
 
 This was the most stable number in the whole benchmark. It came out nearly identical on both models, for every harness. It behaves like a constant of the software, the way a binary has a size.
+
+![Startup tax measured independently on two models, log-log](figures/fig_startup.png)
+
+*Same measurement, two unrelated models. Every harness lands on the identity line.*
 
 And it matters way more than it looks, because it isn't paid once. Models don't remember anything between calls, so the whole conversation, baggage included, gets resent on every round-trip. A harness with a 26k floor that takes 15 turns has spent around 390k input tokens on its own scaffolding before you count any actual work. The startup tax times the number of turns is most of the bill for the heavy harnesses.
 
@@ -52,6 +60,10 @@ What actually separated them was the floor each turn re-carries. The looping har
 On the DeepSeek run, Codex burned over a million tokens for the suite. On paper, one of the worst. But 77% of its billed tokens were cache reads, which providers bill at roughly a tenth of the normal price. Priced the way you'd actually pay, Codex comes out cheaper per solved task than Claude Code, a harness that used half as many raw tokens.
 
 This makes sense once you remember the startup tax. Resending the same prefix every turn is exactly the pattern prompt caching was built for, so a harness that keeps its prefix stable gets all that repetition nearly free — if the serving path cooperates. That's the twist I didn't see coming: Claude Code's zero cache share turned out not to be its prompts at all. It's the only harness that talks to OpenRouter through the Anthropic-style messages endpoint, and the gateway's translation of that dialect was dropping cache hits that identical traffic earns through the OpenAI-style endpoint, on the same providers. So three lessons. Never compare harnesses on raw token counts without checking the cached share, because it flips rankings. Being cache-friendly is a real engineering virtue in a harness, worth as much as a smaller prompt. And the discount belongs to the whole harness-gateway-provider path, so verify yours actually pays it.
+
+![Raw versus cache-discounted tokens per solved task](figures/fig_cache.png)
+
+*Gray is what a token dashboard shows you. Blue is what you'd actually pay.*
 
 One catch: Nemotron's free tier reported no caching at all. The discount only exists where the provider supports it.
 
@@ -69,6 +81,10 @@ All four resolved exactly one task out of ten. The same task.
 
 Aider got there on 0.8M tokens. Claude Code spent 5.3M. Kilo spent 12.3M. Codex spent 15M. An 18x spread in spending, identical results. I even reran Claude Code with five times its earlier budget to make sure I wasn't strangling it. It produced real patches on nine of ten tasks instead of one, and not a single extra one resolved.
 
+![Total tokens spent on ten SWE-bench Lite tasks by four harnesses](figures/fig_swe.png)
+
+*Four bills for the same outcome.*
+
 Harnesses still have a job on hard tasks. But when the model can't solve the problem, no amount of scaffolding rescues it. DeepSeek V4 Flash is a capable small model, but these tasks were past its ceiling, and the expensive loops just circled that ceiling at 15M tokens instead of finding a way over it. Capability comes from the model. The harness decides how expensive it is to find that out.
 
 ## Then I stuffed the context with garbage
@@ -83,7 +99,15 @@ The third surprise was Kilo's curve: perfectly flat, and suspiciously cheap. It 
 
 Codex was the only looping harness that was both honest and sturdy: full payload, every call, 12/12 at every level. The price of that honesty is the boot-tax math again: it re-sends the garbage on every turn, so 100k of junk turned an 82k task into a 909k one. Eleven times the cost, paid entirely for noise it was too polite to drop.
 
+![Solve rate and cost as injected noise grows from 0 to 100k tokens](figures/fig_dcurve.png)
+
+*Left: who survives the garbage. Right: what they pay. Claude Code's cliff, Kilo's suspiciously flat lines, Codex's honest and expensive climb.*
+
 After seeing Kilo's trick, I probed all twelve harnesses at the 100k level and checked, at the network layer, how much of the prompt each one actually transmitted. Seven of twelve passed it through faithfully. Two (Kilo and Opencode) silently dropped 83-89% of it and "solved" the tasks anyway. One (OpenClaw) checked the size up front, refused to run, and told me to use a larger-context model. Annoying, but honest. One (Kimi Code) just crashed with an unhandled exception. And Claude Code transmitted everything and lost the plot. Five different behaviors for the same oversized input. The crash and the refusal at least announce themselves; the dangerous one — silent truncation — looks exactly like success in the harness's output.
+
+![Transmission fidelity at 100k injected tokens for all twelve configurations](figures/fig_fidelity.png)
+
+*Fraction of the prompt that actually reached the model. The orange bars "solved" the tasks anyway.*
 
 So: keep your prompts clean. The model can handle the junk; your harness's bill and your harness's attention often can't. And know which of these behaviors your harness has, because "it still worked" can mean it coped, or it can mean it never read what you sent.
 

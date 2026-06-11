@@ -15,7 +15,10 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = json.load(open(os.path.join(HERE, "data.json")))
 FIGDIR = os.path.join(HERE, "figures")
+# PNG copies for the findings doc, kept in sync with the paper by construction
+DOCS_FIGDIR = os.path.join(os.path.dirname(HERE), "docs", "figures")
 os.makedirs(FIGDIR, exist_ok=True)
+os.makedirs(DOCS_FIGDIR, exist_ok=True)
 
 plt.rcParams.update({
     "font.size": 9,
@@ -54,8 +57,11 @@ order_by_c = sorted(DATA["harness_order"], key=lambda n: DATA["deepseek"][n]["c_
 
 def save(fig, name):
     fig.savefig(os.path.join(FIGDIR, name), bbox_inches="tight")
+    png = os.path.splitext(name)[0] + ".png"
+    fig.savefig(os.path.join(DOCS_FIGDIR, png), bbox_inches="tight",
+                dpi=220, facecolor="white")
     plt.close(fig)
-    print("wrote", name)
+    print("wrote", name, "+", png)
 
 
 def fig_cost():
