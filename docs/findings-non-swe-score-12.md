@@ -1,4 +1,4 @@
-# How much of your AI coding bill is the harness?
+# The wrong coding harness is costing you 70x
 
 Everyone compares models. Almost nobody compares the harness, the CLI tool that wraps the model and drives it. I wanted to know how much that wrapper actually costs.
 
