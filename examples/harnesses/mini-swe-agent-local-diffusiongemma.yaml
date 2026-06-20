@@ -1,0 +1,83 @@
+id: mini-swe-agent-local-diffusiongemma
+adapter: mini_swe_agent
+model: openai/nvidia/diffusiongemma-26B-A4B-it-NVFP4
+timeout_sec: 900
+trace_mode: partial
+command:
+  - "-y"
+  - "--exit-immediately"
+  - "-c"
+  - "mini_textbased.yaml"
+  - "-c"
+  - "agent.cost_limit=0"
+  - "-c"
+  - "agent.step_limit=30"
+  - "-c"
+  - "agent.wall_time_limit_seconds=780"
+  - "-c"
+  - "model.model_class=litellm_textbased"
+  - "-c"
+  - "model.cost_tracking=ignore_errors"
+  - "-c"
+  - "model.model_name=openai/nvidia/diffusiongemma-26B-A4B-it-NVFP4"
+  - "-c"
+  - "model.model_kwargs.api_base=http://127.0.0.1:8000/v1"
+  - "-c"
+  - "model.model_kwargs.api_key=dummy"
+  - "-c"
+  - "model.model_kwargs.custom_llm_provider=openai"
+  - "-c"
+  - "model.model_kwargs.drop_params=true"
+  - "-c"
+  - |-
+    agent.instance_template=Please solve this issue: {{{{task}}}}
+
+    You can execute bash commands and edit files to implement the necessary changes.
+
+    ## Recommended Workflow
+
+    This workflow should be done step-by-step so that you can iterate on your changes and any possible problems.
+
+    1. Analyze the codebase by finding and reading relevant files. Use `rg` instead of `grep` when available. Do not `cat` large files; inspect targeted line ranges with commands like `nl -ba filename.py | sed -n '10,80p'`.
+    2. If needed, create a temporary script to reproduce the issue. Remove temporary scratch files such as `reproduce_issue.py` or `test_draggable.py` before final submission unless they are real project tests intended to be committed.
+    3. Edit the source code to resolve the issue. Prefer Python scripts or project-aware edit tools over complex, brittle `sed` commands.
+    4. Verify your fix. Do not submit while verification is failing due to syntax errors, import errors, or other problems caused by your changes.
+    5. Test relevant edge cases when practical.
+    6. Remove temporary scratch files, inspect `git diff`, then submit your changes and finish your work by issuing the following command: `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.
+       Do not combine it with any other command. <important>After this command, you cannot continue working on this task.</important>
+
+    ## Important Rules
+
+    1. Every response must contain exactly one action
+    2. The action must be enclosed in triple backticks
+    3. Directory or environment variable changes are not persistent. Every action is executed in a new subshell.
+       However, you can prefix any action with `MY_ENV_VAR=MY_VALUE cd /path/to/working/dir && ...` or write/load environment variables from files
+    4. The final patch should contain only the source changes required to fix the issue. Do not leave trajectories, temporary reproduction scripts, caches, compiled files, or build artifacts in the repository.
+
+    <system_information>
+    {{{{system}}}} {{{{release}}}} {{{{version}}}} {{{{machine}}}}
+    </system_information>
+
+    ## Command Guidance
+
+    Keep commands small and targeted. Use `rg` for search, `nl -ba ... | sed -n 'start,endp'` for line ranges, and a short Python script for precise edits when simple replacement is not enough. Before submitting, run `git diff --stat` and remove temporary files such as `reproduce_issue.py` or `test_draggable.py` if they are not intended project tests.
+
+  - "-o"
+  - "/tmp/mini-swe-agent/{run_id}.traj.json"
+  - "-t"
+  - "{prompt}"
+env:
+  OPENAI_API_BASE: http://127.0.0.1:8000/v1
+  OPENAI_API_KEY: dummy
+  MSWEA_COST_TRACKING: ignore_errors
+  MSWEA_CONFIGURED: "true"
+  MSWEA_SILENT_STARTUP: "1"
+  XDG_CONFIG_HOME: /tmp/mini-swe-agent/.config
+config:
+  backend: docker
+  docker_image: playground-mini-swe-agent:2.4.1
+  docker_workspace: /workspace
+  docker_network: host
+  docker_home: /tmp/mini-swe-agent
+  docker_user: "{uid}:{gid}"
+  bench_ready: true
