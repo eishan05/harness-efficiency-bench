@@ -1,0 +1,113 @@
+id: mini-swe-agent-local-vibethinker-3b
+adapter: mini_swe_agent
+model: openai/vibethinker-3b
+timeout_sec: 900
+trace_mode: partial
+command:
+  - "-y"
+  - "--exit-immediately"
+  - "-c"
+  - "mini_textbased.yaml"
+  - "-c"
+  - "agent.cost_limit=0"
+  - "-c"
+  - "agent.step_limit=30"
+  - "-c"
+  - "agent.wall_time_limit_seconds=780"
+  - "-c"
+  - |-
+    agent.system_template=You are a command generator for mini-swe-agent.
+    Output exactly one fenced code block and nothing else.
+    The fence language must be mswea_bash_command.
+    Put only the shell command inside the code block.
+    Do not explain, analyze, or write prose outside the code block.
+  - "-c"
+  - |-
+    agent.instance_template=Task: {{{{task}}}}
+
+    You can run bash commands in the repository and edit files.
+    You must run at least one non-completion command before finishing.
+    Never output the completion command as your first action.
+
+    First command guidance:
+    - For a file creation task, create the requested file now. Use redirection: `printf '%s\n' 'TEXT' > FILE`.
+    - For a code task, discover files first with `find . -maxdepth 3 -type f | sort | sed -n '1,160p'`.
+    - If a path is unknown, run `find . -maxdepth 3 -type f | sort | sed -n '1,160p'`.
+
+    Rules:
+    - Do not use `git commit`, `git add`, `git push`, `git reset`, `nano`, `vim`, `xdg-open`, `open`, `less`, `more`, or `man`.
+    - Do not guess paths such as `src/...`; discover files first.
+    - Use `rg` instead of `grep` when searching.
+    - Read file ranges with `nl -ba FILE | sed -n 'START,ENDp'`; do not invent raw `sed` addresses.
+    - If the file list shows one top-level `.py` file, read that source file next.
+    - Do not repeat a successful command.
+    - Remove temporary scratch files before final submission.
+    - After a file-only task is changed, finish immediately.
+    - For code tasks, inspect failing files, edit source, run relevant tests, then finish.
+
+    Do not submit until an observation says the requested change is complete.
+
+    Output the next command now.
+
+    <system_information>
+    {{{{system}}}} {{{{release}}}} {{{{version}}}} {{{{machine}}}}
+    </system_information>
+
+  - "-c"
+  - |-
+    model.observation_template=<returncode>{{{{output.returncode}}}}</returncode>
+    <output>
+    {{{{ output.output -}}}}
+    </output>
+
+    If the previous command succeeded, never repeat it.
+    Never run git commit, git add, git push, git reset, nano, vim, xdg-open, open, less, more, or man.
+    If a file creation command printed text but did not use `> FILE`, create the requested file with `printf '%s\n' 'TEXT' > FILE`.
+    If a `sed` command failed with a syntax error, read the file with `nl -ba FILE | sed -n '1,120p'`.
+    If the previous command listed files and showed one top-level `.py` file, read that source file with `nl -ba FILE | sed -n '1,200p'`.
+    If the previous command failed because a file, directory, glob, or command was missing, run `find . -maxdepth 3 -type f | sort | sed -n '1,160p'` next.
+    If tests failed and named a source file or test file, read the relevant line range from that file next.
+    If the previous successful command created or updated the requested file for a file-only task, finish by running `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.
+    If no requested file or source file has been changed yet, continue by reading relevant files or editing the fix. Do not finish.
+    If you changed files but have not inspected `git status --short`, run `git status --short`.
+    If relevant tests or checks failed, continue fixing the code. Do not finish.
+    If `git status --short` shows the intended changed files and relevant tests or checks have passed, finish by running `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.
+    Otherwise, output one new command that moves the task forward.
+  - "-c"
+  - "model.model_class=litellm_textbased"
+  - "-c"
+  - "model.cost_tracking=ignore_errors"
+  - "-c"
+  - "model.model_name=openai/vibethinker-3b"
+  - "-c"
+  - "model.model_kwargs.api_base=http://127.0.0.1:8011/v1"
+  - "-c"
+  - "model.model_kwargs.api_key=dummy"
+  - "-c"
+  - "model.model_kwargs.custom_llm_provider=openai"
+  - "-c"
+  - "model.model_kwargs.drop_params=true"
+  - "-c"
+  - "model.model_kwargs.max_tokens=512"
+  - "-c"
+  - "model.model_kwargs.temperature=0"
+  - "-o"
+  - "/tmp/mini-swe-agent/{run_id}.traj.json"
+  - "-t"
+  - "{prompt}"
+env:
+  OPENAI_API_BASE: http://127.0.0.1:8011/v1
+  OPENAI_API_KEY: dummy
+  SUBMIT_CMD: echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT
+  MSWEA_COST_TRACKING: ignore_errors
+  MSWEA_CONFIGURED: "true"
+  MSWEA_SILENT_STARTUP: "1"
+  XDG_CONFIG_HOME: /tmp/mini-swe-agent/.config
+config:
+  backend: docker
+  docker_image: playground-mini-swe-agent:2.4.1
+  docker_workspace: /workspace
+  docker_network: host
+  docker_home: /tmp/mini-swe-agent
+  docker_user: "{uid}:{gid}"
+  bench_ready: true

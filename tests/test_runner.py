@@ -48,6 +48,15 @@ class RunnerTest(unittest.TestCase):
             root_cache_dir = workspace / "__pycache__"
             root_cache_dir.mkdir()
             (root_cache_dir / "parser.cpython-312.pyc").write_bytes(b"root-cache")
+            mini_swe_trace_dir = workspace / ".mini-swe-agent"
+            mini_swe_trace_dir.mkdir()
+            (mini_swe_trace_dir / "run.traj.json").write_text('{"trajectory": "large"}\n', encoding="utf-8")
+            nested_mini_swe_trace_dir = workspace / "pkg" / ".mini-swe-agent"
+            nested_mini_swe_trace_dir.mkdir()
+            (nested_mini_swe_trace_dir / "run.traj.json").write_text(
+                '{"trajectory": "nested"}\n',
+                encoding="utf-8",
+            )
 
             diff = BenchmarkRunner._collect_git_diff(workspace)
 
@@ -56,6 +65,71 @@ class RunnerTest(unittest.TestCase):
         self.assertNotIn(".harness-usage-proxy.jsonl", diff)
         self.assertNotIn(".litellm-usage.jsonl", diff)
         self.assertNotIn("__pycache__", diff)
+        self.assertNotIn(".mini-swe-agent", diff)
+        self.assertNotIn(".traj.json", diff)
+
+    def test_collect_git_diff_includes_real_untracked_files_while_excluding_agent_noise(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            BenchmarkRunner._run_setup_command(["git", "init"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.email", "benchmark@example.invalid"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.name", "Harness Benchmark"], workspace)
+            (workspace / "tracked.txt").write_text("baseline\n", encoding="utf-8")
+            BenchmarkRunner._run_setup_command(["git", "add", "-A"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "commit", "-m", "baseline"], workspace)
+
+            (workspace / "new_source.py").write_text("VALUE = 42\n", encoding="utf-8")
+            mini_swe_trace_dir = workspace / ".mini-swe-agent"
+            mini_swe_trace_dir.mkdir()
+            (mini_swe_trace_dir / "run.traj.json").write_text('{"trajectory": "root"}\n', encoding="utf-8")
+            nested_trace_dir = workspace / "pkg" / ".mini-swe-agent"
+            nested_trace_dir.mkdir(parents=True)
+            (nested_trace_dir / "nested.traj.json").write_text('{"trajectory": "nested"}\n', encoding="utf-8")
+
+            diff = BenchmarkRunner._collect_git_diff(workspace)
+            status = subprocess.run(
+                ["git", "status", "--short"],
+                cwd=workspace,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            ).stdout
+
+        self.assertIn("new_source.py", diff)
+        self.assertIn("VALUE = 42", diff)
+        self.assertNotIn(".mini-swe-agent", diff)
+        self.assertNotIn(".traj.json", diff)
+        self.assertIn(" A new_source.py", status)
+        self.assertIn("?? .mini-swe-agent/", status)
+        self.assertIn("?? pkg/", status)
+
+    def test_collect_git_diff_excludes_tracked_agent_noise_changes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            BenchmarkRunner._run_setup_command(["git", "init"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.email", "benchmark@example.invalid"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "config", "user.name", "Harness Benchmark"], workspace)
+            (workspace / "tracked.txt").write_text("before\n", encoding="utf-8")
+            trace_dir = workspace / ".mini-swe-agent"
+            trace_dir.mkdir()
+            (trace_dir / "old.traj.json").write_text('{"trajectory": "old"}\n', encoding="utf-8")
+            nested_trace_dir = workspace / "pkg" / ".mini-swe-agent"
+            nested_trace_dir.mkdir(parents=True)
+            (nested_trace_dir / "old.traj.json").write_text('{"trajectory": "nested-old"}\n', encoding="utf-8")
+            BenchmarkRunner._run_setup_command(["git", "add", "-A"], workspace)
+            BenchmarkRunner._run_setup_command(["git", "commit", "-m", "baseline"], workspace)
+
+            (workspace / "tracked.txt").write_text("after\n", encoding="utf-8")
+            (trace_dir / "old.traj.json").write_text('{"trajectory": "new"}\n', encoding="utf-8")
+            (nested_trace_dir / "old.traj.json").unlink()
+
+            diff = BenchmarkRunner._collect_git_diff(workspace)
+
+        self.assertIn("tracked.txt", diff)
+        self.assertIn("+after", diff)
+        self.assertNotIn(".mini-swe-agent", diff)
+        self.assertNotIn(".traj.json", diff)
 
     def test_git_clone_workspace_setup_uses_repo_cache(self):
         with tempfile.TemporaryDirectory() as tmp:

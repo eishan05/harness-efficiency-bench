@@ -6,6 +6,34 @@ import subprocess
 from pathlib import Path
 
 
+PATCH_EXCLUDE_PATHS = (
+    ":(exclude).benchmark_prompt.txt",
+    ":(exclude).harness-usage-proxy.jsonl",
+    ":(exclude).litellm-usage.jsonl",
+    ":(exclude).mini-swe-agent/**",
+    ":(exclude)**/.mini-swe-agent/**",
+    ":(exclude).codex_rollout_trace",
+    ":(exclude).codex_rollout_trace/**",
+    ":(exclude)**/.codex_rollout_trace",
+    ":(exclude)__pycache__/**",
+    ":(exclude)**/__pycache__/**",
+    ":(exclude).pytest_cache/**",
+    ":(exclude)**/.pytest_cache/**",
+    ":(exclude).mypy_cache/**",
+    ":(exclude)**/.mypy_cache/**",
+    ":(exclude).ruff_cache/**",
+    ":(exclude)**/.ruff_cache/**",
+    ":(exclude).tox/**",
+    ":(exclude)**/.tox/**",
+    ":(exclude).nox/**",
+    ":(exclude)**/.nox/**",
+    ":(exclude).coverage",
+    ":(exclude)**/.coverage",
+    ":(exclude)htmlcov/**",
+    ":(exclude)**/htmlcov/**",
+)
+
+
 def collect_git_diff(workspace: Path) -> str:
     """Collect the model patch from a Git-initialized benchmark workspace."""
     if not (workspace / ".git").exists():
@@ -26,7 +54,7 @@ def collect_git_diff(workspace: Path) -> str:
     except OSError:
         return ""
     subprocess.run(
-        ["git", "add", "-N", "."],
+        ["git", "add", "-N", "--", ".", *PATCH_EXCLUDE_PATHS],
         cwd=workspace,
         text=True,
         stdout=subprocess.DEVNULL,
@@ -49,28 +77,7 @@ def collect_git_diff(workspace: Path) -> str:
             "HEAD",
             "--",
             ".",
-            ":(exclude).benchmark_prompt.txt",
-            ":(exclude).harness-usage-proxy.jsonl",
-            ":(exclude).litellm-usage.jsonl",
-            ":(exclude).codex_rollout_trace",
-            ":(exclude).codex_rollout_trace/**",
-            ":(exclude)**/.codex_rollout_trace",
-            ":(exclude)__pycache__/**",
-            ":(exclude)**/__pycache__/**",
-            ":(exclude).pytest_cache/**",
-            ":(exclude)**/.pytest_cache/**",
-            ":(exclude).mypy_cache/**",
-            ":(exclude)**/.mypy_cache/**",
-            ":(exclude).ruff_cache/**",
-            ":(exclude)**/.ruff_cache/**",
-            ":(exclude).tox/**",
-            ":(exclude)**/.tox/**",
-            ":(exclude).nox/**",
-            ":(exclude)**/.nox/**",
-            ":(exclude).coverage",
-            ":(exclude)**/.coverage",
-            ":(exclude)htmlcov/**",
-            ":(exclude)**/htmlcov/**",
+            *PATCH_EXCLUDE_PATHS,
         ],
         cwd=workspace,
         text=True,

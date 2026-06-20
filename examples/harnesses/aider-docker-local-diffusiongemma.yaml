@@ -1,0 +1,55 @@
+id: aider-docker-local-diffusiongemma
+adapter: docker_agent_cli
+model: openai/nvidia/diffusiongemma-26B-A4B-it-NVFP4
+timeout_sec: 900
+trace_mode: partial
+command:
+  - /opt/harness/run-agent
+  - "{prompt_file}"
+env:
+  OPENAI_API_KEY: dummy
+  AIDER_MODEL: openai/nvidia/diffusiongemma-26B-A4B-it-NVFP4
+  AIDER_EDIT_FORMAT: whole
+pricing: {}
+permissions:
+  sandbox: docker-container
+capabilities:
+  - docker_isolation
+config:
+  backend: docker
+  docker_image: harness-bench/aider:0.86.2
+  docker_network: bridge
+  docker_workspace: /workspace
+  docker_user: host
+  docker_memory: 4g
+  docker_cpus: "2"
+  docker_read_only: true
+  docker_home: /aider-home
+  docker_tmpfs:
+    - /tmp:exec,size=2g,mode=1777
+    - /aider-home:exec,size=512m
+  docker_env_passthrough:
+    - AIDER_FILE_MODE
+    - AIDER_MAX_FILES
+    - AIDER_MAX_FILE_BYTES
+    - AIDER_MAP_TOKENS
+    - AIDER_MAP_REFRESH
+    - AIDER_EDIT_FORMAT
+    - AIDER_ARCHITECT
+    - AIDER_MAX_WALL_TIME
+  required_env:
+    - OPENAI_API_KEY
+  cli_version: "0.86.2"
+  version_command:
+    - aider
+    - --version
+  trace:
+    parser: aider_text
+    litellm_log_path: .litellm-usage.jsonl
+    proxy:
+      enabled: true
+      protocol: openai_compatible
+      upstream_base_url: http://127.0.0.1:8000/v1
+      base_url_env:
+        - OPENAI_BASE_URL
+      trace_path: ../.harness-usage-proxy.jsonl

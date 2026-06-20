@@ -1,6 +1,8 @@
 import unittest
 from pathlib import Path
 
+from harness_efficiency_bench.adapters.base import AdapterRunContext
+from harness_efficiency_bench.adapters.command import render_command
 from harness_efficiency_bench.manifests import HarnessManifest, TaskManifest
 
 
@@ -104,6 +106,48 @@ class ManifestTest(unittest.TestCase):
                 continue
             with self.subTest(path=path.name):
                 self.assertEqual(harness.config.get("docker_user"), "host")
+
+    def test_local_mini_swe_harnesses_keep_trajectories_outside_workspace(self):
+        paths = sorted((ROOT / "examples/harnesses").glob("mini-swe-agent-local-*.yaml"))
+        self.assertTrue(paths)
+        task = TaskManifest.load(ROOT / "examples/tasks/toy-write-file/task.yaml")
+        for path in paths:
+            harness = HarnessManifest.load(path)
+            command = harness.command
+            self.assertIsInstance(command, list)
+            assert isinstance(command, list)
+            context = AdapterRunContext(
+                run_id="test-run-id",
+                task=task,
+                harness=harness,
+                workspace=ROOT,
+                prompt="fix it",
+                prompt_file=ROOT / ".benchmark_prompt.txt",
+                timeout_sec=10,
+            )
+            rendered = render_command(
+                command,
+                context,
+                workspace_override="/workspace",
+                prompt_file_override="/workspace/.benchmark_prompt.txt",
+            )
+            assert isinstance(rendered, list)
+            joined_command = "\n".join(command)
+            joined_rendered = "\n".join(rendered)
+            with self.subTest(path=path.name):
+                self.assertEqual(command.count("-o"), 1)
+                output_path = command[command.index("-o") + 1]
+                self.assertTrue(output_path.startswith("/tmp/mini-swe-agent/"))
+                rendered_output_path = rendered[rendered.index("-o") + 1]
+                self.assertEqual(rendered_output_path, "/tmp/mini-swe-agent/test-run-id.traj.json")
+                self.assertNotIn("/workspace/.mini-swe-agent", joined_command)
+                self.assertNotIn("/workspace/.mini-swe-agent", joined_rendered)
+                self.assertIn("Remove temporary scratch files", joined_command)
+                self.assertIn("Use `rg` instead of `grep`", joined_command)
+                self.assertIn("{{task}}", joined_rendered)
+                self.assertIn("{{system}}", joined_rendered)
+                self.assertNotIn("```mswea_bash_command", joined_command)
+                self.assertNotIn("```mswea_bash_command", joined_rendered)
 
     def test_openrouter_docker_examples_require_key_and_model(self):
         paths = sorted((ROOT / "examples/harnesses").glob("*-docker-openrouter.yaml"))
