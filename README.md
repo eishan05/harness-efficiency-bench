@@ -2,6 +2,40 @@
 
 Benchmark coding-agent harnesses on startup tax, context growth, token-denominated solve efficiency, solve rate, and optional dollar-cost metadata.
 
+## Results
+
+Twelve harness configurations ran the same 12 small Python tasks on the same model, once on DeepSeek V4 Flash and once on NVIDIA Nemotron 3 Ultra. Almost every harness solved almost every task, but the tokens spent per solved task differ by up to 70x.
+
+Tokens per solved task, with the range across the two models:
+
+| Harness | Tokens per solved task | Startup overhead |
+|---|---:|---:|
+| Aider (architect mode) | ~3,500-4,100 | ~700 |
+| Aider | ~4,100-5,000 | ~3,000 |
+| Hermes | ~30,000-34,000 | ~2,500 |
+| Claude Code | ~52,000-55,000 | ~4,500 |
+| Goose | ~56,000-62,000 | ~4,000 |
+| Opencode | ~72,000-80,000 | ~8,500 |
+| Nanobot | ~74,000-84,000 | ~9,000 |
+| Codex | ~85,000-90,000 | ~8,200 |
+| Kimi Code | ~105,000-116,000 | ~16,000 |
+| Kilo | ~119,000-120,000 | ~14,700 |
+| Qwen Code | ~141,000-182,000 | ~20,000 |
+| OpenClaw | ~191,000-292,000 | ~26,000 |
+
+![Tokens per solved task for each harness on both models](docs/figures/fig_cost.png)
+
+- The ranking is nearly the same on both models. Startup overhead ranks identically, and cost per solved task differs by one adjacent swap.
+- Startup overhead is resent on every turn, so it makes up most of the cost of the expensive harnesses.
+- With 100k tokens of extra context injected, seven of the twelve configurations transmitted it in full and kept solving. Kilo and Opencode silently dropped 83-89% of it.
+
+These numbers come from one run per harness and model on small tasks. Read more:
+
+- [Write-up](https://eishanlawrence.com/blog/harness-efficiency-bench)
+- [Full findings, including limits](docs/findings-non-swe-score-12.md)
+- [Paper (PDF)](paper/paper.pdf)
+- [Saved result snapshots](examples/results/README.md)
+
 The v1 scaffold is designed around small task manifests and pluggable harness adapters. It can run a toy benchmark immediately, and it includes adapter entry points for Codex, Claude Code, Antigravity, Qwen Code, mini-swe-agent, nanobot, generic command-line harnesses, and Docker-only agent CLIs.
 
 ## Quick Start
