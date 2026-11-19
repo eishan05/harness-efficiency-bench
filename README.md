@@ -31,7 +31,7 @@ Tokens per solved task, with the range across the two models:
 
 These numbers come from one run per harness and model on small tasks. Read more:
 
-- [Write-up](https://eishanlawrence.com/blog/harness-efficiency-bench)
+- [Write-up](https://www.eishanlawrence.com/blog/harness-efficiency-bench)
 - [Full findings, including limits](docs/findings-non-swe-score-12.md)
 - [Paper (PDF)](paper/paper.pdf)
 - [Saved result snapshots](examples/results/README.md)
