@@ -153,6 +153,17 @@ Checked on opencode.ai/go and opencode.ai/docs/go on 2026-11-20:
 - **Connecting harnesses.** Clients must send a stable `x-opencode-session` header. Claude Code, Codex, Hermes (v0.21.6+) and Pi are validated. Codex may leave the header out. Kimi Code is listed as a client that doesn't work. Fix: the bench proxy adds one session ID per task run, for every harness. Base URL `https://opencode.ai/inference/go`. The docs say "every text model also works through the other APIs". If that includes Anthropic and Gemini formats, Claude Code and agy could run on the same model without translation. Check the Harnesses page.
 - **Speed.** Per-call speed is probably similar or faster, and running several at once is limited only by the caps. A core pass with 3-4 harnesses at once could take a few hours.
 - **Fairness.** It's a hosted router, so providers and caching can change underneath (as in v1). Readers may notice that a benchmark that includes OpenCode runs through OpenCode's own gateway. DeepSeek V4.1 Flash is a newer snapshot than v1's V4 Flash, so the link back to v1 is approximate.
+- **Checked with test calls on 2026-11-20** (each under a cent):
+  - Model ID `deepseek-v4.1-flash`, 1M context. List price: $0.15/M input, $0.003/M cache read, $0.60/M output.
+  - Prices are doubled on weekdays 01:00-04:00 and 06:00-10:00 UTC; schedule runs outside those hours.
+  - At those prices one core pass is roughly $2-3.5, well inside the $20 five-hour window.
+  - The key works without changing the region setting.
+  - All three API formats work, each with a usage object that includes cached and reasoning tokens:
+    - OpenAI-style: `https://opencode.ai/inference/go/openai/v1`
+    - Anthropic-style: `https://opencode.ai/inference/go/anthropic/v1/messages`
+    - Gemini-style: `https://opencode.ai/inference/go/google/v1beta/models/<id>:generateContent`
+  - So Claude Code and agy can run on the same model as everything else. OpenCode converts between formats on its side, so compare cache hits by format in the smoke test (v1's Claude Code problem).
+  - Thinking is on by default (effort low, high or max).
 - **Use.** A strong second track: DeepSeek V4.1 Flash on Go as the hosted pass that links back to v1, run from the droplet with no dependency on the GX10s. The local model stays the main one.
 
 ## 7. Possible stories for the write-up
