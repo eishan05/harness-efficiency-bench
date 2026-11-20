@@ -1,6 +1,6 @@
 FROM node:22-bookworm-slim
 
-ARG CODEX_VERSION=0.137.0
+ARG CODEX_VERSION=0.171.0
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates git python-is-python3 python3 python3-pip python3-venv ripgrep xxd \

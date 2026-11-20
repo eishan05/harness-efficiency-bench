@@ -1,0 +1,21 @@
+#!/bin/sh
+# mini-swe-agent with its shipped `mini` config, non-interactive (--yolo,
+# --exit-immediately), talking to BENCH_BASE_URL through LiteLLM's OpenAI-compatible
+# route. Cost tracking is off: LiteLLM has no price for the model and the bench counts
+# tokens itself. The trajectory goes to /tmp.
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+: "${BENCH_MODEL:?BENCH_MODEL is required}"
+: "${BENCH_BASE_URL:?BENCH_BASE_URL is required}"
+: "${BENCH_API_KEY:?BENCH_API_KEY is required}"
+
+export OPENAI_API_KEY="$BENCH_API_KEY"
+export MSWEA_COST_TRACKING=ignore_errors
+export MSWEA_SILENT_STARTUP=1
+export MSWEA_CONFIGURED=true   # skip the first-run setup prompt
+
+exec mini --yolo --exit-immediately --cost-limit 0 \
+  -c mini.yaml -c "model.model_kwargs.api_base=$BENCH_BASE_URL" \
+  -m "openai/$BENCH_MODEL" -o /tmp/mini.traj.json \
+  -t "$(cat "$prompt_file")"

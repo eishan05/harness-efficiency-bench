@@ -13,7 +13,9 @@ from typing import Any
 
 from .base import AdapterResult, AdapterRunContext, BaseAdapter
 from .command import parse_jsonl_events, result_from_completed, run_command
+from .docker_agent_cli import _prefer_proxy, _select_trace_events, _with_proxy_environment, parse_proxy_trace_events
 from ..tracing import TraceEvent, model_call_event, tool_result_event
+from ..usage_proxy import proxy_from_config
 
 
 class CodexAdapter(BaseAdapter):
@@ -32,17 +34,43 @@ class CodexAdapter(BaseAdapter):
         active_context = self._context_with_expanded_model(context)
         trace_root = self._trace_root(active_context)
         run_context = self._context_with_rollout_trace(active_context, trace_root)
-        completed = run_command(command, run_context, stdin=context.prompt)
+        # Optional usage proxy (v2: OpenCode Go needs a session header on every
+        # request, and the proxy records per-call usage in one format for all
+        # harnesses). The provider's base URL then comes from the proxy's env.
+        proxy = proxy_from_config(context.workspace, run_context.harness.config)
+        if proxy is not None:
+            proxy.start()
+            run_context = _with_proxy_environment(
+                run_context, proxy.env(docker=run_context.harness.config.get("backend") == "docker")
+            )
+        try:
+            completed = run_command(command, run_context, stdin=context.prompt)
+        finally:
+            if proxy is not None:
+                proxy.stop()
         result = result_from_completed(completed)
         rollout_events = []
         if trace_root:
             rollout_events = self._parse_rollout_trace_events(trace_root)
             if not context.harness.config.get("retain_codex_rollout_trace"):
                 shutil.rmtree(trace_root, ignore_errors=True)
-        result.trace_events = self._parse_events(
+        native_events = self._parse_events(
             completed.stdout,
             include_turn_completed_usage=not rollout_events,
         ) + rollout_events
+        selected_trace_source = None
+        if proxy is not None:
+            proxy_events = parse_proxy_trace_events(context.workspace, run_context.harness.config)
+            native_events, selected_trace_source = _select_trace_events(
+                native_events, proxy_events, prefer_proxy=_prefer_proxy(run_context.harness.config)
+            )
+            result.metadata["proxy_trace"] = (
+                "parsed" if selected_trace_source == "proxy" else "available_not_selected" if proxy_events else "enabled_no_usage"
+            )
+            result.metadata["proxy_trace_path"] = str(proxy.config.trace_path)
+        result.trace_events = native_events
+        if selected_trace_source:
+            result.metadata["selected_trace_source"] = selected_trace_source
         if run_context.harness.model:
             result.metadata["model_id"] = run_context.harness.model
         result.metadata["trace_quality"] = "structured"

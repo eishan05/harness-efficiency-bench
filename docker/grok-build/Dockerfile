@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-ARG GROK_BUILD_VERSION=0.2.33
+ARG GROK_BUILD_VERSION=1.0.89
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl git ripgrep python3 \

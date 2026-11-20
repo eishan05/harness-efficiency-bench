@@ -1,6 +1,6 @@
 FROM python:3.12-slim-bookworm
 
-ARG HERMES_AGENT_VERSION=0.16.0
+ARG HERMES_AGENT_VERSION=0.19.0
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git ripgrep \

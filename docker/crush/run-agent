@@ -1,0 +1,39 @@
+#!/bin/sh
+# Crush (Charm) headless: `crush run` with one OpenAI-compatible provider ("bench")
+# used for both the large and the small model, so title and summary calls go to the
+# same model. Sessions and logs go to /tmp, not the workspace. -y skips permission
+# prompts (dangerous commands stay blocked, as in Crush's own -y).
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+: "${BENCH_MODEL:?BENCH_MODEL is required}"
+: "${BENCH_BASE_URL:?BENCH_BASE_URL is required}"
+: "${BENCH_API_KEY:?BENCH_API_KEY is required}"
+: "${BENCH_CONTEXT_WINDOW:=1000000}"
+: "${BENCH_MAX_OUTPUT_TOKENS:=65536}"
+export BENCH_MODEL BENCH_BASE_URL BENCH_API_KEY BENCH_CONTEXT_WINDOW BENCH_MAX_OUTPUT_TOKENS
+
+mkdir -p "$HOME/.config/crush"
+python3 - <<'PY'
+import json, os
+from pathlib import Path
+env = os.environ
+model = env["BENCH_MODEL"]
+selected = {"model": model, "provider": "bench"}
+config = {
+    "$schema": "https://charm.land/crush.json",
+    "providers": {"bench": {
+        "name": "Bench", "type": "completions", "base_url": env["BENCH_BASE_URL"],
+        "api_key": env["BENCH_API_KEY"],
+        "models": [{"id": model, "name": model,
+                    "context_window": int(env["BENCH_CONTEXT_WINDOW"]),
+                    "default_max_tokens": int(env["BENCH_MAX_OUTPUT_TOKENS"])}],
+    }},
+    "models": {"large": selected, "small": selected},
+    "options": {"disable_metrics": True, "disable_provider_auto_update": True,
+                "disable_default_providers": True},
+}
+(Path(env["HOME"]) / ".config" / "crush" / "crush.json").write_text(json.dumps(config, indent=2))
+PY
+
+exec crush -y -D /tmp/crush-data run --quiet < "$prompt_file"

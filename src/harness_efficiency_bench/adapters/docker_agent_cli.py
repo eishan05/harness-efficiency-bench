@@ -79,7 +79,9 @@ class DockerAgentCliAdapter(BaseAdapter):
             stderr=completed.stderr,
         )
         proxy_events = parse_proxy_trace_events(context.workspace, active_context.harness.config)
-        parsed_events, selected_trace_source = _select_trace_events(native_events, proxy_events)
+        parsed_events, selected_trace_source = _select_trace_events(
+            native_events, proxy_events, prefer_proxy=_prefer_proxy(active_context.harness.config)
+        )
         if parsed_events:
             result.trace_events = parsed_events
         result.metadata.update(
@@ -173,7 +175,10 @@ def parse_proxy_trace_events(workspace: Path, config: dict[str, Any]) -> list[Tr
     call_index = 0
     default_source = "usage_proxy" if proxy_config.get("trace_path") or trace_config.get("proxy_trace_path") else "litellm_proxy"
     for raw in sorted(_parse_json_or_jsonl(trace_path.read_text(encoding="utf-8")), key=_proxy_record_sort_key):
-        usage = _event_usage(raw)
+        # Records from the v2 proxy carry usage already normalized across API
+        # formats; older records only have the provider's raw usage.
+        normalized = raw.get("normalized_usage")
+        usage = normalized if isinstance(normalized, dict) else _event_usage(raw)
         if not usage or not _usage_has_activity(usage):
             continue
         reasoning_tokens, reasoning_in_output = _reasoning_tokens_info(usage)
@@ -195,7 +200,16 @@ def parse_proxy_trace_events(workspace: Path, config: dict[str, Any]) -> list[Tr
 
 def _proxy_metadata(raw: dict[str, Any], default_source: str) -> dict[str, Any]:
     metadata = {"source": raw.get("source", default_source), "model": raw.get("model")}
-    for key in ("request_id", "status_code", "path", "method", "request_started_at", "request_finished_at"):
+    for key in (
+        "request_id",
+        "status_code",
+        "path",
+        "method",
+        "request_started_at",
+        "request_finished_at",
+        "session_id",
+        "requested_model",
+    ):
         if raw.get(key) is not None:
             metadata[key] = raw[key]
     return metadata
@@ -218,9 +232,14 @@ def _with_proxy_environment(context: AdapterRunContext, proxy_env: dict[str, str
     return replace(context, harness=harness)
 
 
-def _select_trace_events(native_events: list[TraceEvent], proxy_events: list[TraceEvent]) -> tuple[list[TraceEvent], str | None]:
+def _select_trace_events(
+    native_events: list[TraceEvent], proxy_events: list[TraceEvent], *, prefer_proxy: bool = False
+) -> tuple[list[TraceEvent], str | None]:
     native_model_calls = [event for event in native_events if event.type == "model_call"]
     proxy_model_calls = [event for event in proxy_events if event.type == "model_call"]
+    if prefer_proxy and proxy_model_calls:
+        # v2: the proxy is the one measurement path for every harness.
+        return [event for event in native_events if event.type != "model_call"] + proxy_events, "proxy"
     if proxy_model_calls and not native_model_calls:
         return native_events + proxy_events, "proxy"
     if proxy_model_calls and _non_aggregate_calls(proxy_model_calls) > _non_aggregate_calls(native_model_calls):
@@ -238,6 +257,11 @@ def _select_trace_events(native_events: list[TraceEvent], proxy_events: list[Tra
     if proxy_model_calls:
         return native_events + proxy_events, "proxy"
     return native_events or proxy_events, None
+
+
+def _prefer_proxy(config: dict[str, Any]) -> bool:
+    proxy = _trace_config(config).get("proxy")
+    return bool(isinstance(proxy, dict) and proxy.get("prefer"))
 
 
 def _calls_with_cost(events: list[TraceEvent]) -> int:

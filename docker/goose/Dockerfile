@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-ARG GOOSE_VERSION=1.37.0
+ARG GOOSE_VERSION=1.60.2
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends bzip2 ca-certificates curl git ripgrep python3 \

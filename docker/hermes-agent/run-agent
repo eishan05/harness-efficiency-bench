@@ -3,6 +3,15 @@ set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
 
+# v2 provider slot: BENCH_* (set for OpenCode Go runs through the usage proxy) maps
+# onto the v1 OPENROUTER_* names, which this wrapper treats as "an OpenAI-compatible
+# API at OPENROUTER_BASE_URL" whenever that base URL is set.
+if [ -n "${BENCH_API_KEY:-}" ]; then
+  export OPENROUTER_API_KEY="$BENCH_API_KEY"
+  export OPENROUTER_MODEL="${BENCH_MODEL:?BENCH_MODEL is required with BENCH_API_KEY}"
+  if [ -n "${BENCH_BASE_URL:-}" ]; then export OPENROUTER_BASE_URL="$BENCH_BASE_URL"; fi
+fi
+
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   : "${OPENROUTER_MODEL:?OPENROUTER_MODEL is required when OPENROUTER_API_KEY is set}"
   : "${HERMES_TOOLSETS:=terminal}"
@@ -10,7 +19,7 @@ if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   if [ -n "${OPENROUTER_BASE_URL:-}" ]; then
     export HERMES_BASE_URL="$OPENROUTER_BASE_URL"
   fi
-  export HERMES_PROVIDER=openrouter
+  export HERMES_PROVIDER="${HERMES_PROVIDER:-openrouter}"
   runner_script="$(mktemp)"
   cat > "$runner_script" <<'PY'
 import os

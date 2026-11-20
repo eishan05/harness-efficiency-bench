@@ -10,6 +10,30 @@ if [ -n "${GROK_BUILD_RUN_COMMAND:-}" ]; then
   exec /bin/sh -lc "$GROK_BUILD_RUN_COMMAND"
 fi
 
+# v2: a custom OpenAI-compatible model ("bench", BENCH_* through the usage proxy),
+# set as the default so every request uses it. Web search is off: it is an xAI-hosted
+# tool that would bypass the model under test.
+if [ -n "${BENCH_API_KEY:-}" ]; then
+  : "${BENCH_MODEL:?BENCH_MODEL is required with BENCH_API_KEY}"
+  : "${BENCH_BASE_URL:?BENCH_BASE_URL is required with BENCH_API_KEY}"
+  : "${BENCH_CONTEXT_WINDOW:=1000000}"
+  mkdir -p "$HOME/.grok"
+  cat > "$HOME/.grok/config.toml" <<TOML
+[models]
+default = "bench"
+
+[model.bench]
+model = "${BENCH_MODEL}"
+name = "${BENCH_MODEL}"
+base_url = "${BENCH_BASE_URL}"
+env_key = "BENCH_API_KEY"
+api_backend = "chat_completions"
+context_window = ${BENCH_CONTEXT_WINDOW}
+TOML
+  : "${GROK_OUTPUT_FORMAT:=streaming-json}"
+  exec grok -p "$prompt" -m bench --output-format "$GROK_OUTPUT_FORMAT" --always-approve --disable-web-search
+fi
+
 if [ -n "${XAI_API_KEY:-}" ] && [ -z "${GROK_CODE_XAI_API_KEY:-}" ]; then
   export GROK_CODE_XAI_API_KEY="$XAI_API_KEY"
 fi

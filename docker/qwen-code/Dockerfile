@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim
 
-ARG QWEN_CODE_VERSION=0.17.1
+ARG QWEN_CODE_VERSION=0.28.0
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git ripgrep python3 \

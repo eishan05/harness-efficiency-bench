@@ -1,6 +1,6 @@
 FROM python:3.12-slim-bookworm
 
-ARG NANOBOT_VERSION=0.2.1
+ARG NANOBOT_VERSION=0.4.1
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git ripgrep \

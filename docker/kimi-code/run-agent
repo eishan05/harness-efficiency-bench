@@ -2,6 +2,15 @@
 set -eu
 
 prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+
+# v2 provider slot: BENCH_* (set for OpenCode Go runs through the usage proxy) maps
+# onto the v1 OPENROUTER_* names, which this wrapper treats as "an OpenAI-compatible
+# API at OPENROUTER_BASE_URL" whenever that base URL is set.
+if [ -n "${BENCH_API_KEY:-}" ]; then
+  export OPENROUTER_API_KEY="$BENCH_API_KEY"
+  export OPENROUTER_MODEL="${BENCH_MODEL:?BENCH_MODEL is required with BENCH_API_KEY}"
+  if [ -n "${BENCH_BASE_URL:-}" ]; then export OPENROUTER_BASE_URL="$BENCH_BASE_URL"; fi
+fi
 export KIMI_CODE_HOME="${KIMI_CODE_HOME:-$HOME/.kimi-code}"
 export KIMI_DISABLE_TELEMETRY="${KIMI_DISABLE_TELEMETRY:-1}"
 
@@ -17,6 +26,8 @@ if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   export KIMI_MODEL_BASE_URL="$KIMI_BASE_URL"
   export KIMI_MODEL_MAX_CONTEXT_SIZE="$KIMI_MAX_CONTEXT_SIZE"
   cat > "$KIMI_CODE_HOME/config.toml" <<EOF
+default_model = "${KIMI_MODEL_NAME}"
+
 [providers.openrouter]
 type = "openai"
 base_url = "${KIMI_BASE_URL}"
@@ -52,38 +63,15 @@ else
   export KIMI_MODEL_NAME
 fi
 
-runner_script="$(mktemp --suffix=.mjs)"
-cat > "$runner_script" <<'NODE'
-import { readFileSync } from "node:fs";
-import { handleMainCommand } from "/usr/local/lib/node_modules/@moonshot-ai/kimi-code/dist/main.mjs";
-
-const promptFile = process.argv[2];
-const prompt = readFileSync(promptFile, "utf8");
-const version = JSON.parse(
-  readFileSync("/usr/local/lib/node_modules/@moonshot-ai/kimi-code/package.json", "utf8"),
-).version;
-
-await handleMainCommand(
-  {
-    session: undefined,
-    continue: false,
-    yolo: false,
-    auto: false,
-    plan: false,
-    model: process.env.KIMI_MODEL_NAME,
-    outputFormat: "stream-json",
-    prompt,
-    skillsDirs: [],
-  },
-  version,
-);
-NODE
+# Kimi Code 2.x has a headless prompt mode (-p). It refuses --auto and runs without
+# approval prompts on its own; v1 also called it with neither --yolo nor --auto. The
+# prompt is read from the file into one argument, as v1 passed it.
+set -- kimi --output-format stream-json -m "$KIMI_MODEL_NAME" -p "$(cat "$prompt_file")"
 
 status=0
 if [ -n "${KIMI_MAX_WALL_TIME:-}" ]; then
-  KIMI_CODE_SKIP_AUTO_MAIN=1 timeout --kill-after=10s "$KIMI_MAX_WALL_TIME" node "$runner_script" "$prompt_file" || status=$?
+  timeout --kill-after=10s "$KIMI_MAX_WALL_TIME" "$@" || status=$?
 else
-  KIMI_CODE_SKIP_AUTO_MAIN=1 node "$runner_script" "$prompt_file" || status=$?
+  "$@" || status=$?
 fi
-rm -f "$runner_script"
 exit "$status"

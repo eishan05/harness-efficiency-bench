@@ -412,3 +412,38 @@ class DockerAgentCliAdapterTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ProxyTraceNormalizedUsageTest(unittest.TestCase):
+    def test_parser_prefers_normalized_usage_over_raw_anthropic_usage(self):
+        import tempfile
+
+        from harness_efficiency_bench.adapters.docker_agent_cli import parse_proxy_trace_events
+
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp) / "ws"
+            workspace.mkdir()
+            record = {
+                "source": "usage_proxy",
+                "request_started_at": "2026-11-20T00:00:00+00:00",
+                "usage": {"input_tokens": 8, "cache_read_input_tokens": 4224, "output_tokens": 5},
+                "normalized_usage": {
+                    "input_tokens": 4232,
+                    "cached_input_tokens": 4224,
+                    "output_tokens": 5,
+                    "output_tokens_details": {"reasoning_tokens": 5},
+                },
+                "session_id": "s-1",
+                "requested_model": "gemini-3.8-flash-medium",
+            }
+            (Path(tmp) / ".harness-usage-proxy.jsonl").write_text(json.dumps(record) + "\n", encoding="utf-8")
+            events = parse_proxy_trace_events(
+                workspace, {"trace": {"proxy": {"trace_path": "../.harness-usage-proxy.jsonl"}}}
+            )
+        self.assertEqual(len(events), 1)
+        data = events[0].data
+        self.assertEqual(data["input_tokens"], 4232)
+        self.assertEqual(data["cached_input_tokens"], 4224)
+        self.assertEqual(data["output_tokens"], 5)
+        self.assertEqual(data["metadata"]["session_id"], "s-1")
+        self.assertEqual(data["metadata"]["requested_model"], "gemini-3.8-flash-medium")

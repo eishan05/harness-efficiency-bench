@@ -1,0 +1,40 @@
+#!/bin/sh
+# pi (https://pi.dev) headless: `pi -p --mode json` with one custom OpenAI-compatible
+# provider ("bench") pointing at BENCH_BASE_URL. Everything else is pi's default
+# (tools, built-in extensions, context files); --no-session keeps no session file and
+# --offline skips pi's startup network checks (not model calls).
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+: "${BENCH_MODEL:?BENCH_MODEL is required}"
+: "${BENCH_BASE_URL:?BENCH_BASE_URL is required}"
+: "${BENCH_API_KEY:?BENCH_API_KEY is required}"
+: "${BENCH_CONTEXT_WINDOW:=1000000}"
+: "${BENCH_MAX_OUTPUT_TOKENS:=65536}"
+export BENCH_MODEL BENCH_BASE_URL BENCH_API_KEY BENCH_CONTEXT_WINDOW BENCH_MAX_OUTPUT_TOKENS
+
+mkdir -p "$HOME/.pi/agent"
+python3 - <<'PY'
+import json, os
+from pathlib import Path
+env = os.environ
+agent = Path(env["HOME"]) / ".pi" / "agent"
+model = env["BENCH_MODEL"]
+(agent / "models.json").write_text(json.dumps({"providers": {"bench": {
+    "name": "Bench", "baseUrl": env["BENCH_BASE_URL"], "api": "openai-completions",
+    "apiKey": env["BENCH_API_KEY"],
+    "models": [{"id": model, "name": model, "reasoning": True, "input": ["text"],
+                "contextWindow": int(env["BENCH_CONTEXT_WINDOW"]),
+                "maxTokens": int(env["BENCH_MAX_OUTPUT_TOKENS"]),
+                "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}}],
+}}}, indent=2))
+(agent / "settings.json").write_text(json.dumps({
+    "defaultProvider": "bench", "defaultModel": model, "enableInstallTelemetry": False,
+}, indent=2))
+PY
+
+export PI_SKIP_VERSION_CHECK=1 PI_TELEMETRY=0
+# The prompt goes in as an attached file (like the v1 Opencode and Kilo wrappers), so a
+# long prompt is not limited by the size of one command-line argument.
+exec pi -p --mode json --no-session --offline --model "bench/$BENCH_MODEL" \
+  "@$prompt_file" "Execute the complete benchmark instructions in the attached file."

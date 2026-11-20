@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-ARG ANTIGRAVITY_CLI_VERSION=1.0.6
+ARG ANTIGRAVITY_CLI_VERSION=1.5.13
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

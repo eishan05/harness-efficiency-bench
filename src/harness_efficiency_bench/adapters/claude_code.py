@@ -10,7 +10,7 @@ from typing import Any
 
 from .base import AdapterResult, AdapterRunContext, BaseAdapter
 from .command import missing_required_env, parse_jsonl_events, result_from_completed, run_command
-from .docker_agent_cli import _select_trace_events, parse_proxy_trace_events
+from .docker_agent_cli import _prefer_proxy, _select_trace_events, parse_proxy_trace_events
 from ..tracing import TraceEvent, model_call_event, tool_result_event
 from ..usage_proxy import proxy_from_config
 
@@ -61,7 +61,9 @@ class ClaudeCodeAdapter(BaseAdapter):
         proxy_events = parse_proxy_trace_events(context.workspace, active_context.harness.config)
         if proxy_events:
             proxy_events = _mark_preflight_proxy_calls(proxy_events, native_events)
-        parsed_events, selected_trace_source = _select_trace_events(native_events, proxy_events)
+        parsed_events, selected_trace_source = _select_trace_events(
+            native_events, proxy_events, prefer_proxy=_prefer_proxy(active_context.harness.config)
+        )
         result.trace_events = parsed_events
         result.metadata["trace_quality"] = "structured" if any(event.type == "model_call" for event in parsed_events) else "partial"
         result.metadata["model_id"] = active_context.harness.model
@@ -119,12 +121,28 @@ class ClaudeCodeAdapter(BaseAdapter):
 
 
 def _with_openrouter_environment(context: AdapterRunContext) -> AdapterRunContext:
-    if context.harness.config.get("auth_mode") != "openrouter":
+    """Point Claude Code at an Anthropic-compatible gateway with one model.
+
+    ``auth_mode: openrouter`` is the v1 setup. ``auth_mode: gateway`` is the
+    same for any other Anthropic-compatible gateway (v2: OpenCode Go), with
+    the key and model read from ``gateway_api_key_env`` / ``gateway_model_env``.
+    """
+    auth_mode = context.harness.config.get("auth_mode")
+    if auth_mode not in {"openrouter", "gateway"}:
         return context
+    config = context.harness.config
     source_env = {**os.environ, **context.harness.env}
-    api_key = source_env.get("OPENROUTER_API_KEY", "")
-    model = _expand_env_vars(context.harness.model or source_env.get("OPENROUTER_MODEL", ""), source_env)
-    base_url = str(context.harness.config.get("openrouter_base_url") or "https://openrouter.ai/api")
+    if auth_mode == "gateway":
+        api_key_env = str(config.get("gateway_api_key_env") or "BENCH_API_KEY")
+        model_env = str(config.get("gateway_model_env") or "BENCH_MODEL")
+        base_url = str(config.get("gateway_base_url") or "")
+        if not base_url:
+            raise ValueError("auth_mode: gateway requires config.gateway_base_url")
+    else:
+        api_key_env, model_env = "OPENROUTER_API_KEY", "OPENROUTER_MODEL"
+        base_url = str(config.get("openrouter_base_url") or "https://openrouter.ai/api")
+    api_key = source_env.get(api_key_env, "")
+    model = _expand_env_vars(context.harness.model or source_env.get(model_env, ""), source_env)
     env = {
         **context.harness.env,
         "ANTHROPIC_BASE_URL": base_url,

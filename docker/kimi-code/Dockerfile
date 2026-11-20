@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim
 
-ARG KIMI_CODE_VERSION=0.11.0
+ARG KIMI_CODE_VERSION=2.7.2
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git ripgrep python3 \

@@ -12,6 +12,30 @@ fi
 
 settings_dir="$HOME/.gemini/antigravity-cli"
 mkdir -p "$settings_dir"
+
+# v2: Gemini API-key mode against GOOGLE_GEMINI_BASE_URL (the usage proxy). agy only
+# accepts models from its own catalog, so it is told to use AGY_MODEL and the proxy
+# rewrites every request to the model under test (force_model; recorded per call).
+if [ -n "${BENCH_API_KEY:-}" ]; then
+  : "${AGY_MODEL:=gemini-3.8-flash-medium}"
+  export GEMINI_API_KEY="$BENCH_API_KEY"
+  cat > "$settings_dir/settings.json" <<'JSON'
+{
+  "modelProvider": "gemini",
+  "permissions": {
+    "allow": [
+      "command(*)"
+    ]
+  },
+  "trustedWorkspaces": [
+    "/workspace"
+  ]
+}
+JSON
+  exec agy --add-dir /workspace --dangerously-skip-permissions --model "$AGY_MODEL" \
+    --output-format stream-json -p="$prompt"
+fi
+
 if [ ! -f "$settings_dir/settings.json" ]; then
   cat > "$settings_dir/settings.json" <<'EOF'
 {

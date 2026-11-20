@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim
 
-ARG OPENCODE_VERSION=1.16.2
+ARG OPENCODE_VERSION=1.19.6
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git ripgrep python3 \
