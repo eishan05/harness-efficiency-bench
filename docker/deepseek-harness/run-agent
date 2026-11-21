@@ -1,0 +1,36 @@
+#!/bin/sh
+# DeepSeek Harness (dsh). DSH_BENCH_PROFILE picks the surface:
+#   headless     `dsh --profile headless`: the one-shot CLI, with the same tools, prompt
+#                and defaults as the full product (default)
+#   sdk-minimal  the SDK's minimal profile, which the repo's BENCHMARK.md recommends
+# Both talk Anthropic Messages to DEEPSEEK_BASE_URL (dsh appends /v1/messages).
+# danger-full-access + approval "never" is dsh's equivalent of a yolo flag; the
+# container is the sandbox. Feedback telemetry is off (DSH_TELEMETRY_DISABLED).
+set -eu
+
+prompt_file="${1:-/workspace/.benchmark_prompt.txt}"
+: "${BENCH_MODEL:?BENCH_MODEL is required}"
+: "${BENCH_API_KEY:?BENCH_API_KEY is required}"
+
+export DEEPSEEK_API_KEY="$BENCH_API_KEY"
+export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-${BENCH_BASE_URL:?BENCH_BASE_URL or DEEPSEEK_BASE_URL is required}}"
+export DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
+export DSH_PERMISSION_MODE=danger-full-access
+export DSH_TELEMETRY_DISABLED=1
+if [ -n "${BENCH_CONTEXT_WINDOW:-}" ]; then export DSH_CONTEXT_WINDOW="$BENCH_CONTEXT_WINDOW"; fi
+mkdir -p "$DSH_HOME"
+
+case "${DSH_BENCH_PROFILE:-headless}" in
+  headless)
+    exec dsh --profile headless --patch /opt/harness/bench.patch.yml \
+      --patch /opt/harness/headless-model.patch.yml \
+      --permission-mode danger-full-access --json < "$prompt_file"
+    ;;
+  sdk-minimal)
+    exec python3 /opt/harness/minimal.py "$prompt_file"
+    ;;
+  *)
+    echo "unknown DSH_BENCH_PROFILE: $DSH_BENCH_PROFILE" >&2
+    exit 2
+    ;;
+esac

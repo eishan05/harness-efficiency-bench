@@ -206,6 +206,18 @@ def new_harnesses() -> list[dict]:
         prx=proxy("gemini", ["GOOGLE_GEMINI_BASE_URL"], agent=f"antigravity-cli/{v}", force_model="${BENCH_MODEL}",
                   gemini_tool_results_as_user=True),
         passthrough=["AGY_MODEL"], home_tmpfs="size=512m,uid=1000,gid=1000")))
+    # DeepSeek Harness talks Anthropic Messages (dsh appends /v1/messages to
+    # DEEPSEEK_BASE_URL). Two surfaces: the headless CLI (product defaults) and the
+    # SDK's minimal profile (what the repo's BENCHMARK.md recommends).
+    v = dockerfile_version("deepseek-harness")
+    for harness_id, profile in (("deepseek-harness-go", "headless"), ("deepseek-harness-minimal-go", "sdk-minimal")):
+        manifest = agent_cli(harness_id, docker_config(
+            "deepseek-harness", v, "/dsh-home",
+            version_command=["python", "-c", "import importlib.metadata as m; print(m.version('deepseek-harness-sdk'))"],
+            parser="none", prx=proxy("anthropic", ["DEEPSEEK_BASE_URL"], agent=f"deepseek-harness/{v}"),
+            passthrough=["DSH_BENCH_PROFILE"], home_tmpfs="size=1g"))
+        manifest["env"] = {"DSH_BENCH_PROFILE": profile}
+        manifests.append(manifest)
     return manifests
 
 

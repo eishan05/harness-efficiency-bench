@@ -58,7 +58,10 @@ sudo -u bench -H scripts/v2/run.sh smoke smoke1                      # toy task,
 sudo -u bench -H JOBS=3 scripts/v2/run.sh suite r1                   # 12 score-facing tasks
 sudo -u bench -H JOBS=3 scripts/v2/run.sh suite r1 pi-go crush-go    # some harnesses
 sudo -u bench python3 scripts/v2/summarize.py runs/v2/r1
+python3 scripts/v2/pool.py runs/v2/r1 runs/v2/r2 runs/v2/r3 --csv runs/v2/pooled-r1-r3.csv
 ```
+
+`pool.py` pools repeats per harness: median and range of tokens per solved task, cache-discounted tokens, startup tax, and cache behavior from the per-call proxy records (cached share after the first call, on the first call, and turn-to-turn prefix reuse).
 
 - Results go to `runs/v2/<run>/<harness-id>/`, with logs and conditions (git commit, image IDs, model) in `runs/v2/<run>/logs/`.
 - A harness whose results already exist is skipped, so rerunning a command resumes a stopped run.

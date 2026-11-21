@@ -1,0 +1,13 @@
+# Bench overlay for dsh (--patch / SDK patches). Model-facing behavior stays as shipped.
+#
+# - Two request fields meant for DeepSeek's own API are off: the session-log upload
+#   (dsh_session_log, up to 8 MiB per request) and the plugin inventory
+#   (dsh_plugin_packages). Neither is model input; through the gateway they would only
+#   send the session log to a third party.
+- id: session-log-deepseek
+  config:
+    enabled: false
+
+- id: plugin-package-inventory-deepseek
+  config:
+    enabled: false

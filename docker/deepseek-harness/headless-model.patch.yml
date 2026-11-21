@@ -1,0 +1,7 @@
+# Headless only (the SDK passes the model itself): the model under test comes from
+# BENCH_MODEL. The shipped default is deepseek-official/deepseek-flash, DeepSeek's own
+# name for the model, which the gateway names differently.
+- id: agent-default-model
+  config:
+    provider: deepseek-official
+    model: !!js process.env.BENCH_MODEL
